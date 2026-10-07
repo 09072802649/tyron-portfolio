@@ -1,0 +1,2209 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tyron John L. Dela Cruz | Portfolio - Network Engineer, Data Analyst & Web Developer</title>
+  <meta name="description" content="Portfolio of Tyron John L. Dela Cruz - Senior BSIT Student at Datamex College of Saint Adeline specializing in Web Development, Data Analytics, Networking, and Cybersecurity.">
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Tailwind CSS CDN with Custom Configurations -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            'cyber-bg': '#080C14',
+            'cyber-card': 'rgba(15, 23, 42, 0.72)',
+            'cyber-card-hover': 'rgba(24, 34, 60, 0.85)',
+            'cyber-cyan': '#00F2FE',
+            'cyber-blue': '#4FACFE',
+            'cyber-purple': '#7F00FF',
+            'cyber-slate': '#94A3B8',
+            'cyber-border': 'rgba(255, 255, 255, 0.08)',
+            'cyber-border-glow': 'rgba(0, 242, 254, 0.28)',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          boxShadow: {
+            'cyan-glow': '0 0 25px -5px rgba(0, 242, 254, 0.35)',
+            'cyan-sm': '0 0 12px 0 rgba(0, 242, 254, 0.25)',
+            'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+          },
+          animation: {
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'spin-slow': 'spin 18s linear infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-10px)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom CSS for Cyber-Tech Dark Glassmorphism -->
+  <style>
+    :root {
+      color-scheme: dark;
+    }
+    
+    body {
+      background-color: #080C14;
+      color: #94A3B8;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 15% 20%, rgba(0, 242, 254, 0.06) 0%, transparent 40%),
+        radial-gradient(circle at 85% 60%, rgba(79, 172, 254, 0.05) 0%, transparent 45%),
+        radial-gradient(circle at 50% 85%, rgba(127, 0, 255, 0.04) 0%, transparent 40%),
+        radial-gradient(rgba(0, 242, 254, 0.04) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 100% 100%, 36px 36px;
+      background-attachment: fixed;
+    }
+
+    /* Custom Glassmorphism */
+    .glass-card {
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glass-card:hover {
+      border-color: rgba(0, 242, 254, 0.35);
+      box-shadow: 0 10px 30px -10px rgba(0, 242, 254, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .glass-nav {
+      background: rgba(8, 12, 20, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    /* Glow text */
+    .glow-text {
+      text-shadow: 0 0 20px rgba(0, 242, 254, 0.45);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #080C14;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1E293B;
+      border-radius: 4px;
+      border: 1px solid rgba(0, 242, 254, 0.2);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #00F2FE;
+    }
+
+    /* Rotating Cyan Gradient Ring */
+    .neon-ring-container {
+      position: relative;
+    }
+    .neon-ring-container::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00F2FE, #4FACFE, #7F00FF, #00F2FE);
+      animation: spin 8s linear infinite;
+      z-index: 0;
+      opacity: 0.85;
+      filter: blur(4px);
+    }
+    .neon-ring-container::after {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00F2FE, #4FACFE, #7F00FF, #00F2FE);
+      animation: spin 8s linear infinite;
+      z-index: 0;
+    }
+
+    /* Active Nav link */
+    .nav-link.active {
+      color: #00F2FE;
+      border-bottom: 2px solid #00F2FE;
+    }
+
+    /* Accordion animations */
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease-out, opacity 0.3s ease;
+      opacity: 0;
+    }
+    .accordion-content.open {
+      max-height: 1000px;
+      opacity: 1;
+      transition: max-height 0.5s ease-in, opacity 0.4s ease;
+    }
+
+    /* Tab styles */
+    .filter-btn.active {
+      background: linear-gradient(135deg, #00F2FE, #4FACFE);
+      color: #080C14;
+      font-weight: 600;
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-[#00F2FE] selection:text-[#080C14]">
+
+  <!-- Top Sticky Glassmorphic Navbar -->
+  <header id="main-header" class="fixed top-0 left-0 right-0 z-50 glass-nav transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <!-- Logo <TD.> with Cyan Gradient Ring -->
+        <a href="#hero" class="flex items-center gap-3 group focus:outline-none">
+          <div class="relative w-11 h-11 rounded-xl p-[2px] bg-gradient-to-tr from-[#00F2FE] via-[#4FACFE] to-[#7F00FF] transition-transform duration-300 group-hover:scale-105 shadow-cyan-sm">
+            <div class="w-full h-full bg-[#080C14] rounded-[10px] flex items-center justify-center">
+              <span class="font-mono font-bold text-lg text-white group-hover:text-[#00F2FE] transition-colors">&lt;TD.&gt;</span>
+            </div>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-bold text-white tracking-wide text-sm sm:text-base group-hover:text-[#00F2FE] transition-colors">Tyron Dela Cruz</span>
+            <span class="text-[10px] font-mono tracking-widest text-[#94A3B8] uppercase">BSIT Senior &bull; Tech Lead</span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation (11 Links) -->
+        <nav class="hidden xl:flex items-center space-x-1 2xl:space-x-2 text-xs font-medium text-slate-300">
+          <a href="#hero" class="nav-link py-2 px-2.5 hover:text-[#00F2FE] transition-colors">Home</a>
+          <a href="#about" class="nav-link py-2 px-2.5 hover:text-[#00F2FE] transition-colors">About</a>
+          <a href="#skills" class="nav-link py-2 px-2.5 hover:text-[#00F2FE] transition-colors">Skills</a>
+          <a href="#projects" class="nav-link py-2 px-2.5 hover:text-[#00F2FE] transition-colors">Projects</a>
+          <a href="#troubleshooting" class="nav-link py-2 px-2.5 hover:text-[#00F2FE] transition-colors">Troubleshooting</a>
+          <a href="#ai-log" class="nav-link py-2 px-2.5 hover:text-[#00F2FE] transition-colors">AI Log</a>
+          <a href="#resume" class="nav-link py-2 px-2.5 hover:text-[#00F2FE] transition-colors">Resume</a>
+          <a href="#certifications" class="nav-link py-2 px-2.5 hover:text-[#00F2FE] transition-colors">Certs</a>
+          <a href="#career-plan" class="nav-link py-2 px-2.5 hover:text-[#00F2FE] transition-colors">Career Plan</a>
+          <a href="#reflection" class="nav-link py-2 px-2.5 hover:text-[#00F2FE] transition-colors">Reflection</a>
+          <a href="#contact" class="nav-link py-2 px-2.5 hover:text-[#00F2FE] transition-colors">Contact</a>
+        </nav>
+
+        <!-- Mobile Toggle Button -->
+        <div class="flex items-center xl:hidden">
+          <!-- Mobile Hamburger Toggle -->
+          <button id="mobile-menu-btn" type="button" class="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 focus:outline-none focus:ring-2 focus:ring-[#00F2FE]" aria-label="Toggle Navigation Menu">
+            <i id="menu-icon" class="fas fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Slide-out Drawer Navigation -->
+    <div id="mobile-drawer" class="fixed inset-y-0 right-0 w-72 bg-[#080C14]/95 backdrop-blur-2xl border-l border-white/10 z-50 transform translate-x-full transition-transform duration-300 ease-in-out p-6 flex flex-col justify-between shadow-2xl xl:hidden">
+      <div>
+        <div class="flex items-center justify-between pb-6 border-b border-slate-800">
+          <div class="flex items-center gap-2">
+            <span class="font-mono font-bold text-lg text-[#00F2FE]">&lt;TD.&gt;</span>
+            <span class="text-sm font-semibold text-white">Menu Navigation</span>
+          </div>
+          <button id="close-drawer-btn" class="p-2 text-slate-400 hover:text-white focus:outline-none" aria-label="Close menu">
+            <i class="fas fa-xmark text-lg"></i>
+          </button>
+        </div>
+
+        <nav class="mt-6 flex flex-col space-y-3 font-medium text-sm">
+          <a href="#hero" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-1.5 px-3 rounded-md hover:bg-slate-800/40 transition">Home</a>
+          <a href="#about" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-1.5 px-3 rounded-md hover:bg-slate-800/40 transition">About Me</a>
+          <a href="#skills" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-1.5 px-3 rounded-md hover:bg-slate-800/40 transition">Technical Skills</a>
+          <a href="#projects" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-1.5 px-3 rounded-md hover:bg-slate-800/40 transition">Projects Showcase</a>
+          <a href="#troubleshooting" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-1.5 px-3 rounded-md hover:bg-slate-800/40 transition">Troubleshooting Cases</a>
+          <a href="#ai-log" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-1.5 px-3 rounded-md hover:bg-slate-800/40 transition">AI Usage Log</a>
+          <a href="#resume" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-1.5 px-3 rounded-md hover:bg-slate-800/40 transition">Resume &amp; Experience</a>
+          <a href="#certifications" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-1.5 px-3 rounded-md hover:bg-slate-800/40 transition">Certifications</a>
+          <a href="#career-plan" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-1.5 px-3 rounded-md hover:bg-slate-800/40 transition">Career Plan</a>
+          <a href="#reflection" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-1.5 px-3 rounded-md hover:bg-slate-800/40 transition">Reflection Essay</a>
+          <a href="#contact" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-1.5 px-3 rounded-md hover:bg-slate-800/40 transition">Contact</a>
+        </nav>
+      </div>
+
+      <div class="pt-6 border-t border-slate-800">
+        <a href="tyron_dela_cruz_resume.pdf" download class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-xs font-mono font-semibold bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] text-[#080C14] hover:opacity-95 transition shadow-cyan-sm">
+          <i class="fas fa-download"></i> Download Resume
+        </a>
+      </div>
+    </div>
+    <!-- Drawer Backdrop -->
+    <div id="drawer-backdrop" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden xl:hidden"></div>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="relative z-10 pt-20">
+
+    <!-- 1. HERO SECTION -->
+    <section id="hero" class="min-h-[calc(100vh-5rem)] flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      <!-- Ambient light blobs -->
+      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-[#00F2FE]/10 rounded-full blur-[140px] pointer-events-none -z-10"></div>
+      <div class="absolute bottom-10 right-10 w-[350px] h-[350px] bg-[#7F00FF]/10 rounded-full blur-[120px] pointer-events-none -z-10"></div>
+
+      <div class="max-w-4xl mx-auto text-center flex flex-col items-center">
+        <!-- Live Status Badge -->
+        <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full glass-card border border-[#00F2FE]/30 mb-8 animate-float">
+          <span class="w-2.5 h-2.5 rounded-full bg-[#00F2FE] animate-ping"></span>
+          <span class="text-xs font-mono tracking-wider text-slate-200 uppercase font-semibold">Ready For Industry &bull; BSIT Senior</span>
+        </div>
+
+        <!-- Avatar Container with Animated Neon Glowing Ring -->
+        <div class="relative mb-8">
+          <div class="neon-ring-container w-40 h-40 sm:w-48 sm:h-48 rounded-full p-1 flex items-center justify-center">
+            <div class="relative w-full h-full rounded-full bg-[#0B1120] border-2 border-[#00F2FE]/40 overflow-hidden flex items-center justify-center z-10 shadow-2xl">
+              <!-- Profile Portrait Graphic Representation -->
+              <div class="absolute inset-0 bg-gradient-to-b from-[#00F2FE]/20 via-[#4FACFE]/10 to-[#080C14] opacity-80"></div>
+              <div class="text-center z-20 flex flex-col items-center">
+                <i class="fas fa-user-gear text-4xl sm:text-5xl text-[#00F2FE] mb-1.5 drop-shadow-[0_0_15px_rgba(0,242,254,0.7)]"></i>
+                <span class="font-mono text-xs font-bold text-white tracking-widest">&lt;TD.DEV&gt;</span>
+                <span class="text-[9px] text-[#4FACFE] font-mono uppercase tracking-wider">Network &bull; Data &bull; Web</span>
+              </div>
+            </div>
+          </div>
+          <!-- Tech status indicator badge -->
+          <div class="absolute bottom-1 right-2 z-20 bg-[#0B1120] border border-[#00F2FE] rounded-full px-2 py-0.5 flex items-center gap-1.5 shadow-lg">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span class="text-[10px] font-mono text-slate-300 font-medium">ONLINE</span>
+          </div>
+        </div>
+
+        <!-- Hero Headline -->
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-tight mb-4">
+          Hi, I'm <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#00F2FE] via-[#4FACFE] to-white glow-text">Tyron John L. Dela Cruz</span>
+        </h1>
+
+        <!-- Sub-header Badge -->
+        <div class="mb-6 max-w-2xl">
+          <span class="inline-block text-base sm:text-lg md:text-xl font-medium text-slate-300 bg-slate-900/60 px-5 py-2 rounded-xl border border-white/10 shadow-inner">
+            BSIT Senior Student | Aspiring Network Engineer, Data Analyst &amp; Web Developer
+          </span>
+        </div>
+
+        <!-- Academic Distinction Chips -->
+        <div class="flex flex-wrap items-center justify-center gap-3 mb-10 text-xs font-mono text-slate-400">
+          <span class="glass-card px-3 py-1.5 rounded-lg border border-amber-500/30 text-amber-300">
+            <i class="fas fa-award mr-1.5 text-amber-400"></i> Dean's Lister (GWA 1.20 - 1.80)
+          </span>
+          <span class="glass-card px-3 py-1.5 rounded-lg border border-[#00F2FE]/30 text-cyan-300">
+            <i class="fas fa-headset mr-1.5 text-[#00F2FE]"></i> Official Event Technical Lead
+          </span>
+          <span class="glass-card px-3 py-1.5 rounded-lg border border-purple-500/30 text-purple-300">
+            <i class="fas fa-graduation-cap mr-1.5 text-purple-400"></i> Datamex College of Saint Adeline
+          </span>
+        </div>
+
+        <!-- Call to Action Buttons -->
+        <div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+          <!-- Primary Solid Cyan Pill -->
+          <a href="#projects" class="w-full sm:w-auto px-8 py-3.5 rounded-full font-semibold text-sm bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] text-[#080C14] hover:shadow-cyan-glow transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+            <span>View My Projects</span>
+            <i class="fas fa-arrow-down text-xs"></i>
+          </a>
+
+          <!-- Secondary Outlined Glass Pill -->
+          <a href="tyron_dela_cruz_resume.pdf" download class="w-full sm:w-auto px-8 py-3.5 rounded-full font-semibold text-sm glass-card text-white border border-white/20 hover:border-[#00F2FE] hover:text-[#00F2FE] hover:bg-slate-800/50 transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+            <i class="fas fa-download"></i>
+            <span>Download Resume</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. ABOUT ME SECTION -->
+    <section id="about" class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <div class="inline-flex items-center gap-2 text-xs font-mono text-[#00F2FE] tracking-widest uppercase mb-2">
+          <i class="fas fa-terminal"></i> 01 // Overview
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">About Me</h2>
+        <div class="w-20 h-1 bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] mx-auto mt-4 rounded-full"></div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        <!-- 150-Word Professional Statement Card -->
+        <div class="lg:col-span-7 glass-card rounded-2xl p-8 flex flex-col justify-between border border-white/10 relative overflow-hidden">
+          <div class="absolute top-0 right-0 p-8 opacity-5">
+            <i class="fas fa-code text-9xl text-white"></i>
+          </div>
+
+          <div>
+            <div class="flex items-center gap-3 mb-6">
+              <span class="w-3 h-3 rounded-full bg-[#00F2FE]"></span>
+              <span class="text-xs font-mono uppercase tracking-widest text-slate-400 font-semibold">Professional Profile</span>
+            </div>
+
+            <!-- Exact 150-word statement -->
+            <blockquote class="text-slate-200 text-base sm:text-lg leading-relaxed mb-6 font-normal">
+              "I am a senior BSIT student at Datamex College of Saint Adeline specializing in Web Development, Data Analytics, Networking, Cybersecurity, and IT Troubleshooting. Proficient in HTML, CSS, JavaScript, Python, and SQL, I bring a practical, hands-on approach to building web applications, querying data, configuring network systems, and diagnosing technical issues. I am seeking entry-level roles as a Network Engineer, Data Analyst, Web Developer, or IT Support Specialist."
+            </blockquote>
+          </div>
+
+          <!-- Highlight metrics row -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-slate-800">
+            <div>
+              <div class="text-xl sm:text-2xl font-mono font-bold text-[#00F2FE]">4th</div>
+              <div class="text-[11px] text-slate-400 uppercase tracking-wider">Year Senior</div>
+            </div>
+            <div>
+              <div class="text-xl sm:text-2xl font-mono font-bold text-[#4FACFE]">1.20-1.80</div>
+              <div class="text-[11px] text-slate-400 uppercase tracking-wider">Dean's GWA</div>
+            </div>
+            <div>
+              <div class="text-xl sm:text-2xl font-mono font-bold text-emerald-400">5+</div>
+              <div class="text-[11px] text-slate-400 uppercase tracking-wider">Core Disciplines</div>
+            </div>
+            <div>
+              <div class="text-xl sm:text-2xl font-mono font-bold text-purple-400">2027</div>
+              <div class="text-[11px] text-slate-400 uppercase tracking-wider">Graduation</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Info Cards Grid -->
+        <div class="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Institution -->
+          <div class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between">
+            <div class="w-10 h-10 rounded-xl bg-[#00F2FE]/10 border border-[#00F2FE]/30 flex items-center justify-center text-[#00F2FE] mb-4">
+              <i class="fas fa-school"></i>
+            </div>
+            <div>
+              <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">Institution</span>
+              <h4 class="text-sm font-semibold text-white mt-1">Datamex College of Saint Adeline</h4>
+              <p class="text-xs text-slate-400 mt-1">BSIT 4th Year &bull; Expected Graduation: July 2027</p>
+            </div>
+          </div>
+
+          <!-- Location -->
+          <div class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between">
+            <div class="w-10 h-10 rounded-xl bg-[#4FACFE]/10 border border-[#4FACFE]/30 flex items-center justify-center text-[#4FACFE] mb-4">
+              <i class="fas fa-map-location-dot"></i>
+            </div>
+            <div>
+              <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">Location</span>
+              <h4 class="text-sm font-semibold text-white mt-1">Las Piñas City, PH</h4>
+              <p class="text-xs text-slate-400 mt-1">3080 Holy Family Compd., Manuyo Uno</p>
+            </div>
+          </div>
+
+          <!-- Current Roles -->
+          <div class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between">
+            <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-4">
+              <i class="fas fa-briefcase"></i>
+            </div>
+            <div>
+              <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">Current Roles</span>
+              <h4 class="text-sm font-semibold text-white mt-1">Official Event Lead Technical</h4>
+              <p class="text-xs text-slate-400 mt-1">&amp; Student Assistant (Aug 2024 – Present)</p>
+            </div>
+          </div>
+
+          <!-- Languages -->
+          <div class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-4">
+              <i class="fas fa-language"></i>
+            </div>
+            <div>
+              <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">Languages</span>
+              <h4 class="text-sm font-semibold text-white mt-1">English, Tagalog</h4>
+              <p class="text-xs text-slate-400 mt-1">Bilingual professional technical proficiency</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. TECHNICAL SKILLS SECTION -->
+    <section id="skills" class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <div class="inline-flex items-center gap-2 text-xs font-mono text-[#00F2FE] tracking-widest uppercase mb-2">
+          <i class="fas fa-microchip"></i> 02 // Stack &amp; Competencies
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">Technical Skills</h2>
+        <p class="text-slate-400 text-sm max-w-xl mx-auto mt-2">Categorized competencies spanning software development, network topologies, data pipelines, and hardware diagnostics.</p>
+        <div class="w-20 h-1 bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] mx-auto mt-4 rounded-full"></div>
+      </div>
+
+      <!-- Skills Grid (7 Core Categories) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- 1. Web Development -->
+        <div class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-[#00F2FE]/10 border border-[#00F2FE]/30 flex items-center justify-center text-[#00F2FE]">
+                  <i class="fas fa-globe text-lg"></i>
+                </div>
+                <h3 class="text-base font-bold text-white">Web Development</h3>
+              </div>
+              <span class="text-xs font-mono text-[#00F2FE] bg-[#00F2FE]/10 px-2 py-0.5 rounded">90%</span>
+            </div>
+            <p class="text-xs text-slate-400 mb-4">Building responsive, accessible, dynamic user experiences and modular web architectures.</p>
+            <div class="flex flex-wrap gap-1.5 font-mono text-xs">
+              <span class="bg-slate-900/80 text-cyan-300 border border-cyan-500/20 px-2.5 py-1 rounded">HTML5</span>
+              <span class="bg-slate-900/80 text-cyan-300 border border-cyan-500/20 px-2.5 py-1 rounded">CSS3</span>
+              <span class="bg-slate-900/80 text-cyan-300 border border-cyan-500/20 px-2.5 py-1 rounded">JavaScript (ES6+)</span>
+              <span class="bg-slate-900/80 text-cyan-300 border border-cyan-500/20 px-2.5 py-1 rounded">Responsive Layouts</span>
+              <span class="bg-slate-900/80 text-cyan-300 border border-cyan-500/20 px-2.5 py-1 rounded">API Integration</span>
+            </div>
+          </div>
+          <div class="w-full bg-slate-800/80 h-1.5 rounded-full mt-6 overflow-hidden">
+            <div class="bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] h-full rounded-full" style="width: 90%;"></div>
+          </div>
+        </div>
+
+        <!-- 2. Programming & Scripting -->
+        <div class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-[#4FACFE]/10 border border-[#4FACFE]/30 flex items-center justify-center text-[#4FACFE]">
+                  <i class="fas fa-code text-lg"></i>
+                </div>
+                <h3 class="text-base font-bold text-white">Programming &amp; Scripting</h3>
+              </div>
+              <span class="text-xs font-mono text-[#4FACFE] bg-[#4FACFE]/10 px-2 py-0.5 rounded">85%</span>
+            </div>
+            <p class="text-xs text-slate-400 mb-4">Algorithmic logic, object-oriented concepts, and automation scripting for routine system operations.</p>
+            <div class="flex flex-wrap gap-1.5 font-mono text-xs">
+              <span class="bg-slate-900/80 text-blue-300 border border-blue-500/20 px-2.5 py-1 rounded">Python</span>
+              <span class="bg-slate-900/80 text-blue-300 border border-blue-500/20 px-2.5 py-1 rounded">C++ Fundamentals</span>
+              <span class="bg-slate-900/80 text-blue-300 border border-blue-500/20 px-2.5 py-1 rounded">Automation Scripts</span>
+              <span class="bg-slate-900/80 text-blue-300 border border-blue-500/20 px-2.5 py-1 rounded">Object-Oriented Logic</span>
+            </div>
+          </div>
+          <div class="w-full bg-slate-800/80 h-1.5 rounded-full mt-6 overflow-hidden">
+            <div class="bg-gradient-to-r from-[#4FACFE] to-[#7F00FF] h-full rounded-full" style="width: 85%;"></div>
+          </div>
+        </div>
+
+        <!-- 3. Database Systems -->
+        <div class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                  <i class="fas fa-database text-lg"></i>
+                </div>
+                <h3 class="text-base font-bold text-white">Database Systems</h3>
+              </div>
+              <span class="text-xs font-mono text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded">88%</span>
+            </div>
+            <p class="text-xs text-slate-400 mb-4">Relational schema modeling, multi-table queries, normalization rules, and index optimization.</p>
+            <div class="flex flex-wrap gap-1.5 font-mono text-xs">
+              <span class="bg-slate-900/80 text-purple-300 border border-purple-500/20 px-2.5 py-1 rounded">SQL</span>
+              <span class="bg-slate-900/80 text-purple-300 border border-purple-500/20 px-2.5 py-1 rounded">MySQL</span>
+              <span class="bg-slate-900/80 text-purple-300 border border-purple-500/20 px-2.5 py-1 rounded">ERD System Design</span>
+              <span class="bg-slate-900/80 text-purple-300 border border-purple-500/20 px-2.5 py-1 rounded">Database Normalization</span>
+            </div>
+          </div>
+          <div class="w-full bg-slate-800/80 h-1.5 rounded-full mt-6 overflow-hidden">
+            <div class="bg-gradient-to-r from-purple-500 to-indigo-500 h-full rounded-full" style="width: 88%;"></div>
+          </div>
+        </div>
+
+        <!-- 4. Networking & Infrastructure -->
+        <div class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                  <i class="fas fa-network-wired text-lg"></i>
+                </div>
+                <h3 class="text-base font-bold text-white">Networking &amp; Infrastructure</h3>
+              </div>
+              <span class="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">92%</span>
+            </div>
+            <p class="text-xs text-slate-400 mb-4">Subnet planning, gateway configuration, switch/router setup, and packet troubleshooting.</p>
+            <div class="flex flex-wrap gap-1.5 font-mono text-xs">
+              <span class="bg-slate-900/80 text-emerald-300 border border-emerald-500/20 px-2.5 py-1 rounded">TCP/IP</span>
+              <span class="bg-slate-900/80 text-emerald-300 border border-emerald-500/20 px-2.5 py-1 rounded">Subnetting (VLSM/CIDR)</span>
+              <span class="bg-slate-900/80 text-emerald-300 border border-emerald-500/20 px-2.5 py-1 rounded">Routing Protocols</span>
+              <span class="bg-slate-900/80 text-emerald-300 border border-emerald-500/20 px-2.5 py-1 rounded">Hardware Configuration</span>
+            </div>
+          </div>
+          <div class="w-full bg-slate-800/80 h-1.5 rounded-full mt-6 overflow-hidden">
+            <div class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full" style="width: 92%;"></div>
+          </div>
+        </div>
+
+        <!-- 5. Cybersecurity & QA -->
+        <div class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400">
+                  <i class="fas fa-shield-halved text-lg"></i>
+                </div>
+                <h3 class="text-base font-bold text-white">Cybersecurity &amp; QA</h3>
+              </div>
+              <span class="text-xs font-mono text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded">86%</span>
+            </div>
+            <p class="text-xs text-slate-400 mb-4">Vulnerability identification, attack vector mitigation, test case design, and systematic bug tracking.</p>
+            <div class="flex flex-wrap gap-1.5 font-mono text-xs">
+              <span class="bg-slate-900/80 text-rose-300 border border-rose-500/20 px-2.5 py-1 rounded">Threat Mitigation</span>
+              <span class="bg-slate-900/80 text-rose-300 border border-rose-500/20 px-2.5 py-1 rounded">Vulnerability Assessment</span>
+              <span class="bg-slate-900/80 text-rose-300 border border-rose-500/20 px-2.5 py-1 rounded">Software QA Testing</span>
+              <span class="bg-slate-900/80 text-rose-300 border border-rose-500/20 px-2.5 py-1 rounded">Bug Tracking</span>
+            </div>
+          </div>
+          <div class="w-full bg-slate-800/80 h-1.5 rounded-full mt-6 overflow-hidden">
+            <div class="bg-gradient-to-r from-rose-500 to-pink-500 h-full rounded-full" style="width: 86%;"></div>
+          </div>
+        </div>
+
+        <!-- 6. IT Support & Hardware -->
+        <div class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                  <i class="fas fa-screwdriver-wrench text-lg"></i>
+                </div>
+                <h3 class="text-base font-bold text-white">IT Support &amp; Hardware</h3>
+              </div>
+              <span class="text-xs font-mono text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded">95%</span>
+            </div>
+            <p class="text-xs text-slate-400 mb-4">Workstation assembly, component diagnostics, thermal management, and rapid OS repair.</p>
+            <div class="flex flex-wrap gap-1.5 font-mono text-xs">
+              <span class="bg-slate-900/80 text-amber-300 border border-amber-500/20 px-2.5 py-1 rounded">PC Hardware Assembly</span>
+              <span class="bg-slate-900/80 text-amber-300 border border-amber-500/20 px-2.5 py-1 rounded">Diagnostic Troubleshooting</span>
+              <span class="bg-slate-900/80 text-amber-300 border border-amber-500/20 px-2.5 py-1 rounded">System Maintenance</span>
+              <span class="bg-slate-900/80 text-amber-300 border border-amber-500/20 px-2.5 py-1 rounded">OS Recovery</span>
+            </div>
+          </div>
+          <div class="w-full bg-slate-800/80 h-1.5 rounded-full mt-6 overflow-hidden">
+            <div class="bg-gradient-to-r from-amber-500 to-yellow-400 h-full rounded-full" style="width: 95%;"></div>
+          </div>
+        </div>
+
+        <!-- 7. Data & Tools -->
+        <div class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between md:col-span-2 lg:col-span-3">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+                  <i class="fas fa-chart-line text-lg"></i>
+                </div>
+                <h3 class="text-base font-bold text-white">Data &amp; Productivity Tools</h3>
+              </div>
+              <span class="text-xs font-mono text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded">90%</span>
+            </div>
+            <p class="text-xs text-slate-400 mb-4">Analytical spreadsheet modeling, Git source control, digital design assets, and workflow script automation.</p>
+            <div class="flex flex-wrap gap-2 font-mono text-xs">
+              <span class="bg-slate-900/80 text-slate-200 border border-cyan-500/30 px-3 py-1.5 rounded-md"><i class="fas fa-table mr-1.5 text-emerald-400"></i> Excel/Sheets Data Analytics</span>
+              <span class="bg-slate-900/80 text-slate-200 border border-cyan-500/30 px-3 py-1.5 rounded-md"><i class="fab fa-git-alt mr-1.5 text-orange-400"></i> Git/GitHub Version Control</span>
+              <span class="bg-slate-900/80 text-slate-200 border border-cyan-500/30 px-3 py-1.5 rounded-md"><i class="fas fa-palette mr-1.5 text-pink-400"></i> Graphic Design &amp; UI Wireframes</span>
+              <span class="bg-slate-900/80 text-slate-200 border border-cyan-500/30 px-3 py-1.5 rounded-md"><i class="fas fa-gears mr-1.5 text-blue-400"></i> Process Automation</span>
+            </div>
+          </div>
+          <div class="w-full bg-slate-800/80 h-1.5 rounded-full mt-6 overflow-hidden">
+            <div class="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 h-full rounded-full" style="width: 90%;"></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 4. PROJECTS SHOWCASE SECTION -->
+    <section id="projects" class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div class="text-center mb-12">
+        <div class="inline-flex items-center gap-2 text-xs font-mono text-[#00F2FE] tracking-widest uppercase mb-2">
+          <i class="fas fa-layer-group"></i> 03 // Portfolio Showcase
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">Featured Projects</h2>
+        <p class="text-slate-400 text-sm max-w-xl mx-auto mt-2">Filter through interactive implementations spanning full-stack web applications, telemetry analytics, and network security topologies.</p>
+        <div class="w-20 h-1 bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] mx-auto mt-4 rounded-full"></div>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="flex items-center justify-center gap-2 mb-12 flex-wrap">
+        <button type="button" class="filter-btn active px-5 py-2 rounded-full text-xs font-mono border border-white/10 hover:border-[#00F2FE]/50 transition-all" data-filter="all">All Projects (3)</button>
+        <button type="button" class="filter-btn px-5 py-2 rounded-full text-xs font-mono bg-slate-900/60 text-slate-400 border border-white/10 hover:border-[#00F2FE]/50 hover:text-white transition-all" data-filter="web-app">Web App</button>
+        <button type="button" class="filter-btn px-5 py-2 rounded-full text-xs font-mono bg-slate-900/60 text-slate-400 border border-white/10 hover:border-[#00F2FE]/50 hover:text-white transition-all" data-filter="data-analytics">Data Analytics</button>
+        <button type="button" class="filter-btn px-5 py-2 rounded-full text-xs font-mono bg-slate-900/60 text-slate-400 border border-white/10 hover:border-[#00F2FE]/50 hover:text-white transition-all" data-filter="specialization">Specialization</button>
+      </div>
+
+      <!-- Projects Grid -->
+      <div id="projects-grid" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Project 1: Web App -->
+        <div class="project-card glass-card rounded-2xl overflow-hidden border border-white/10 flex flex-col justify-between group" data-category="web-app">
+          <div>
+            <div class="h-48 bg-gradient-to-br from-slate-900 via-[#0B1528] to-slate-950 p-6 relative flex flex-col justify-between border-b border-white/5">
+              <div class="flex items-center justify-between z-10">
+                <span class="text-[11px] font-mono font-semibold px-2.5 py-1 rounded bg-[#00F2FE]/20 text-[#00F2FE] border border-[#00F2FE]/30">WEB APP</span>
+                <span class="text-xs text-slate-400"><i class="fas fa-ticket text-slate-500 mr-1"></i> ITSM Core</span>
+              </div>
+              <div class="z-10 flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-[#00F2FE]/10 border border-[#00F2FE]/30 flex items-center justify-center text-[#00F2FE] group-hover:scale-110 transition-transform">
+                  <i class="fas fa-robot text-xl"></i>
+                </div>
+                <div>
+                  <h4 class="text-white font-bold text-base leading-tight">AI Help Desk</h4>
+                  <p class="text-xs text-slate-400">Incident Ticket Orchestrator</p>
+                </div>
+              </div>
+              <div class="absolute inset-0 bg-[radial-gradient(#00f2fe_1px,transparent_1px)] [background-size:16px_16px] opacity-15"></div>
+            </div>
+
+            <div class="p-6">
+              <h3 class="text-lg font-bold text-white mb-2 group-hover:text-[#00F2FE] transition-colors">AI-Assisted IT Help Desk &amp; Service Ticket System</h3>
+              <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                A full-stack IT service management hub engineered with intelligent prompt categorization, automated severity scoring, and comprehensive ticket life-cycle management.
+              </p>
+
+              <div class="space-y-1.5 mb-5 text-xs text-slate-300">
+                <div class="flex items-center gap-2">
+                  <i class="fas fa-check text-[#00F2FE] text-[10px]"></i>
+                  <span>CRUD Ticket operations &amp; status pipelines</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <i class="fas fa-check text-[#00F2FE] text-[10px]"></i>
+                  <span>Auto-categorization of issue logs</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <i class="fas fa-check text-[#00F2FE] text-[10px]"></i>
+                  <span>Role-based user auth &amp; responsive UI</span>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-1.5 font-mono text-[11px] mb-4">
+                <span class="bg-slate-800/90 text-cyan-300 px-2 py-0.5 rounded border border-white/5">HTML5</span>
+                <span class="bg-slate-800/90 text-cyan-300 px-2 py-0.5 rounded border border-white/5">CSS3</span>
+                <span class="bg-slate-800/90 text-cyan-300 px-2 py-0.5 rounded border border-white/5">JavaScript</span>
+                <span class="bg-slate-800/90 text-blue-300 px-2 py-0.5 rounded border border-white/5">Python</span>
+                <span class="bg-slate-800/90 text-purple-300 px-2 py-0.5 rounded border border-white/5">SQL API</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-6 pt-0 flex items-center gap-3">
+            <a href="https://github.com/tyron-delacruz" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-lg text-xs font-mono font-medium text-slate-300 bg-slate-900 border border-white/10 hover:border-white/30 hover:text-white text-center transition">
+              <i class="fab fa-github mr-1.5"></i> GitHub Repo
+            </a>
+            <button type="button" onclick="openModal('modal-helpdesk')" class="flex-1 py-2 px-3 rounded-lg text-xs font-mono font-semibold text-[#080C14] bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] hover:shadow-cyan-sm text-center transition">
+              <i class="fas fa-play mr-1.5"></i> Live Demo
+            </button>
+          </div>
+        </div>
+
+        <!-- Project 2: Data Project -->
+        <div class="project-card glass-card rounded-2xl overflow-hidden border border-white/10 flex flex-col justify-between group" data-category="data-analytics">
+          <div>
+            <div class="h-48 bg-gradient-to-br from-slate-900 via-[#10192E] to-slate-950 p-6 relative flex flex-col justify-between border-b border-white/5">
+              <div class="flex items-center justify-between z-10">
+                <span class="text-[11px] font-mono font-semibold px-2.5 py-1 rounded bg-[#4FACFE]/20 text-[#4FACFE] border border-[#4FACFE]/30">DATA PROJECT</span>
+                <span class="text-xs text-slate-400"><i class="fas fa-chart-pie text-slate-500 mr-1"></i> Telemetry</span>
+              </div>
+              <div class="z-10 flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-[#4FACFE]/10 border border-[#4FACFE]/30 flex items-center justify-center text-[#4FACFE] group-hover:scale-110 transition-transform">
+                  <i class="fas fa-server text-xl"></i>
+                </div>
+                <div>
+                  <h4 class="text-white font-bold text-base leading-tight">System Telemetry</h4>
+                  <p class="text-xs text-slate-400">Peak Load &amp; Uptime Analytics</p>
+                </div>
+              </div>
+              <div class="absolute inset-0 bg-[radial-gradient(#4facfe_1px,transparent_1px)] [background-size:16px_16px] opacity-15"></div>
+            </div>
+
+            <div class="p-6">
+              <h3 class="text-lg font-bold text-white mb-2 group-hover:text-[#4FACFE] transition-colors">Network Performance &amp; System Usage Analytics Dashboard</h3>
+              <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                Telemetry log aggregation platform executing relational queries across historical router and switch syslogs to visualize throughput bottlenecks and server availability.
+              </p>
+
+              <div class="space-y-1.5 mb-5 text-xs text-slate-300">
+                <div class="flex items-center gap-2">
+                  <i class="fas fa-check text-[#4FACFE] text-[10px]"></i>
+                  <span>SQL querying of device syslogs &amp; events</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <i class="fas fa-check text-[#4FACFE] text-[10px]"></i>
+                  <span>99.9% uptime metric aggregations</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <i class="fas fa-check text-[#4FACFE] text-[10px]"></i>
+                  <span>Data visualization charts for peak usage</span>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-1.5 font-mono text-[11px] mb-4">
+                <span class="bg-slate-800/90 text-purple-300 px-2 py-0.5 rounded border border-white/5">SQL (MySQL)</span>
+                <span class="bg-slate-800/90 text-blue-300 px-2 py-0.5 rounded border border-white/5">Python (Pandas)</span>
+                <span class="bg-slate-800/90 text-cyan-300 px-2 py-0.5 rounded border border-white/5">Matplotlib</span>
+                <span class="bg-slate-800/90 text-emerald-300 px-2 py-0.5 rounded border border-white/5">Excel Analytics</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-6 pt-0 flex items-center gap-3">
+            <a href="https://github.com/tyron-delacruz" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-lg text-xs font-mono font-medium text-slate-300 bg-slate-900 border border-white/10 hover:border-white/30 hover:text-white text-center transition">
+              <i class="fab fa-github mr-1.5"></i> GitHub Repo
+            </a>
+            <button type="button" onclick="openModal('modal-telemetry')" class="flex-1 py-2 px-3 rounded-lg text-xs font-mono font-semibold text-white bg-slate-800 border border-[#4FACFE]/50 hover:bg-[#4FACFE]/20 hover:border-[#4FACFE] text-center transition">
+              <i class="fas fa-chart-column mr-1.5 text-[#4FACFE]"></i> Analytics Report
+            </button>
+          </div>
+        </div>
+
+        <!-- Project 3: Specialization Project -->
+        <div class="project-card glass-card rounded-2xl overflow-hidden border border-white/10 flex flex-col justify-between group" data-category="specialization">
+          <div>
+            <div class="h-48 bg-gradient-to-br from-slate-900 via-[#18112C] to-slate-950 p-6 relative flex flex-col justify-between border-b border-white/5">
+              <div class="flex items-center justify-between z-10">
+                <span class="text-[11px] font-mono font-semibold px-2.5 py-1 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">SPECIALIZATION</span>
+                <span class="text-xs text-slate-400"><i class="fas fa-shield-virus text-slate-500 mr-1"></i> NetSec Lab</span>
+              </div>
+              <div class="z-10 flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
+                  <i class="fas fa-network-wired text-xl"></i>
+                </div>
+                <div>
+                  <h4 class="text-white font-bold text-base leading-tight">Network Sec Lab</h4>
+                  <p class="text-xs text-slate-400">Topology &amp; Vulnerability Lab</p>
+                </div>
+              </div>
+              <div class="absolute inset-0 bg-[radial-gradient(#7f00ff_1px,transparent_1px)] [background-size:16px_16px] opacity-15"></div>
+            </div>
+
+            <div class="p-6">
+              <h3 class="text-lg font-bold text-white mb-2 group-hover:text-purple-300 transition-colors">Interactive Network Topology &amp; Vulnerability Diagnostic Lab</h3>
+              <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                Enterprise network emulation modeling segregated VLAN partitions, multi-router OSPF boundaries, and Python socket audit scripts probing open ports and ACL filtering.
+              </p>
+
+              <div class="space-y-1.5 mb-5 text-xs text-slate-300">
+                <div class="flex items-center gap-2">
+                  <i class="fas fa-check text-purple-400 text-[10px]"></i>
+                  <span>TCP/IP routing configurations &amp; VLAN trunks</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <i class="fas fa-check text-purple-400 text-[10px]"></i>
+                  <span>Subnet allocation tables &amp; CIDR masks</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <i class="fas fa-check text-purple-400 text-[10px]"></i>
+                  <span>Security port scanners &amp; socket probes</span>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-1.5 font-mono text-[11px] mb-4">
+                <span class="bg-slate-800/90 text-cyan-300 px-2 py-0.5 rounded border border-white/5">Cisco Packet Tracer</span>
+                <span class="bg-slate-800/90 text-emerald-300 px-2 py-0.5 rounded border border-white/5">TCP/IP &amp; OSPF</span>
+                <span class="bg-slate-800/90 text-blue-300 px-2 py-0.5 rounded border border-white/5">Python Security</span>
+                <span class="bg-slate-800/90 text-purple-300 px-2 py-0.5 rounded border border-white/5">ACL Firewalls</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-6 pt-0 flex items-center gap-3">
+            <a href="https://github.com/tyron-delacruz" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-lg text-xs font-mono font-medium text-slate-300 bg-slate-900 border border-white/10 hover:border-white/30 hover:text-white text-center transition">
+              <i class="fab fa-github mr-1.5"></i> GitHub Repo
+            </a>
+            <button type="button" onclick="openModal('modal-topology')" class="flex-1 py-2 px-3 rounded-lg text-xs font-mono font-semibold text-white bg-slate-800 border border-purple-500/50 hover:bg-purple-500/20 hover:border-purple-400 text-center transition">
+              <i class="fas fa-sitemap mr-1.5 text-purple-400"></i> Architecture
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 5. PROBLEM-SOLVING & REAL-WORLD SKILLS -->
+    <section id="troubleshooting" class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <div class="inline-flex items-center gap-2 text-xs font-mono text-[#00F2FE] tracking-widest uppercase mb-2">
+          <i class="fas fa-wrench"></i> 04 // Field Diagnostics &amp; Case Studies
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">Problem-Solving &amp; Real-World Skills</h2>
+        <p class="text-slate-400 text-sm max-w-xl mx-auto mt-2">Documented empirical diagnostic cases from campus technical setups, laboratory support, and cybersecurity hardening.</p>
+        <div class="w-20 h-1 bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] mx-auto mt-4 rounded-full"></div>
+      </div>
+
+      <!-- Accordion Grid: 5 IT Troubleshooting Cases -->
+      <div class="mb-16">
+        <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+          <i class="fas fa-clipboard-check text-[#00F2FE]"></i>
+          <span>5 Core IT Troubleshooting Cases</span>
+        </h3>
+
+        <div class="space-y-4" id="accordion-container">
+
+          <!-- Case 1: Wi-Fi DNS/IP Conflicts -->
+          <div class="accordion-item glass-card rounded-xl border border-white/10 overflow-hidden">
+            <button type="button" class="accordion-trigger w-full px-6 py-4 flex items-center justify-between text-left focus:outline-none transition-colors hover:bg-slate-800/40">
+              <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-[#00F2FE]/10 border border-[#00F2FE]/30 text-[#00F2FE] font-mono text-xs flex items-center justify-center font-bold">01</span>
+                <div>
+                  <h4 class="text-sm sm:text-base font-semibold text-white">Wi-Fi Connected but "No Internet Access" (DNS/IP Conflicts)</h4>
+                  <span class="text-[11px] font-mono text-slate-400">Domain: Campus Wireless Infrastructure &bull; Protocol: DHCP / IPv4</span>
+                </div>
+              </div>
+              <i class="fas fa-chevron-down text-slate-400 transition-transform duration-300 accordion-arrow"></i>
+            </button>
+            <div class="accordion-content px-6 pb-6 text-xs sm:text-sm text-slate-300 border-t border-slate-800/80">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+                <div class="space-y-2">
+                  <p><strong class="text-[#00F2FE] font-mono">Problem:</strong> Clients authenticate to campus AP with strong signal RSSI, but web browsers return DNS_PROBE_FINISHED_NO_INTERNET.</p>
+                  <p><strong class="text-[#4FACFE] font-mono">Possible Causes:</strong> Exhausted DHCP pool lease timeout, misconfigured gateway IP, DNS server unreachable, or static rogue IP overlap.</p>
+                  <p><strong class="text-amber-400 font-mono">Diagnostic Procedure:</strong> Executed <code>ipconfig /all</code>; observed APIPA 169.254.x.x on rogue laptop and identical static IP lease conflict. Ran <code>nslookup google.com</code> which timed out on DNS 127.0.0.1 loopback.</p>
+                </div>
+                <div class="space-y-2">
+                  <p><strong class="text-emerald-400 font-mono">Solution:</strong> Flushed local DNS resolver cache (<code>ipconfig /flushdns</code>), released and renewed DHCP lease (<code>ipconfig /release &amp;&amp; ipconfig /renew</code>). Reconfigured router DHCP scope from /24 to /23 with 2-hour lease duration to avoid pool starvation.</p>
+                  <div class="p-3 bg-slate-900/80 rounded-lg border border-slate-800 font-mono text-xs text-slate-400 mt-2">
+                    <span class="text-cyan-300 font-semibold">Lesson Learned:</span> Always segregate guest mobile clients from administrative static nodes via isolated VLANs with aggressive DHCP lease expiries.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Case 2: Audio Ground Loop Hum -->
+          <div class="accordion-item glass-card rounded-xl border border-white/10 overflow-hidden">
+            <button type="button" class="accordion-trigger w-full px-6 py-4 flex items-center justify-between text-left focus:outline-none transition-colors hover:bg-slate-800/40">
+              <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 font-mono text-xs flex items-center justify-center font-bold">02</span>
+                <div>
+                  <h4 class="text-sm sm:text-base font-semibold text-white">Event Audio Signal Noise &amp; Ground Loop Hum in Sound System</h4>
+                  <span class="text-[11px] font-mono text-slate-400">Domain: Institutional Event Technical Lead &bull; Signal: Balanced XLR / AC Power</span>
+                </div>
+              </div>
+              <i class="fas fa-chevron-down text-slate-400 transition-transform duration-300 accordion-arrow"></i>
+            </button>
+            <div class="accordion-content px-6 pb-6 text-xs sm:text-sm text-slate-300 border-t border-slate-800/80">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+                <div class="space-y-2">
+                  <p><strong class="text-[#00F2FE] font-mono">Problem:</strong> Severe 60Hz low-frequency electrical hum and buzz reverberating through auditorium line-array speakers when laptop audio was plugged into the analog console.</p>
+                  <p><strong class="text-[#4FACFE] font-mono">Possible Causes:</strong> Ground potential differences between laptop power brick and amplifier outlet; unbalanced 3.5mm line input; unshielded cables parallel to stage lighting mains.</p>
+                  <p><strong class="text-amber-400 font-mono">Diagnostic Procedure:</strong> Isolated input channels one-by-one on the mixing board. Disconnecting the laptop charger instantly silenced the hum, identifying an AC ground loop circuit.</p>
+                </div>
+                <div class="space-y-2">
+                  <p><strong class="text-emerald-400 font-mono">Solution:</strong> Routed laptop audio through a passive Stereo Direct Injection (DI) box with galvanic ground-lift switch engaged. Re-routed signal cables perpendicularly away from stage lighting dimmers.</p>
+                  <div class="p-3 bg-slate-900/80 rounded-lg border border-slate-800 font-mono text-xs text-slate-400 mt-2">
+                    <span class="text-cyan-300 font-semibold">Lesson Learned:</span> Never feed consumer unbalanced audio directly into live stage preamps without galvanic isolation and balanced XLR conversions.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Case 3: OS Boot Recovery -->
+          <div class="accordion-item glass-card rounded-xl border border-white/10 overflow-hidden">
+            <button type="button" class="accordion-trigger w-full px-6 py-4 flex items-center justify-between text-left focus:outline-none transition-colors hover:bg-slate-800/40">
+              <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-400 font-mono text-xs flex items-center justify-center font-bold">03</span>
+                <div>
+                  <h4 class="text-sm sm:text-base font-semibold text-white">Corrupted Operating System Boot File Recovery</h4>
+                  <span class="text-[11px] font-mono text-slate-400">Domain: IT Laboratory Maintenance &bull; Storage: BCD / UEFI Bootloader</span>
+                </div>
+              </div>
+              <i class="fas fa-chevron-down text-slate-400 transition-transform duration-300 accordion-arrow"></i>
+            </button>
+            <div class="accordion-content px-6 pb-6 text-xs sm:text-sm text-slate-300 border-t border-slate-800/80">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+                <div class="space-y-2">
+                  <p><strong class="text-[#00F2FE] font-mono">Problem:</strong> College laboratory PC halted during POST with blue screen error <code>0xc0000098: The Windows Boot Configuration Data does not contain a valid OS entry</code>.</p>
+                  <p><strong class="text-[#4FACFE] font-mono">Possible Causes:</strong> Sudden power outage during scheduled system patch update, corrupted EFI system partition, or SATA SSD read sector glitch.</p>
+                  <p><strong class="text-amber-400 font-mono">Diagnostic Procedure:</strong> Booted via laboratory Windows PE recovery flash drive. Inspected disk structure using <code>diskpart</code>; confirmed volume C: and FAT32 100MB EFI partition were intact but unindexed.</p>
+                </div>
+                <div class="space-y-2">
+                  <p><strong class="text-emerald-400 font-mono">Solution:</strong> Assigned letter to EFI volume in diskpart. Executed <code>bcdboot C:\Windows /s S: /f UEFI</code> to regenerate a clean BCD store. Re-ran <code>chkdsk C: /f /r</code> to repair dirty sectors.</p>
+                  <div class="p-3 bg-slate-900/80 rounded-lg border border-slate-800 font-mono text-xs text-slate-400 mt-2">
+                    <span class="text-cyan-300 font-semibold">Lesson Learned:</span> Bootloader rebuilds avoid destructive OS reinstalls, saving student project data and preserving lab configuration profiles.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Case 4: Database Connection Timeout -->
+          <div class="accordion-item glass-card rounded-xl border border-white/10 overflow-hidden">
+            <button type="button" class="accordion-trigger w-full px-6 py-4 flex items-center justify-between text-left focus:outline-none transition-colors hover:bg-slate-800/40">
+              <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-purple-500/10 border border-purple-500/30 text-purple-400 font-mono text-xs flex items-center justify-center font-bold">04</span>
+                <div>
+                  <h4 class="text-sm sm:text-base font-semibold text-white">Database Connection Timeout in Web Application Backend</h4>
+                  <span class="text-[11px] font-mono text-slate-400">Domain: Web Development &amp; Systems &bull; Database: MySQL Connection Pool</span>
+                </div>
+              </div>
+              <i class="fas fa-chevron-down text-slate-400 transition-transform duration-300 accordion-arrow"></i>
+            </button>
+            <div class="accordion-content px-6 pb-6 text-xs sm:text-sm text-slate-300 border-t border-slate-800/80">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+                <div class="space-y-2">
+                  <p><strong class="text-[#00F2FE] font-mono">Problem:</strong> Student registration web app threw intermittent HTTP 500 / <code>OperationalError: (2006, 'MySQL server has gone away')</code> during concurrent submissions.</p>
+                  <p><strong class="text-[#4FACFE] font-mono">Possible Causes:</strong> Unclosed cursor instances leaking connections, <code>max_connections</code> ceiling reached, or firewall terminating idle socket connections without keep-alive.</p>
+                  <p><strong class="text-amber-400 font-mono">Diagnostic Procedure:</strong> Audited MySQL server metrics via <code>SHOW STATUS LIKE 'Threads_connected';</code> which hit the default 151 limit. Reviewed backend code and discovered raw connections created per request without pooling.</p>
+                </div>
+                <div class="space-y-2">
+                  <p><strong class="text-emerald-400 font-mono">Solution:</strong> Implemented a managed Connection Pool (pool_size=20, max_overflow=10) with automatic ping recycling (<code>pool_recycle=3600</code>). Wrapped DB sessions in context manager <code>try...finally: session.close()</code>.</p>
+                  <div class="p-3 bg-slate-900/80 rounded-lg border border-slate-800 font-mono text-xs text-slate-400 mt-2">
+                    <span class="text-cyan-300 font-semibold">Lesson Learned:</span> Always manage database connections with thread-safe pooling to handle burst traffic and avoid connection exhaustion.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Case 5: Unresponsive Workstation RAM Faults -->
+          <div class="accordion-item glass-card rounded-xl border border-white/10 overflow-hidden">
+            <button type="button" class="accordion-trigger w-full px-6 py-4 flex items-center justify-between text-left focus:outline-none transition-colors hover:bg-slate-800/40">
+              <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-400 font-mono text-xs flex items-center justify-center font-bold">05</span>
+                <div>
+                  <h4 class="text-sm sm:text-base font-semibold text-white">Unresponsive PC Workstation Hardware RAM Faults</h4>
+                  <span class="text-[11px] font-mono text-slate-400">Domain: Hardware Diagnostics &bull; Component: DDR4 Memory Modules</span>
+                </div>
+              </div>
+              <i class="fas fa-chevron-down text-slate-400 transition-transform duration-300 accordion-arrow"></i>
+            </button>
+            <div class="accordion-content px-6 pb-6 text-xs sm:text-sm text-slate-300 border-t border-slate-800/80">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+                <div class="space-y-2">
+                  <p><strong class="text-[#00F2FE] font-mono">Problem:</strong> IT lab workstation powered on with spinning fans and LED indicators, but showed black screen with no POST and 3 distinct recurring motherboard beeps.</p>
+                  <p><strong class="text-[#4FACFE] font-mono">Possible Causes:</strong> Unseated RAM stick, oxidized DIMM golden contacts, failed memory channel, or static discharge damage.</p>
+                  <p><strong class="text-amber-400 font-mono">Diagnostic Procedure:</strong> Consulted AMI BIOS beep code manual (3 short beeps = first 64KB memory failure). Extracted both 8GB DDR4 sticks; tested each individually across Channel A and B slots.</p>
+                </div>
+                <div class="space-y-2">
+                  <p><strong class="text-emerald-400 font-mono">Solution:</strong> Cleaned oxidized gold pins using 99% isopropyl alcohol and anti-static microfiber. Slot A had accumulated dust cleared with compressed air. Reseated module in Slot A2; PC immediately completed POST and passed MemTest86 with 0 errors.</p>
+                  <div class="p-3 bg-slate-900/80 rounded-lg border border-slate-800 font-mono text-xs text-slate-400 mt-2">
+                    <span class="text-cyan-300 font-semibold">Lesson Learned:</span> Systematic single-component isolation saves expensive motherboard replacements caused by minor surface oxidation.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Cybersecurity Case Study: SQL Injection -->
+      <div class="glass-card rounded-2xl p-6 sm:p-8 border border-white/10 relative overflow-hidden">
+        <div class="flex items-center justify-between mb-6 flex-wrap gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400">
+              <i class="fas fa-user-ninja text-lg"></i>
+            </div>
+            <div>
+              <span class="text-xs font-mono text-rose-400 uppercase tracking-widest">Cybersecurity Case Study</span>
+              <h3 class="text-lg sm:text-xl font-bold text-white">SQL Injection (SQLi) Vulnerability &amp; Defensive Mitigation</h3>
+            </div>
+          </div>
+          <span class="text-xs font-mono px-3 py-1 rounded-full bg-rose-500/10 text-rose-300 border border-rose-500/30">OWASP Top 10 A03</span>
+        </div>
+
+        <p class="text-xs sm:text-sm text-slate-300 mb-6 leading-relaxed">
+          <strong class="text-white">Flaw Mechanics:</strong> SQL Injection happens when untrusted user input is directly concatenated into dynamic SQL queries without syntax escape. An adversary can input malicious payloads such as <code class="text-[#00F2FE] font-mono bg-slate-900 px-1 py-0.5 rounded">' OR '1'='1</code> to manipulate query logic, bypass authentication, extract confidential data, or execute administrative commands.
+        </p>
+
+        <!-- Interactive Code Comparison Tabs -->
+        <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
+          <div class="flex border-b border-slate-800 bg-slate-900/60">
+            <button type="button" id="tab-vulnerable" class="code-tab-btn px-5 py-2.5 text-xs font-mono font-medium text-rose-400 border-b-2 border-rose-500 bg-slate-900/80 focus:outline-none">
+              <i class="fas fa-triangle-exclamation mr-1.5"></i> Vulnerable Implementation (Exploitable)
+            </button>
+            <button type="button" id="tab-mitigated" class="code-tab-btn px-5 py-2.5 text-xs font-mono font-medium text-slate-400 hover:text-white border-b-2 border-transparent focus:outline-none">
+              <i class="fas fa-shield-check mr-1.5 text-emerald-400"></i> Defensive Mitigation (Parameterized)
+            </button>
+          </div>
+
+          <!-- Vulnerable Code View -->
+          <div id="code-view-vulnerable" class="p-4 sm:p-6 font-mono text-xs overflow-x-auto text-slate-300">
+            <div class="text-slate-500 mb-2"># HIGH RISK: Raw string interpolation allows attacker authentication bypass</div>
+            <pre class="text-rose-300 leading-relaxed"><code>def authenticate_user(user_input, password_input):
+    # ATTACK VECTOR: If user enters: admin' --
+    # The resulting SQL executes: SELECT * FROM users WHERE username = 'admin' --' AND password = '...'
+    query = f"SELECT * FROM users WHERE username = '{user_input}' AND password = '{password_input}'"
+    
+    cursor.execute(query)  <span class="text-rose-500 font-bold"># &lt;-- VULNERABLE: Direct interpreter execution</span>
+    return cursor.fetchone()</code></pre>
+            <div class="mt-4 p-3 rounded bg-rose-950/30 border border-rose-800/40 text-xs text-rose-200">
+              <i class="fas fa-circle-exclamation text-rose-400 mr-1.5"></i>
+              <strong>Risk Assessment:</strong> Complete database dump, privilege escalation to admin role, and data tampering.
+            </div>
+          </div>
+
+          <!-- Mitigated Code View -->
+          <div id="code-view-mitigated" class="hidden p-4 sm:p-6 font-mono text-xs overflow-x-auto text-slate-300">
+            <div class="text-slate-500 mb-2"># SECURE: Prepared statements with bound parameterized placeholders</div>
+            <pre class="text-emerald-300 leading-relaxed"><code>def authenticate_user_secure(user_input, password_input):
+    # DEFENSE: Parameter placeholders (%s) enforce strict data-plane typing.
+    # The database engine treats payloads purely as string literals, not executable SQL syntax.
+    query = "SELECT user_id, username, password_hash, role FROM users WHERE username = %s"
+    
+    cursor.execute(query, (user_input,))  <span class="text-emerald-400 font-bold"># &lt;-- SECURE: Bound Parameter</span>
+    user = cursor.fetchone()
+    
+    if user and verify_bcrypt_hash(password_input, user['password_hash']):
+        return user
+    return None</code></pre>
+            <div class="mt-4 p-3 rounded bg-emerald-950/30 border border-emerald-800/40 text-xs text-emerald-200">
+              <i class="fas fa-shield-halved text-emerald-400 mr-1.5"></i>
+              <strong>Defense in Depth:</strong> Uses parameterized queries + Bcrypt hash verification. Input validation and least-privilege DB user accounts complete the defense.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. AI LITERACY EVIDENCE (AI USAGE LOG) -->
+    <section id="ai-log" class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <div class="inline-flex items-center gap-2 text-xs font-mono text-[#00F2FE] tracking-widest uppercase mb-2">
+          <i class="fas fa-brain"></i> 05 // Transparency &amp; Rigor
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">AI Literacy Evidence (AI Usage Log)</h2>
+        <p class="text-slate-400 text-sm max-w-xl mx-auto mt-2">A transparent audit log demonstrating responsible AI collaboration, human verification benchmarks, and rigorous manual testing.</p>
+        <div class="w-20 h-1 bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] mx-auto mt-4 rounded-full"></div>
+      </div>
+
+      <div class="glass-card rounded-2xl p-6 sm:p-8 border border-white/10">
+        <!-- Search bar & stats header -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+          <div class="flex items-center gap-2 text-xs font-mono text-slate-300">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span>All AI outputs subject to 100% human verification &amp; linting</span>
+          </div>
+          <div class="relative w-full sm:w-72">
+            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+            <input type="text" id="ai-log-search" placeholder="Filter tasks or verification..." class="w-full pl-9 pr-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-xs text-white focus:outline-none focus:border-[#00F2FE] font-mono">
+          </div>
+        </div>
+
+        <!-- Table Container -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-slate-800 text-slate-400 font-mono uppercase tracking-wider text-[11px] bg-slate-900/50">
+                <th class="py-3 px-4">Date</th>
+                <th class="py-3 px-4">Project / Task</th>
+                <th class="py-3 px-4">AI Assistance Provided</th>
+                <th class="py-3 px-4">Human Verification &amp; Personal Testing</th>
+              </tr>
+            </thead>
+            <tbody id="ai-log-table-body" class="divide-y divide-slate-800/60 font-sans">
+              <!-- Log Entry 1 -->
+              <tr class="hover:bg-slate-800/30 transition-colors log-row">
+                <td class="py-4 px-4 font-mono text-[#00F2FE] whitespace-nowrap">2026-08-14</td>
+                <td class="py-4 px-4 font-semibold text-white">Help Desk API Auth &amp; Token Debugging</td>
+                <td class="py-4 px-4 text-slate-300">Drafted regex patterns for Bearer tokens and generated scaffold exception handling for expired sessions.</td>
+                <td class="py-4 px-4 text-slate-400">Stepped through VS Code debugger with simulated null auth headers. Corrected edge case where empty string passed schema check; wrote custom unit test.</td>
+              </tr>
+              <!-- Log Entry 2 -->
+              <tr class="hover:bg-slate-800/30 transition-colors log-row">
+                <td class="py-4 px-4 font-mono text-[#00F2FE] whitespace-nowrap">2026-08-28</td>
+                <td class="py-4 px-4 font-semibold text-white">Telemetry SQL Aggregation Optimization</td>
+                <td class="py-4 px-4 text-slate-300">Proposed window function <code>PERCENT_RANK()</code> query to calculate device peak latency distribution.</td>
+                <td class="py-4 px-4 text-slate-400">Ran <code>EXPLAIN ANALYZE</code> on MySQL Workbench. Noticed full table scan on 50,000 log records. Added composite index on <code>(device_id, log_timestamp)</code> reducing execution time from 840ms to 42ms.</td>
+              </tr>
+              <!-- Log Entry 3 -->
+              <tr class="hover:bg-slate-800/30 transition-colors log-row">
+                <td class="py-4 px-4 font-mono text-[#00F2FE] whitespace-nowrap">2026-09-10</td>
+                <td class="py-4 px-4 font-semibold text-white">Subnet IP Allocation Bitwise Script</td>
+                <td class="py-4 px-4 text-slate-300">Generated Python helper function using bitwise shifts to convert CIDR notation to 32-bit integer netmasks.</td>
+                <td class="py-4 px-4 text-slate-400">Benchmarked calculation against official Cisco CCNA subnetting tables across 16 VLSM ranges; fixed off-by-one error on usable broadcast host address limit.</td>
+              </tr>
+              <!-- Log Entry 4 -->
+              <tr class="hover:bg-slate-800/30 transition-colors log-row">
+                <td class="py-4 px-4 font-mono text-[#00F2FE] whitespace-nowrap">2026-09-22</td>
+                <td class="py-4 px-4 font-semibold text-white">Event Sound Checklist Script</td>
+                <td class="py-4 px-4 text-slate-300">Drafted automated Google Apps Script spreadsheet validator for stage microphone battery levels and channel assignments.</td>
+                <td class="py-4 px-4 text-slate-400">Customized channel map specifically for Datamex auditorium Behringer X32 mixer inputs; performed live pre-event trial run during campus academic assembly.</td>
+              </tr>
+              <!-- Log Entry 5 -->
+              <tr class="hover:bg-slate-800/30 transition-colors log-row">
+                <td class="py-4 px-4 font-mono text-[#00F2FE] whitespace-nowrap">2026-10-02</td>
+                <td class="py-4 px-4 font-semibold text-white">REST API Schema Docs &amp; QA Boundary Tests</td>
+                <td class="py-4 px-4 text-slate-300">Formatted OpenAPI 3.0 YAML schema draft and mocked 15 boundary test payload conditions.</td>
+                <td class="py-4 px-4 text-slate-400">Loaded into Postman collection runner; verified accurate 400 Bad Request and 422 Unprocessable Entity responses for malformed JSON payloads.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. RESUME & EMPLOYABILITY SECTION -->
+    <section id="resume" class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <div class="inline-flex items-center gap-2 text-xs font-mono text-[#00F2FE] tracking-widest uppercase mb-2">
+          <i class="fas fa-file-invoice"></i> 06 // Career Credentials
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">Resume &amp; Employability</h2>
+        <p class="text-slate-400 text-sm max-w-xl mx-auto mt-2">Comprehensive summary of hands-on collegiate leadership, academic honors, technical certifications, and direct PDF download.</p>
+        <div class="w-20 h-1 bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] mx-auto mt-4 rounded-full"></div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+        <!-- Resume Interactive Document Viewer Card -->
+        <div class="lg:col-span-8 glass-card rounded-2xl p-6 sm:p-8 border border-white/10 shadow-2xl relative">
+          <!-- Document Header -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-800 gap-4">
+            <div>
+              <h3 class="text-2xl font-bold text-white">TYRON JOHN L. DELA CRUZ</h3>
+              <p class="text-xs font-mono text-[#00F2FE] mt-1">Las Piñas City, PH &bull; +639072802649 &bull; tyronjohndelacruz@gmail.com</p>
+            </div>
+            <a href="tyron_dela_cruz_resume.pdf" download class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-xs font-mono font-semibold bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] text-[#080C14] hover:shadow-cyan-glow transition shadow-md">
+              <i class="fas fa-download"></i> Download Resume
+            </a>
+          </div>
+
+          <!-- Section: Work Experience -->
+          <div class="py-6 border-b border-slate-800">
+            <div class="flex items-center gap-2 mb-4">
+              <span class="w-2 h-2 rounded-full bg-[#00F2FE]"></span>
+              <h4 class="text-sm font-mono font-bold text-white uppercase tracking-wider">Professional Experience</h4>
+            </div>
+
+            <div class="space-y-4">
+              <div>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between">
+                  <h5 class="text-base font-bold text-white">Official Event Lead Technical &amp; Student Assistant</h5>
+                  <span class="text-xs font-mono text-cyan-400">Aug 2024 – Present</span>
+                </div>
+                <div class="text-xs text-slate-400 font-mono mb-2">Datamex College of Saint Adeline &bull; Las Piñas City</div>
+                <ul class="list-disc list-inside space-y-1.5 text-xs text-slate-300 leading-relaxed">
+                  <li>Direct technical operations for college-wide assemblies, symposiums, and sports fests, managing multi-channel digital audio mixers, wireless microphones, and HD live-streaming feeds.</li>
+                  <li>Perform hardware assembly, component-level testing, and operating system recovery across 60+ laboratory workstations.</li>
+                  <li>Configure temporary campus event network backbones, managing switch patch cords, wireless access points, and resolving real-time IP conflicts.</li>
+                  <li>Provide front-line technical support to faculty members, resolving software installations, projector displays, and network credentials.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section: Education -->
+          <div class="py-6 border-b border-slate-800">
+            <div class="flex items-center gap-2 mb-4">
+              <span class="w-2 h-2 rounded-full bg-[#4FACFE]"></span>
+              <h4 class="text-sm font-mono font-bold text-white uppercase tracking-wider">Education</h4>
+            </div>
+
+            <div>
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between">
+                <h5 class="text-base font-bold text-white">Bachelor of Science in Information Technology (BSIT)</h5>
+                <span class="text-xs font-mono text-blue-400">4th Year Senior</span>
+              </div>
+              <div class="text-xs text-slate-400 font-mono mb-2">Datamex College of Saint Adeline &bull; Expected Graduation: July 2027</div>
+              <p class="text-xs text-slate-300">
+                Specializations in Web Development, Data Analytics, Networking, Cybersecurity, and IT Troubleshooting.
+              </p>
+            </div>
+          </div>
+
+          <!-- Section: Awards & Honors -->
+          <div class="pt-6">
+            <div class="flex items-center gap-2 mb-4">
+              <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+              <h4 class="text-sm font-mono font-bold text-white uppercase tracking-wider">Academic Honors &amp; Leadership</h4>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="p-4 rounded-xl bg-slate-900/60 border border-amber-500/20">
+                <div class="text-amber-400 font-bold text-sm flex items-center gap-2 mb-1">
+                  <i class="fas fa-medal"></i> Dean's Lister Award
+                </div>
+                <p class="text-xs text-slate-300 font-mono">Consistent General Weighted Average (GWA): 1.20 – 1.80</p>
+              </div>
+
+              <div class="p-4 rounded-xl bg-slate-900/60 border border-purple-500/20">
+                <div class="text-purple-400 font-bold text-sm flex items-center gap-2 mb-1">
+                  <i class="fas fa-crown"></i> Event Technical Organizer
+                </div>
+                <p class="text-xs text-slate-300 font-mono">Official technical director recognition for major institutional ceremonies</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Employability Summary Quick Card -->
+        <div class="lg:col-span-4 space-y-6">
+          <div class="glass-card rounded-2xl p-6 border border-white/10">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 rounded-xl bg-[#00F2FE]/10 border border-[#00F2FE]/30 flex items-center justify-center text-[#00F2FE]">
+                <i class="fas fa-bullseye text-lg"></i>
+              </div>
+              <div>
+                <h4 class="text-base font-bold text-white">Target Roles</h4>
+                <p class="text-xs text-slate-400">Ready for Immediate Onboarding</p>
+              </div>
+            </div>
+
+            <div class="space-y-2.5 text-xs font-mono">
+              <div class="p-2.5 rounded-lg bg-slate-900/80 border border-white/5 flex items-center justify-between text-slate-200">
+                <span>&bull; Network Engineer (Entry)</span>
+                <i class="fas fa-check text-[#00F2FE]"></i>
+              </div>
+              <div class="p-2.5 rounded-lg bg-slate-900/80 border border-white/5 flex items-center justify-between text-slate-200">
+                <span>&bull; Data Analyst (Junior)</span>
+                <i class="fas fa-check text-[#00F2FE]"></i>
+              </div>
+              <div class="p-2.5 rounded-lg bg-slate-900/80 border border-white/5 flex items-center justify-between text-slate-200">
+                <span>&bull; Full-Stack Web Developer</span>
+                <i class="fas fa-check text-[#00F2FE]"></i>
+              </div>
+              <div class="p-2.5 rounded-lg bg-slate-900/80 border border-white/5 flex items-center justify-between text-slate-200">
+                <span>&bull; IT Support Specialist</span>
+                <i class="fas fa-check text-[#00F2FE]"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- PDF Resume Download Callout Box -->
+          <div class="glass-card rounded-2xl p-6 border border-[#00F2FE]/30 bg-gradient-to-b from-[#00F2FE]/5 to-transparent text-center">
+            <i class="fas fa-file-pdf text-4xl text-[#00F2FE] mb-3"></i>
+            <h4 class="text-base font-bold text-white mb-1">Official Resume Document</h4>
+            <p class="text-xs text-slate-400 mb-4">Formatted for ATS compliance and engineering recruiter evaluation.</p>
+            <a href="tyron_dela_cruz_resume.pdf" download class="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-mono text-xs font-bold text-[#080C14] bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] hover:shadow-cyan-glow transition">
+              <i class="fas fa-download"></i> Download tyron_dela_cruz_resume.pdf
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 8. CERTIFICATIONS & ACHIEVEMENTS SECTION -->
+    <section id="certifications" class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <div class="inline-flex items-center gap-2 text-xs font-mono text-[#00F2FE] tracking-widest uppercase mb-2">
+          <i class="fas fa-certificate"></i> 07 // Badges &amp; Credentials
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">Certifications &amp; Achievements</h2>
+        <p class="text-slate-400 text-sm max-w-xl mx-auto mt-2">Verified credentials demonstrating continuous learning in security, API development, software QA, and embedded computing.</p>
+        <div class="w-20 h-1 bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] mx-auto mt-4 rounded-full"></div>
+      </div>
+
+      <!-- Badge Gallery (5 Specified Certifications) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- Cert 1: Cyber Awareness -->
+        <div class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between hover:border-[#00F2FE]/40 transition group">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-[#00F2FE] group-hover:scale-110 transition-transform">
+                <i class="fas fa-user-shield text-xl"></i>
+              </div>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">Verified 2026</span>
+            </div>
+            <h3 class="text-base font-bold text-white mb-1">Cyber Awareness</h3>
+            <div class="text-xs font-mono text-[#00F2FE] mb-3">Cyber Threats in 2026 and How to Stay Safe</div>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              In-depth coverage of contemporary social engineering, credential stuffing vectors, ransomware countermeasures, and zero-trust authentication hygiene.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-400">
+            <span>Issuer: Tech Security Cert</span>
+            <span class="text-emerald-400"><i class="fas fa-check-circle mr-1"></i> Completed</span>
+          </div>
+        </div>
+
+        <!-- Cert 2: Web Dev 101 -->
+        <div class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between hover:border-[#4FACFE]/40 transition group">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-[#4FACFE] group-hover:scale-110 transition-transform">
+                <i class="fas fa-cloud-arrow-down text-xl"></i>
+              </div>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/10 text-blue-300 border border-blue-500/20">Verified 2025</span>
+            </div>
+            <h3 class="text-base font-bold text-white mb-1">Web Dev 101: System Integration</h3>
+            <div class="text-xs font-mono text-[#4FACFE] mb-3">Connecting Apps via API</div>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Mastery of asynchronous fetch architectures, RESTful endpoints, JSON payload validation, status codes, and cross-origin resource sharing (CORS).
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-400">
+            <span>Issuer: Modern Web Institute</span>
+            <span class="text-emerald-400"><i class="fas fa-check-circle mr-1"></i> Completed</span>
+          </div>
+        </div>
+
+        <!-- Cert 3: QA 101 -->
+        <div class="glass-card rounded-2xl p-6 border border-purple-500/40 transition group">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
+                <i class="fas fa-bug-slash text-xl"></i>
+              </div>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">Verified 2025</span>
+            </div>
+            <h3 class="text-base font-bold text-white mb-1">QA 101: Software Quality</h3>
+            <div class="text-xs font-mono text-purple-300 mb-3">Bug Tracking and Manual Testing</div>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Standardized defect reporting methodologies, severity vs. priority indexing, test scenario authoring, and regression test cycle management.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-400">
+            <span>Issuer: QA Software Alliance</span>
+            <span class="text-emerald-400"><i class="fas fa-check-circle mr-1"></i> Completed</span>
+          </div>
+        </div>
+
+        <!-- Cert 4: Pro Skills -->
+        <div class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between hover:border-emerald-500/40 transition group">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
+                <i class="fas fa-people-group text-xl"></i>
+              </div>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Verified 2024</span>
+            </div>
+            <h3 class="text-base font-bold text-white mb-1">Pro Skills for Tech Pros</h3>
+            <div class="text-xs font-mono text-emerald-400 mb-3">21st Century Soft Skills</div>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              High-pressure incident communication, cross-functional collaboration between engineering and business stakeholders, and technical project management.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-400">
+            <span>Issuer: Tech Leadership Forum</span>
+            <span class="text-emerald-400"><i class="fas fa-check-circle mr-1"></i> Completed</span>
+          </div>
+        </div>
+
+        <!-- Cert 5: Arduino 101 -->
+        <div class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between hover:border-amber-500/40 transition group">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform">
+                <i class="fas fa-microchip text-xl"></i>
+              </div>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">Verified 2024</span>
+            </div>
+            <h3 class="text-base font-bold text-white mb-1">Arduino 101</h3>
+            <div class="text-xs font-mono text-amber-400 mb-3">Coding Meets Hardware</div>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Microcontroller firmware programming in C/C++, breadboard prototyping, sensor data polling, GPIO PWM signals, and embedded hardware debugging.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-400">
+            <span>Issuer: Embedded Systems Academy</span>
+            <span class="text-emerald-400"><i class="fas fa-check-circle mr-1"></i> Completed</span>
+          </div>
+        </div>
+
+        <!-- Academic Honor Badge: Dean's Lister -->
+        <div class="glass-card rounded-2xl p-6 border border-amber-500/30 bg-amber-500/5 flex flex-col justify-between hover:border-amber-500 transition group">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-300 group-hover:scale-110 transition-transform">
+                <i class="fas fa-award text-xl"></i>
+              </div>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">Consecutive Semesters</span>
+            </div>
+            <h3 class="text-base font-bold text-white mb-1">Dean's Honor List</h3>
+            <div class="text-xs font-mono text-amber-300 mb-3">Datamex College of Saint Adeline</div>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Maintaining consistent academic excellence with a General Weighted Average (GWA) ranging between 1.20 and 1.80 while serving as full-time student assistant and event tech lead.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-400">
+            <span>Academic Merit</span>
+            <span class="text-amber-300"><i class="fas fa-star mr-1"></i> Honors</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 9. IT CAREER DEVELOPMENT PLAN -->
+    <section id="career-plan" class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <div class="inline-flex items-center gap-2 text-xs font-mono text-[#00F2FE] tracking-widest uppercase mb-2">
+          <i class="fas fa-route"></i> 08 // Strategic Roadmap
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">IT Career Development Plan</h2>
+        <p class="text-slate-400 text-sm max-w-xl mx-auto mt-2">A structured 3-phase strategic roadmap driving academic culmination into senior enterprise infrastructure and data engineering mastery.</p>
+        <div class="w-20 h-1 bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] mx-auto mt-4 rounded-full"></div>
+      </div>
+
+      <!-- 3-Card Visual Timeline -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+        <div class="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-[#00F2FE] via-[#4FACFE] to-[#7F00FF] -translate-y-12 z-0 opacity-40"></div>
+
+        <!-- 6-Month Goal -->
+        <div class="glass-card rounded-2xl p-6 sm:p-8 border border-white/10 relative z-10 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <span class="w-10 h-10 rounded-full bg-[#00F2FE]/10 border-2 border-[#00F2FE] flex items-center justify-center font-mono font-bold text-sm text-[#00F2FE] shadow-cyan-sm">
+                01
+              </span>
+              <span class="text-xs font-mono px-3 py-1 rounded-full bg-[#00F2FE]/10 text-cyan-300 border border-[#00F2FE]/30">6-Month Milestone</span>
+            </div>
+
+            <h3 class="text-xl font-bold text-white mb-2">BSIT Graduation &amp; Foundation Certs</h3>
+            <p class="text-xs text-slate-400 leading-relaxed mb-6">
+              Complete final undergraduate coursework and capstone at Datamex College of Saint Adeline with honors.
+            </p>
+
+            <div class="space-y-3 text-xs text-slate-300 font-mono">
+              <div class="flex items-start gap-2">
+                <i class="fas fa-check-circle text-[#00F2FE] mt-0.5"></i>
+                <span>Graduate BSIT (July 2027) with Dean's Honor status.</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <i class="fas fa-check-circle text-[#00F2FE] mt-0.5"></i>
+                <span>Pass IT Support &amp; Foundational Networking Certifications.</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <i class="fas fa-check-circle text-[#00F2FE] mt-0.5"></i>
+                <span>Finalize &amp; deploy production portfolio website.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 pt-4 border-t border-slate-800 text-[11px] font-mono text-cyan-400">
+            Target Focus: Academic Completion &amp; Readiness
+          </div>
+        </div>
+
+        <!-- 1-Year Goal -->
+        <div class="glass-card rounded-2xl p-6 sm:p-8 border border-[#4FACFE]/30 relative z-10 flex flex-col justify-between bg-slate-900/80 shadow-cyan-sm">
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <span class="w-10 h-10 rounded-full bg-[#4FACFE]/10 border-2 border-[#4FACFE] flex items-center justify-center font-mono font-bold text-sm text-[#4FACFE]">
+                02
+              </span>
+              <span class="text-xs font-mono px-3 py-1 rounded-full bg-[#4FACFE]/10 text-blue-300 border border-[#4FACFE]/30">1-Year Milestone</span>
+            </div>
+
+            <h3 class="text-xl font-bold text-white mb-2">Entry-Level Role &amp; CCNA Credentials</h3>
+            <p class="text-xs text-slate-400 leading-relaxed mb-6">
+              Secure an impactful industry position and expand professional network security credentials.
+            </p>
+
+            <div class="space-y-3 text-xs text-slate-300 font-mono">
+              <div class="flex items-start gap-2">
+                <i class="fas fa-check-circle text-[#4FACFE] mt-0.5"></i>
+                <span>Secure role as Network Engineer or Junior Data Analyst.</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <i class="fas fa-check-circle text-[#4FACFE] mt-0.5"></i>
+                <span>Obtain Cisco CCNA (200-301) / CompTIA Security+.</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <i class="fas fa-check-circle text-[#4FACFE] mt-0.5"></i>
+                <span>Deploy enterprise monitoring scripts and SQL pipelines.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 pt-4 border-t border-slate-800 text-[11px] font-mono text-[#4FACFE]">
+            Target Focus: Industry Entry &amp; Cisco CCNA
+          </div>
+        </div>
+
+        <!-- 3-Year Goal -->
+        <div class="glass-card rounded-2xl p-6 sm:p-8 border border-white/10 relative z-10 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <span class="w-10 h-10 rounded-full bg-purple-500/10 border-2 border-purple-500 flex items-center justify-center font-mono font-bold text-sm text-purple-400">
+                03
+              </span>
+              <span class="text-xs font-mono px-3 py-1 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/30">3-Year Horizon</span>
+            </div>
+
+            <h3 class="text-xl font-bold text-white mb-2">Senior Infrastructure &amp; Data Lead</h3>
+            <p class="text-xs text-slate-400 leading-relaxed mb-6">
+              Step into senior architectural leadership overseeing cloud-hybrid infrastructure and analytics.
+            </p>
+
+            <div class="space-y-3 text-xs text-slate-300 font-mono">
+              <div class="flex items-start gap-2">
+                <i class="fas fa-check-circle text-purple-400 mt-0.5"></i>
+                <span>Advance to Senior Network Infrastructure Specialist.</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <i class="fas fa-check-circle text-purple-400 mt-0.5"></i>
+                <span>Architect enterprise hybrid networks &amp; data lakes.</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <i class="fas fa-check-circle text-purple-400 mt-0.5"></i>
+                <span>Mentor junior technicians and steer automation engineering.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 pt-4 border-t border-slate-800 text-[11px] font-mono text-purple-400">
+            Target Focus: Senior Technical Leadership
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 10. FINAL REFLECTION ESSAY -->
+    <section id="reflection" class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <div class="inline-flex items-center gap-2 text-xs font-mono text-[#00F2FE] tracking-widest uppercase mb-2">
+          <i class="fas fa-feather-pointed"></i> 09 // Academic Synthesis
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">Final Reflection Essay</h2>
+        <p class="text-slate-400 text-sm max-w-xl mx-auto mt-2">A reflective analysis on technical growth, real-world crisis leadership, and readiness to engineer scalable technological systems.</p>
+        <div class="w-20 h-1 bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] mx-auto mt-4 rounded-full"></div>
+      </div>
+
+      <!-- Styled Essay Container -->
+      <div class="glass-card rounded-2xl p-6 sm:p-10 border border-white/10 relative max-w-4xl mx-auto">
+        <div class="flex items-center justify-between pb-6 border-b border-slate-800 mb-8 flex-wrap gap-4">
+          <div>
+            <span class="text-xs font-mono text-[#00F2FE] uppercase tracking-wider">Senior BSIT Culminating Essay</span>
+            <h3 class="text-xl sm:text-2xl font-bold text-white mt-1">From Theory to the Soundboard: My Evolution as a Technologist</h3>
+          </div>
+          <button type="button" onclick="openModal('modal-essay')" class="px-4 py-2 rounded-lg text-xs font-mono text-[#00F2FE] border border-[#00F2FE]/40 hover:bg-[#00F2FE]/10 transition flex items-center gap-2">
+            <i class="fas fa-expand"></i> Full Reader Mode
+          </button>
+        </div>
+
+        <!-- Essay Text Body (Word count approx 650 words) -->
+        <article class="prose prose-invert max-w-none text-slate-300 leading-relaxed text-sm sm:text-base space-y-5">
+          <p>
+            When I first entered the Bachelor of Science in Information Technology (BSIT) program at Datamex College of Saint Adeline, technology felt like a vast labyrinth of discrete concepts. Textbooks cleanly demarcated software development from hardware engineering, and network topologies were portrayed as static diagrams on whiteboard lectures. Yet as I progressed into my senior year, that theoretical compartmentalization dissolved into a profound realization: real-world information technology is an interconnected, living ecosystem where hardware stability, network reliability, algorithmic logic, and human operation must harmoniously converge.
+          </p>
+
+          <p>
+            My greatest technical crucible arrived not within the serenity of an exam hall, but in the high-stakes pressure cooker of campus operations. Serving as the Official Event Lead Technical and Student Assistant from August 2024 to the present transformed my perspective on engineering. Standing behind an audio-visual console and patch bay during major collegiate symposiums with hundreds of eyes watching taught me that failure is immediate and unforgiving. When unexpected ground loops generate ear-piercing 60Hz hums minutes before an institutional guest speaks, or when a critical auditorium workstation throws a bootloader failure, abstract textbook memorization cannot help you. Only methodical diagnostics, cool-headed composure under pressure, and deep root-cause analysis can solve the problem.
+          </p>
+
+          <p>
+            This operational agility fundamentally shaped how I approach software and systems engineering. When writing code—whether developing our AI-assisted IT help desk ticket system or querying relational MySQL logs for peak network telemetry—I view code through the lens of real-world survivability. I learned that an algorithm is only as good as its error-handling boundaries, and a database schema is only as dependable as its normalization and connection pooling safeguards. My experience troubleshooting hardware, diagnosing DDR4 RAM faults, and untangling VLSM subnets directly informs my defensive programming mindset today.
+          </p>
+
+          <p>
+            Furthermore, my journey has solidified my philosophy surrounding modern artificial intelligence. In an era where AI tools are ubiquitous, true competence does not mean passive delegation. As evidenced by my AI literacy log, I treat generative tools as an intellectual collaborator that accelerates ideation, but demands rigorous human verification, benchmarking, and security audits. Knowing <em>why</em> a parameterized SQL query neutralizes injection attacks is infinitely more valuable than blindly generating code without comprehending its security implications.
+          </p>
+
+          <p>
+            As I look ahead to completing my BSIT degree in July 2027 and stepping into entry-level roles as a Network Engineer, Data Analyst, Web Developer, or IT Support Specialist, I carry more than technical syntax and academic honors. I bring an battle-tested resilience forged in live event production, a relentless curiosity for systems architecture, and an unwavering commitment to continuous learning. Technology will inevitably evolve, but the core discipline—diagnosing rigorously, engineering thoughtfully, and communicating clearly—remains my steadfast foundation.
+          </p>
+        </article>
+
+        <div class="mt-8 pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs font-mono text-slate-400 gap-4">
+          <div class="flex items-center gap-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+            <span>Authored by: Tyron John L. Dela Cruz</span>
+          </div>
+          <div>Datamex College of Saint Adeline &bull; Academic Year 2026–2027</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11. CONTACT SECTION & FOOTER -->
+    <section id="contact" class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <div class="inline-flex items-center gap-2 text-xs font-mono text-[#00F2FE] tracking-widest uppercase mb-2">
+          <i class="fas fa-envelope"></i> 10 // Connect &amp; Collaborate
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">Contact Me</h2>
+        <p class="text-slate-400 text-sm max-w-xl mx-auto mt-2">Have an open opportunity, network infrastructure inquiry, or web development project? Reach out directly.</p>
+        <div class="w-20 h-1 bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] mx-auto mt-4 rounded-full"></div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+        <!-- Direct Contact Details Card -->
+        <div class="lg:col-span-5 glass-card rounded-2xl p-6 sm:p-8 border border-white/10 space-y-6">
+          <h3 class="text-xl font-bold text-white">Let's Discuss Opportunities</h3>
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            I am currently available for entry-level positions, technical internships, and collaborative software/network projects. Feel free to contact me via phone, email, or through the contact form.
+          </p>
+
+          <div class="space-y-4 pt-2">
+            <!-- Phone -->
+            <a href="tel:+639072802649" class="flex items-center gap-4 p-4 rounded-xl bg-slate-900/60 border border-white/5 hover:border-[#00F2FE]/40 transition group">
+              <div class="w-10 h-10 rounded-lg bg-[#00F2FE]/10 border border-[#00F2FE]/30 flex items-center justify-center text-[#00F2FE] group-hover:scale-110 transition-transform">
+                <i class="fas fa-phone"></i>
+              </div>
+              <div>
+                <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400">Direct Phone</span>
+                <div class="text-sm font-semibold text-white group-hover:text-[#00F2FE] transition-colors">+63 907 280 2649</div>
+              </div>
+            </a>
+
+            <!-- Email -->
+            <a href="mailto:tyronjohndelacruz@gmail.com" class="flex items-center gap-4 p-4 rounded-xl bg-slate-900/60 border border-white/5 hover:border-[#4FACFE]/40 transition group">
+              <div class="w-10 h-10 rounded-xl bg-[#4FACFE]/10 border border-[#4FACFE]/30 flex items-center justify-center text-[#4FACFE] group-hover:scale-110 transition-transform">
+                <i class="fas fa-envelope"></i>
+              </div>
+              <div class="overflow-hidden">
+                <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400">Professional Email</span>
+                <div class="text-sm font-semibold text-white truncate group-hover:text-[#4FACFE] transition-colors">tyronjohndelacruz@gmail.com</div>
+              </div>
+            </a>
+
+            <!-- Location -->
+            <div class="flex items-center gap-4 p-4 rounded-xl bg-slate-900/60 border border-white/5">
+              <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                <i class="fas fa-location-dot"></i>
+              </div>
+              <div>
+                <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400">Current Address</span>
+                <div class="text-sm font-semibold text-white">3080 Holy Family Compd., Manuyo Uno, Las Piñas City</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Social links row -->
+          <div class="pt-4 border-t border-slate-800">
+            <span class="text-xs font-mono text-slate-400 uppercase tracking-wider block mb-3">Connect On Social</span>
+            <div class="flex items-center gap-3">
+              <a href="https://github.com/tyron-delacruz" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-slate-900 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white hover:border-[#00F2FE] hover:shadow-cyan-sm transition">
+                <i class="fab fa-github text-base"></i>
+              </a>
+              <a href="https://linkedin.com/in/tyron-delacruz" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-slate-900 border border-white/10 flex items-center justify-center text-slate-300 hover:text-[#00F2FE] hover:border-[#00F2FE] hover:shadow-cyan-sm transition">
+                <i class="fab fa-linkedin-in text-base"></i>
+              </a>
+              <a href="mailto:tyronjohndelacruz@gmail.com" class="w-10 h-10 rounded-xl bg-slate-900 border border-white/10 flex items-center justify-center text-slate-300 hover:text-cyan-400 hover:border-[#00F2FE] hover:shadow-cyan-sm transition">
+                <i class="fas fa-at text-base"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Glass Contact Form -->
+        <div class="lg:col-span-7 glass-card rounded-2xl p-6 sm:p-8 border border-white/10 relative">
+          <h3 class="text-xl font-bold text-white mb-2">Send a Message</h3>
+          <p class="text-xs text-slate-400 mb-6">Leave a message below and I will respond to your inquiry within 24 hours.</p>
+
+          <form id="contact-form" class="space-y-4" novalidate>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- Name -->
+              <div>
+                <label for="contact-name" class="block text-xs font-mono text-slate-300 mb-1.5">Your Full Name <span class="text-[#00F2FE]">*</span></label>
+                <input type="text" id="contact-name" name="name" required placeholder="John Doe" class="w-full px-4 py-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#00F2FE] focus:ring-1 focus:ring-[#00F2FE] transition">
+                <span id="name-error" class="text-[11px] text-rose-400 hidden mt-1">Please provide your name.</span>
+              </div>
+
+              <!-- Email -->
+              <div>
+                <label for="contact-email" class="block text-xs font-mono text-slate-300 mb-1.5">Email Address <span class="text-[#00F2FE]">*</span></label>
+                <input type="email" id="contact-email" name="email" required placeholder="john@example.com" class="w-full px-4 py-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#00F2FE] focus:ring-1 focus:ring-[#00F2FE] transition">
+                <span id="email-error" class="text-[11px] text-rose-400 hidden mt-1">Please enter a valid email address.</span>
+              </div>
+            </div>
+
+            <!-- Subject -->
+            <div>
+              <label for="contact-subject" class="block text-xs font-mono text-slate-300 mb-1.5">Subject <span class="text-[#00F2FE]">*</span></label>
+              <input type="text" id="contact-subject" name="subject" required placeholder="Network Engineering Role / Project Inquiry" class="w-full px-4 py-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#00F2FE] focus:ring-1 focus:ring-[#00F2FE] transition">
+              <span id="subject-error" class="text-[11px] text-rose-400 hidden mt-1">Please provide a subject line.</span>
+            </div>
+
+            <!-- Message -->
+            <div>
+              <label for="contact-message" class="block text-xs font-mono text-slate-300 mb-1.5">Your Message <span class="text-[#00F2FE]">*</span></label>
+              <textarea id="contact-message" name="message" rows="4" required placeholder="Hi Tyron, I reviewed your portfolio and would like to connect regarding an opportunity..." class="w-full px-4 py-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#00F2FE] focus:ring-1 focus:ring-[#00F2FE] transition resize-none"></textarea>
+              <span id="message-error" class="text-[11px] text-rose-400 hidden mt-1">Please enter your message (at least 10 characters).</span>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="contact-submit-btn" class="w-full py-3.5 px-6 rounded-xl font-semibold text-xs sm:text-sm font-mono bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] text-[#080C14] hover:shadow-cyan-glow transition-all duration-300 flex items-center justify-center gap-2 group">
+              <span>Transmit Message</span>
+              <i class="fas fa-paper-plane group-hover:translate-x-1 transition-transform"></i>
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-800/80 bg-[#080C14] py-12 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-[#00F2FE] to-[#7F00FF] p-[2px]">
+            <div class="w-full h-full bg-[#080C14] rounded-[6px] flex items-center justify-center">
+              <span class="font-mono font-bold text-xs text-[#00F2FE]">&lt;TD.&gt;</span>
+            </div>
+          </div>
+          <div>
+            <div class="text-sm font-bold text-white">Tyron John L. Dela Cruz</div>
+            <p class="text-[11px] text-slate-500 font-mono">&copy; 2026-2027 All Rights Reserved &bull; BSIT Datamex</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-6 text-xs text-slate-400 font-mono">
+          <a href="#hero" class="hover:text-[#00F2FE] transition">Home</a>
+          <a href="#about" class="hover:text-[#00F2FE] transition">About</a>
+          <a href="#projects" class="hover:text-[#00F2FE] transition">Projects</a>
+          <a href="#resume" class="hover:text-[#00F2FE] transition">Resume</a>
+          <a href="#contact" class="hover:text-[#00F2FE] transition">Contact</a>
+        </div>
+
+        <div>
+          <button type="button" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="p-2.5 rounded-xl bg-slate-900 border border-white/10 hover:border-[#00F2FE] hover:text-[#00F2FE] transition text-xs flex items-center gap-2">
+            <span>Back to Top</span>
+            <i class="fas fa-arrow-up"></i>
+          </button>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- MODALS -->
+
+  <!-- 1. Help Desk Demo Modal -->
+  <div id="modal-helpdesk" class="modal fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-card rounded-2xl max-w-2xl w-full border border-cyan-500/30 overflow-hidden shadow-2xl animate-float">
+      <div class="p-6 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <i class="fas fa-robot text-[#00F2FE] text-xl"></i>
+          <div>
+            <h4 class="text-base font-bold text-white">AI-Assisted IT Help Desk &bull; Interactive Simulator</h4>
+            <span class="text-xs font-mono text-cyan-400">Ticket CRUD &amp; Auto-Classification Engine</span>
+          </div>
+        </div>
+        <button type="button" onclick="closeModal('modal-helpdesk')" class="text-slate-400 hover:text-white p-1">
+          <i class="fas fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <div class="p-6 space-y-4">
+        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono space-y-2">
+          <div class="flex items-center justify-between text-slate-400">
+            <span>Ticket: #TICK-9082</span>
+            <span class="text-amber-400">Status: In Progress</span>
+          </div>
+          <div class="text-white font-sans text-sm font-semibold">User Query: "Lab 3 Switch 2 dropping packets on port Gi0/12 intermittently."</div>
+          <div class="text-[#00F2FE]">AI Classification: [Networking / Infrastructure Hardware Fault]</div>
+          <div class="text-slate-400">Recommended Action: Check CRC errors with <code>show interface Gi0/12</code>, test Cat6 patch cable with cable tester, replace transceiver if optical.</div>
+        </div>
+        <div class="flex items-center justify-between text-xs font-mono text-slate-400 pt-2">
+          <span>Backend: Python Flask + MySQL Relational Database</span>
+          <span class="text-emerald-400"><i class="fas fa-circle-check mr-1"></i> Authentication Verified</span>
+        </div>
+      </div>
+      <div class="p-4 bg-slate-900/60 border-t border-slate-800 text-right">
+        <button type="button" onclick="closeModal('modal-helpdesk')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-mono text-white transition">Close Simulator</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Telemetry Modal -->
+  <div id="modal-telemetry" class="modal fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-card rounded-2xl max-w-2xl w-full border border-blue-500/30 overflow-hidden shadow-2xl">
+      <div class="p-6 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <i class="fas fa-chart-column text-[#4FACFE] text-xl"></i>
+          <div>
+            <h4 class="text-base font-bold text-white">Network Telemetry &bull; Analytics Report</h4>
+            <span class="text-xs font-mono text-blue-400">Device Log Aggregation &amp; Peak Load Analysis</span>
+          </div>
+        </div>
+        <button type="button" onclick="closeModal('modal-telemetry')" class="text-slate-400 hover:text-white p-1">
+          <i class="fas fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <div class="p-6 space-y-4">
+        <div class="grid grid-cols-3 gap-3 text-center">
+          <div class="p-3 rounded-lg bg-slate-950 border border-slate-800">
+            <div class="text-xs font-mono text-slate-400">Avg Uptime</div>
+            <div class="text-lg font-bold text-emerald-400 mt-1">99.94%</div>
+          </div>
+          <div class="p-3 rounded-lg bg-slate-950 border border-slate-800">
+            <div class="text-xs font-mono text-slate-400">Peak Bandwidth</div>
+            <div class="text-lg font-bold text-cyan-400 mt-1">942 Mbps</div>
+          </div>
+          <div class="p-3 rounded-lg bg-slate-950 border border-slate-800">
+            <div class="text-xs font-mono text-slate-400">Logs Analyzed</div>
+            <div class="text-lg font-bold text-purple-400 mt-1">50,000+</div>
+          </div>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono text-slate-300">
+          <div class="text-slate-400 mb-1">SQL Aggregation Pipeline Query:</div>
+          <pre class="text-[#00F2FE]"><code>SELECT DATE_FORMAT(timestamp, '%Y-%m-%d %H:00') AS hour_block,
+       AVG(latency_ms) AS avg_latency,
+       MAX(throughput_mbps) AS peak_mbps
+FROM router_syslogs
+GROUP BY hour_block
+ORDER BY peak_mbps DESC LIMIT 5;</code></pre>
+        </div>
+      </div>
+      <div class="p-4 bg-slate-900/60 border-t border-slate-800 text-right">
+        <button type="button" onclick="closeModal('modal-telemetry')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-mono text-white transition">Close Report</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Topology Modal -->
+  <div id="modal-topology" class="modal fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-card rounded-2xl max-w-2xl w-full border border-purple-500/30 overflow-hidden shadow-2xl">
+      <div class="p-6 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <i class="fas fa-sitemap text-purple-400 text-xl"></i>
+          <div>
+            <h4 class="text-base font-bold text-white">System Architecture &bull; Network Topology Lab</h4>
+            <span class="text-xs font-mono text-purple-400">VLAN Segmentation, OSPF Routing &amp; ACL Filter Rules</span>
+          </div>
+        </div>
+        <button type="button" onclick="closeModal('modal-topology')" class="text-slate-400 hover:text-white p-1">
+          <i class="fas fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <div class="p-6 space-y-4">
+        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 font-mono text-xs space-y-2 text-slate-300">
+          <div class="text-purple-300 font-bold">[ Topology Layout Schematic ]</div>
+          <div class="text-slate-400 leading-relaxed">
+            Internet Gateway (Core Router: 192.168.1.1/30)<br>
+            &nbsp;&nbsp;&boxur;&boxh;&boxh; Distribution Switch (Cisco 3560 L3: OSPF Area 0)<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&boxur;&boxh;&boxh; VLAN 10 [Admin / Servers]: 10.10.10.0/24 (Strict ACL Deny All Except SSH/HTTPS)<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&boxur;&boxh;&boxh; VLAN 20 [IT Laboratory 1]: 10.10.20.0/24 (DHCP Dynamic Scope)<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&boxur;&boxh;&boxh; VLAN 30 [Campus Event Wi-Fi]: 172.16.0.0/22 (Captive Portal + DNS Filter)
+          </div>
+        </div>
+        <p class="text-xs text-slate-400">Includes Python vulnerability scanner scripts detecting unauthorized open ports (e.g. Telnet 23, SMB 445).</p>
+      </div>
+      <div class="p-4 bg-slate-900/60 border-t border-slate-800 text-right">
+        <button type="button" onclick="closeModal('modal-topology')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-mono text-white transition">Close Schematic</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Reflection Full Reader Modal -->
+  <div id="modal-essay" class="modal fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-card rounded-2xl max-w-3xl w-full max-h-[85vh] flex flex-col border border-cyan-500/30 overflow-hidden shadow-2xl">
+      <div class="p-6 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0">
+        <div>
+          <h4 class="text-base font-bold text-white">Senior BSIT Final Reflection Essay</h4>
+          <span class="text-xs font-mono text-[#00F2FE]">Full Reader Experience &bull; Tyron John L. Dela Cruz</span>
+        </div>
+        <button type="button" onclick="closeModal('modal-essay')" class="text-slate-400 hover:text-white p-1">
+          <i class="fas fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <div class="p-6 sm:p-8 overflow-y-auto space-y-4 text-slate-300 text-sm leading-relaxed font-sans">
+        <h3 class="text-lg font-bold text-white mb-2">From Theory to the Soundboard: My Evolution as a Technologist</h3>
+        <p>
+          When I first entered the Bachelor of Science in Information Technology (BSIT) program at Datamex College of Saint Adeline, technology felt like a vast labyrinth of discrete concepts. Textbooks cleanly demarcated software development from hardware engineering, and network topologies were portrayed as static diagrams on whiteboard lectures. Yet as I progressed into my senior year, that theoretical compartmentalization dissolved into a profound realization: real-world information technology is an interconnected, living ecosystem where hardware stability, network reliability, algorithmic logic, and human operation must harmoniously converge.
+        </p>
+        <p>
+          My greatest technical crucible arrived not within the serenity of an exam hall, but in the high-stakes pressure cooker of campus operations. Serving as the Official Event Lead Technical and Student Assistant from August 2024 to the present transformed my perspective on engineering. Standing behind an audio-visual console and patch bay during major collegiate symposiums with hundreds of eyes watching taught me that failure is immediate and unforgiving. When unexpected ground loops generate ear-piercing 60Hz hums minutes before an institutional guest speaks, or when a critical auditorium workstation throws a bootloader failure, abstract textbook memorization cannot help you. Only methodical diagnostics, cool-headed composure under pressure, and deep root-cause analysis can solve the problem.
+        </p>
+        <p>
+          This operational agility fundamentally shaped how I approach software and systems engineering. When writing code—whether developing our AI-assisted IT help desk ticket system or querying relational MySQL logs for peak network telemetry—I view code through the lens of real-world survivability. I learned that an algorithm is only as good as its error-handling boundaries, and a database schema is only as dependable as its normalization and connection pooling safeguards. My experience troubleshooting hardware, diagnosing DDR4 RAM faults, and untangling VLSM subnets directly informs my defensive programming mindset today.
+        </p>
+        <p>
+          Furthermore, my journey has solidified my philosophy surrounding modern artificial intelligence. In an era where AI tools are ubiquitous, true competence does not mean passive delegation. As evidenced by my AI literacy log, I treat generative tools as an intellectual collaborator that accelerates ideation, but demands rigorous human verification, benchmarking, and security audits. Knowing <em>why</em> a parameterized SQL query neutralizes injection attacks is infinitely more valuable than blindly generating code without comprehending its security implications.
+        </p>
+        <p>
+          As I look ahead to completing my BSIT degree in July 2027 and stepping into entry-level roles as a Network Engineer, Data Analyst, Web Developer, or IT Support Specialist, I carry more than technical syntax and academic honors. I bring an battle-tested resilience forged in live event production, a relentless curiosity for systems architecture, and an unwavering commitment to continuous learning. Technology will inevitably evolve, but the core discipline—diagnosing rigorously, engineering thoughtfully, and communicating clearly—remains my steadfast foundation.
+        </p>
+      </div>
+      <div class="p-4 bg-slate-900/60 border-t border-slate-800 text-right shrink-0">
+        <button type="button" onclick="closeModal('modal-essay')" class="px-5 py-2 rounded-lg bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] text-[#080C14] font-mono text-xs font-semibold">Done Reading</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING TOAST NOTIFICATION -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-32 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="glass-card rounded-xl p-4 border border-[#00F2FE]/40 bg-slate-900/95 shadow-cyan-glow flex items-center gap-3 max-w-sm pointer-events-auto">
+      <div class="w-9 h-9 rounded-lg bg-[#00F2FE]/20 text-[#00F2FE] flex items-center justify-center shrink-0">
+        <i class="fas fa-paper-plane text-sm"></i>
+      </div>
+      <div>
+        <h5 class="text-xs font-bold text-white">Transmission Successful</h5>
+        <p class="text-[11px] text-slate-300" id="toast-message">Your message has been sent to Tyron Dela Cruz!</p>
+      </div>
+      <button type="button" onclick="hideToast()" class="text-slate-400 hover:text-white ml-2 p-1">
+        <i class="fas fa-xmark text-xs"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT ES6+ LOGIC -->
+  <script>
+    // 1. Mobile Drawer Navigation
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const closeDrawerBtn = document.getElementById('close-drawer-btn');
+    const mobileDrawer = document.getElementById('mobile-drawer');
+    const drawerBackdrop = document.getElementById('drawer-backdrop');
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+    function openMobileMenu() {
+      mobileDrawer.classList.remove('translate-x-full');
+      drawerBackdrop.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobileMenu() {
+      mobileDrawer.classList.add('translate-x-full');
+      drawerBackdrop.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', openMobileMenu);
+    if (closeDrawerBtn) closeDrawerBtn.addEventListener('click', closeMobileMenu);
+    if (drawerBackdrop) drawerBackdrop.addEventListener('click', closeMobileMenu);
+
+    mobileNavLinks.forEach(link => {
+      link.addEventListener('click', closeMobileMenu);
+    });
+
+    // 2. Navbar Active State on Scroll (Intersection Observer)
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    function updateActiveNavLink() {
+      let currentSectionId = '';
+      const scrollPosition = window.scrollY + 200;
+
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.offsetHeight;
+        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+          currentSectionId = section.getAttribute('id');
+        }
+      });
+
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === '#' + currentSectionId) {
+          link.classList.add('active');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', updateActiveNavLink);
+    window.addEventListener('load', updateActiveNavLink);
+
+    // 3. Project Filter Tabs Logic
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const projectCards = document.querySelectorAll('.project-card');
+
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+
+        const filterValue = button.getAttribute('data-filter');
+
+        projectCards.forEach(card => {
+          const category = card.getAttribute('data-category');
+          if (filterValue === 'all' || category === filterValue) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // 4. Troubleshooting Accordion Logic
+    const accordionTriggers = document.querySelectorAll('.accordion-trigger');
+
+    accordionTriggers.forEach(trigger => {
+      trigger.addEventListener('click', () => {
+        const item = trigger.closest('.accordion-item');
+        const content = item.querySelector('.accordion-content');
+        const arrow = item.querySelector('.accordion-arrow');
+        const isOpen = content.classList.contains('open');
+
+        // Close all other accordions
+        document.querySelectorAll('.accordion-content').forEach(c => c.classList.remove('open'));
+        document.querySelectorAll('.accordion-arrow').forEach(a => a.style.transform = 'rotate(0deg)');
+
+        if (!isOpen) {
+          content.classList.add('open');
+          arrow.style.transform = 'rotate(180deg)';
+        }
+      });
+    });
+
+    // Open first accordion by default for immediate preview
+    if (accordionTriggers.length > 0) {
+      const firstItem = accordionTriggers[0].closest('.accordion-item');
+      firstItem.querySelector('.accordion-content').classList.add('open');
+      firstItem.querySelector('.accordion-arrow').style.transform = 'rotate(180deg)';
+    }
+
+    // 5. Cybersecurity SQLi Tab Switcher
+    const tabVulnerable = document.getElementById('tab-vulnerable');
+    const tabMitigated = document.getElementById('tab-mitigated');
+    const codeVulnerable = document.getElementById('code-view-vulnerable');
+    const codeMitigated = document.getElementById('code-view-mitigated');
+
+    if (tabVulnerable && tabMitigated) {
+      tabVulnerable.addEventListener('click', () => {
+        tabVulnerable.classList.add('border-rose-500', 'text-rose-400', 'bg-slate-900/80');
+        tabVulnerable.classList.remove('border-transparent', 'text-slate-400');
+        tabMitigated.classList.remove('border-emerald-500', 'text-emerald-400', 'bg-slate-900/80');
+        tabMitigated.classList.add('border-transparent', 'text-slate-400');
+
+        codeVulnerable.classList.remove('hidden');
+        codeMitigated.classList.add('hidden');
+      });
+
+      tabMitigated.addEventListener('click', () => {
+        tabMitigated.classList.add('border-emerald-500', 'text-emerald-400', 'bg-slate-900/80');
+        tabMitigated.classList.remove('border-transparent', 'text-slate-400');
+        tabVulnerable.classList.remove('border-rose-500', 'text-rose-400', 'bg-slate-900/80');
+        tabVulnerable.classList.add('border-transparent', 'text-slate-400');
+
+        codeMitigated.classList.remove('hidden');
+        codeVulnerable.classList.add('hidden');
+      });
+    }
+
+    // 6. AI Log Search Filter
+    const aiLogSearch = document.getElementById('ai-log-search');
+    const logRows = document.querySelectorAll('.log-row');
+
+    if (aiLogSearch) {
+      aiLogSearch.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        logRows.forEach(row => {
+          const text = row.textContent.toLowerCase();
+          if (text.includes(query)) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        });
+      });
+    }
+
+    // 7. Modals Handler
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+    }
+
+    window.addEventListener('click', (e) => {
+      if (e.target.classList.contains('modal')) {
+        e.target.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+    });
+
+    // 8. Contact Form Validation & Toast Notification
+    const contactForm = document.getElementById('contact-form');
+    const toast = document.getElementById('toast');
+    let toastTimeout;
+
+    function showToast(message) {
+      const toastMsg = document.getElementById('toast-message');
+      if (toastMsg && message) toastMsg.textContent = message;
+
+      toast.classList.remove('translate-y-32', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        hideToast();
+      }, 5000);
+    }
+
+    function hideToast() {
+      toast.classList.add('translate-y-32', 'opacity-0');
+      toast.classList.remove('translate-y-0', 'opacity-100');
+    }
+
+    if (contactForm) {
+      contactForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const nameInput = document.getElementById('contact-name');
+        const emailInput = document.getElementById('contact-email');
+        const subjectInput = document.getElementById('contact-subject');
+        const messageInput = document.getElementById('contact-message');
+
+        let isValid = true;
+
+        // Name Validation
+        if (!nameInput.value.trim()) {
+          document.getElementById('name-error').classList.remove('hidden');
+          nameInput.classList.add('border-rose-500');
+          isValid = false;
+        } else {
+          document.getElementById('name-error').classList.add('hidden');
+          nameInput.classList.remove('border-rose-500');
+        }
+
+        // Email Validation
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(emailInput.value.trim())) {
+          document.getElementById('email-error').classList.remove('hidden');
+          emailInput.classList.add('border-rose-500');
+          isValid = false;
+        } else {
+          document.getElementById('email-error').classList.add('hidden');
+          emailInput.classList.remove('border-rose-500');
+        }
+
+        // Subject Validation
+        if (!subjectInput.value.trim()) {
+          document.getElementById('subject-error').classList.remove('hidden');
+          subjectInput.classList.add('border-rose-500');
+          isValid = false;
+        } else {
+          document.getElementById('subject-error').classList.add('hidden');
+          subjectInput.classList.remove('border-rose-500');
+        }
+
+        // Message Validation
+        if (messageInput.value.trim().length < 10) {
+          document.getElementById('message-error').classList.remove('hidden');
+          messageInput.classList.add('border-rose-500');
+          isValid = false;
+        } else {
+          document.getElementById('message-error').classList.add('hidden');
+          messageInput.classList.remove('border-rose-500');
+        }
+
+        if (isValid) {
+          const submitBtn = document.getElementById('contact-submit-btn');
+          const originalText = submitBtn.innerHTML;
+
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Transmitting...';
+
+          setTimeout(() => {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+            showToast('Thank you, ' + nameInput.value.trim() + '! Your message has been received.');
+            contactForm.reset();
+          }, 800);
+        }
+      });
+    }
+  </script>
+</body>
+</html>

@@ -465,6 +465,12 @@
               <p class="text-sm text-slate-300 italic" id="v-notes"></p>
             </div>
           </div>
+          <div id="v-ai-suggestions-wrapper" class="hidden mt-3 p-4 bg-indigo-500/10 border border-indigo-500/20 rounded-xl">
+            <h4 class="text-[10px] font-mono text-indigo-400 tracking-wider uppercase mb-2 flex items-center gap-1.5">
+              <i class="fas fa-robot"></i> Suggested To-Do List
+            </h4>
+            <div id="v-ai-suggestions-content" class="space-y-2"></div>
+          </div>
         </div>
 
         <div class="pt-4 flex justify-between gap-3 border-t border-white/5 items-center">
@@ -583,6 +589,7 @@
     const _supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZmd2toeXZlY25yeXZkbmNsYW93Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEzOTE1MzUsImV4cCI6MjEwNjk2NzUzNX0.Ia9Tezt_jPUnI20Fs40m-deJMn5qQT2hABiOWwSdD6w';
     let db = null;
     let realtimeChannel = null;
+    let currentAiSuggestions = null;
     try { db = window.supabase.createClient(_supabaseUrl, _supabaseKey); } catch(e) { console.error('Supabase init failed:', e); }
     let isConnectedToSupabase = false;
     let currentTickets = [];
@@ -682,13 +689,19 @@
       
       try {
         if (isConnectedToSupabase && db) {
-          const { data, error } = await db.from('tickets').update({ status, priority, notes }).eq('id', id).select();
+          const { data, error } = await db.from('tickets').update({ status, priority, notes, ai_suggestions: currentAiSuggestions }).eq('id', id).select();
           if (error) throw error;
           const idx = currentTickets.findIndex(t => t.id === id);
           if (idx !== -1 && data.length > 0) currentTickets[idx] = data[0];
         } else {
           const idx = currentTickets.findIndex(t => t.id === id);
-          if (idx !== -1) { currentTickets[idx].status = status; currentTickets[idx].priority = priority; currentTickets[idx].notes = notes; localStorage.setItem('helpdesk_backup_db', JSON.stringify(currentTickets)); }
+          if (idx !== -1) { 
+            currentTickets[idx].status = status; 
+            currentTickets[idx].priority = priority; 
+            currentTickets[idx].notes = notes; 
+            currentTickets[idx].ai_suggestions = currentAiSuggestions;
+            localStorage.setItem('helpdesk_backup_db', JSON.stringify(currentTickets)); 
+          }
         }
         showToast('Ticket updated', 'success');
         closeEditModal();
@@ -807,6 +820,8 @@
       document.getElementById('e-notes').value = t.notes || '';
       document.getElementById('e-notes').value = t.notes || '';
       
+      currentAiSuggestions = t.ai_suggestions || null;
+      
       const role = localStorage.getItem('hd_role');
       if (role === 'user') {
         // User view mode
@@ -817,6 +832,27 @@
         document.getElementById('v-status').innerText = t.status;
         document.getElementById('v-priority').innerText = t.priority;
         document.getElementById('v-notes').innerText = t.notes || 'No notes available.';
+        
+        // Render saved AI Suggestions for User if exists
+        const vAiWrapper = document.getElementById('v-ai-suggestions-wrapper');
+        const vAiContent = document.getElementById('v-ai-suggestions-content');
+        if (currentAiSuggestions) {
+          try {
+            const parsed = typeof currentAiSuggestions === 'string' ? JSON.parse(currentAiSuggestions) : currentAiSuggestions;
+            vAiContent.innerHTML = parsed.map(s => `
+              <div class="flex items-start gap-2 bg-slate-900/60 p-2.5 rounded-lg border border-indigo-500/10">
+                <i class="fas fa-check text-indigo-400 mt-0.5 text-[10px]"></i>
+                <p class="text-xs text-slate-300 leading-relaxed">${s}</p>
+              </div>
+            `).join('');
+            vAiWrapper.classList.remove('hidden');
+          } catch(e) {
+            vAiWrapper.classList.add('hidden');
+          }
+        } else {
+          vAiWrapper.classList.add('hidden');
+        }
+
       } else {
         // Admin edit mode
         document.getElementById('admin-controls').classList.remove('hidden');
@@ -824,10 +860,29 @@
         document.getElementById('btn-del').classList.remove('hidden');
         document.getElementById('btn-update').classList.remove('hidden');
         
-        // Reset AI Suggestions
-        document.getElementById('btn-ai').innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Get Suggested To-Do';
-        document.getElementById('btn-ai').disabled = false;
-        document.getElementById('ai-suggestions-container').innerHTML = 'Click the button above to analyze the ticket and generate a suggested to-do list.';
+        // Render AI Suggestions for Admin
+        const btnAi = document.getElementById('btn-ai');
+        const container = document.getElementById('ai-suggestions-container');
+        btnAi.disabled = false;
+
+        if (currentAiSuggestions) {
+          try {
+            const parsed = typeof currentAiSuggestions === 'string' ? JSON.parse(currentAiSuggestions) : currentAiSuggestions;
+            btnAi.innerHTML = '<i class="fas fa-rotate"></i> Re-generate';
+            container.innerHTML = parsed.map((s, i) => `
+              <div class="flex items-start gap-2 mb-2 bg-slate-900/50 p-2 rounded-lg border border-white/5">
+                <input type="checkbox" id="ai-chk-${i}" class="mt-0.5 accent-indigo-500 cursor-pointer rounded bg-slate-800 border-white/10">
+                <label for="ai-chk-${i}" class="text-xs text-slate-300 cursor-pointer select-none leading-relaxed">${s}</label>
+              </div>
+            `).join('');
+          } catch(e) {
+            btnAi.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Get Suggested To-Do';
+            container.innerHTML = 'Click the button above to analyze the ticket and generate a suggested to-do list.';
+          }
+        } else {
+          btnAi.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Get Suggested To-Do';
+          container.innerHTML = 'Click the button above to analyze the ticket and generate a suggested to-do list.';
+        }
       }
 
       document.getElementById('edit-modal').classList.remove('hidden');
@@ -864,7 +919,8 @@
         `).join('');
 
         container.innerHTML = checklistHtml;
-        btn.innerHTML = '<i class="fas fa-check"></i> Generated';
+        currentAiSuggestions = JSON.stringify(suggestions);
+        btn.innerHTML = '<i class="fas fa-rotate"></i> Re-generate';
         showToast('Suggested To-Do Generated', 'success');
       }, 1500);
     }

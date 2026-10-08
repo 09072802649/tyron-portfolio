@@ -12,8 +12,12 @@ CREATE TABLE tickets (
   status TEXT NOT NULL DEFAULT 'Open',
   description TEXT NOT NULL,
   notes TEXT,
+  ai_suggestions JSONB,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+-- If you already created the table, run this to add the column:
+-- ALTER TABLE tickets ADD COLUMN ai_suggestions JSONB;
 
 -- 2. Set up Row Level Security (RLS)
 -- Enable RLS on the table

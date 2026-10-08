@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IT HELP DESK SYSTEM v3.0 - Full Stack Architecture</title>
+  <title>IT HELP DESK SYSTEM v3.0 - Full Stack Architecture (Supabase)</title>
   
   <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -28,6 +28,9 @@
     }
   </script>
   
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     body {
       background-color: #080C14;
@@ -132,8 +135,8 @@
         <div>
           <h1 class="text-xl font-bold text-white tracking-wide">IT HELP DESK <span class="text-xs font-mono text-[#00F2FE]">v3.0</span></h1>
           <div class="flex items-center gap-2 mt-1">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="text-xs font-mono text-emerald-400" id="db-status">Encrypted Session Active</span>
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" id="status-indicator"></span>
+            <span class="text-xs font-mono text-emerald-400" id="db-status">Connecting to Supabase...</span>
           </div>
         </div>
       </div>
@@ -204,7 +207,7 @@
 
     <!-- Data Loading State -->
     <div id="loader-state" class="hidden justify-center items-center py-20">
-      <div class="loader mr-3"></div> <span class="text-cyan-400 font-mono text-sm animate-pulse">Querying Database...</span>
+      <div class="loader mr-3"></div> <span class="text-cyan-400 font-mono text-sm animate-pulse">Querying Supabase Database...</span>
     </div>
 
     <!-- Ticket List Container -->
@@ -326,31 +329,15 @@
   </div>
 
   <script>
-    /* ================= FULL STACK ARCHITECTURE SIMULATION ================= */
+    /* ================= FULL STACK ARCHITECTURE ================= */
     
-    // --- 1. Database & Server Simulation ---
-    // We wrap all DB interactions in Promises with setTimeout to simulate real server latency and error rates
-    const SERVER_LATENCY = 600; // ms
+    // --- 1. Supabase Initialization ---
+    const _supabaseUrl = 'https://vfwkhyvecnryvdnclaow.supabase.co';
+    const _supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZmd2toeXZlY25yeXZkbmNsYW93Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEzOTE1MzUsImV4cCI6MjEwNjk2NzUzNX0.Ia9Tezt_jPUnI20Fs40m-deJMn5qQT2hABiOWwSdD6w';
     
-    class MockServer {
-      static get(key) {
-        return new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(JSON.parse(localStorage.getItem(key)) || []);
-          }, SERVER_LATENCY);
-        });
-      }
-      static set(key, data) {
-        return new Promise((resolve, reject) => {
-          setTimeout(() => {
-            try {
-              localStorage.setItem(key, JSON.stringify(data));
-              resolve(true);
-            } catch(e) { reject(new Error("Server 500: Database Write Failed")); }
-          }, SERVER_LATENCY / 2);
-        });
-      }
-    }
+    // Create Supabase client
+    const supabase = window.supabase.createClient(_supabaseUrl, _supabaseKey);
+    let isConnectedToSupabase = false;
 
     // --- 2. State Management ---
     let appState = {
@@ -386,18 +373,15 @@
     }
 
     // --- 4. Authentication (Roles & Secure Session) ---
-    const DB_KEY = 'helpdesk_db_v3';
-    
     document.getElementById('login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const u = document.getElementById('auth-user').value.trim();
       const p = document.getElementById('auth-pass').value.trim();
       
-      if(!u || !p) return showToast('Server Error: Missing Payload', 'error');
+      if(!u || !p) return showToast('Error: Missing Username or Password', 'error');
       
-      setBtnLoading('btn-login', true);
+      setBtnLoading('btn-login', true, '');
       
-      // Simulate Auth API Call
       setTimeout(() => {
         setBtnLoading('btn-login', false, '<span>Authenticate</span> <i class="fas fa-arrow-right ml-2"></i>');
         if (u === 'admin' && p === 'admin123') {
@@ -407,7 +391,7 @@
         } else {
           showToast('401 Unauthorized: Invalid Credentials', 'error');
         }
-      }, 1000);
+      }, 500);
     });
 
     function loginSuccess(userObj) {
@@ -416,7 +400,7 @@
       document.getElementById('current-user-name').innerText = userObj.username;
       document.getElementById('current-user-role').innerText = userObj.role;
       
-      showToast('200 OK: Authentication Token Generated', 'success');
+      showToast('Authentication Token Generated', 'success');
       document.getElementById('auth-screen').classList.add('opacity-0');
       setTimeout(() => {
         document.getElementById('auth-screen').classList.add('hidden');
@@ -441,28 +425,41 @@
     const session = localStorage.getItem('hd_session');
     if(session) loginSuccess(JSON.parse(session));
 
-    // --- 5. Database Interaction (CRUD & Server-side Validation) ---
+    // --- 5. Database Interaction (Supabase CRUD) ---
     async function fetchData() {
       document.getElementById('tickets-container').innerHTML = '';
       document.getElementById('loader-state').classList.replace('hidden', 'flex');
       
       try {
-        let data = await MockServer.get(DB_KEY);
-        if (data.length === 0) {
-          // Seed database if empty
-          data = [{ id: '1', code: 'TICK-1001', reporter_name: 'Standard User', device_type: 'Laptop/PC', category: 'Hardware', priority: 'High', status: 'Open', description: 'Screen flickering', created_at: new Date().toISOString() }];
-          await MockServer.set(DB_KEY, data);
-        }
-        appState.tickets = data;
+        const { data, error } = await supabase.from('tickets').select('*').order('created_at', { ascending: false });
+        
+        if (error) throw error;
+        
+        appState.tickets = data || [];
+        isConnectedToSupabase = true;
+        document.getElementById('db-status').innerText = "Supabase Database Connected";
+        document.getElementById('db-status').className = "text-xs font-mono text-emerald-400";
+        document.getElementById('status-indicator').className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
+        
         renderUI();
       } catch(err) {
-        showToast(err.message, 'error');
+        console.error("Supabase Error:", err);
+        showToast("Supabase Error: " + err.message, 'error');
+        
+        // Fallback to local storage if Supabase fails (e.g. table doesn't exist)
+        document.getElementById('db-status').innerText = "Supabase Error - Using LocalDB";
+        document.getElementById('db-status').className = "text-xs font-mono text-amber-400";
+        document.getElementById('status-indicator').className = "w-2 h-2 rounded-full bg-amber-500";
+        
+        const localData = localStorage.getItem('hd_backup_db');
+        appState.tickets = localData ? JSON.parse(localData) : [];
+        renderUI();
       } finally {
         document.getElementById('loader-state').classList.replace('flex', 'hidden');
       }
     }
 
-    // CREATE (With Server-Side Mock Validation)
+    // CREATE
     document.getElementById('create-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const desc = document.getElementById('c-desc').value.trim();
@@ -472,54 +469,78 @@
       setBtnLoading('btn-submit-ticket', true, 'Save Record');
       
       const newTicket = {
-        id: Date.now().toString(),
         code: 'TICK-' + Math.floor(1000 + Math.random() * 9000),
-        reporter_name: appState.user.username, // Auto-assign reporter based on authenticated user
+        reporter_name: appState.user.username, // Auto-assign reporter
         device_type: document.getElementById('c-device').value,
         category: document.getElementById('c-category').value,
         priority: document.getElementById('c-priority').value,
         status: 'Open',
         description: desc,
+        notes: 'System auto-assigned.',
         created_at: new Date().toISOString()
       };
 
       try {
-        appState.tickets.unshift(newTicket);
-        await MockServer.set(DB_KEY, appState.tickets);
+        if (isConnectedToSupabase) {
+          const { data, error } = await supabase.from('tickets').insert([newTicket]).select();
+          if (error) throw error;
+          appState.tickets.unshift(data[0]);
+        } else {
+          newTicket.id = Date.now().toString();
+          appState.tickets.unshift(newTicket);
+          localStorage.setItem('hd_backup_db', JSON.stringify(appState.tickets));
+        }
+
         showToast('201 Created: Inserted into Database', 'success');
         closeCreateModal();
         renderUI();
       } catch(err) {
-        showToast(err.message, 'error');
+        showToast("Error inserting into Supabase: " + err.message, 'error');
       } finally {
         setBtnLoading('btn-submit-ticket', false, 'Save Record');
       }
     });
 
-    // UPDATE (With Role-Based Authorization)
+    // UPDATE
     document.getElementById('edit-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      // Authorization Check
       if (appState.user.role !== 'admin') {
-        return showToast('403 Forbidden: Standard users cannot modify ticket metadata.', 'error');
+        return showToast('403 Forbidden: Standard users cannot modify tickets.', 'error');
       }
 
       setBtnLoading('btn-update', true, 'Update DB');
       
       const id = document.getElementById('e-id').value;
-      const idx = appState.tickets.findIndex(t => t.id === id);
+      const status = document.getElementById('e-status').value;
+      const priority = document.getElementById('e-priority').value;
+      const notes = document.getElementById('e-notes').value;
       
       try {
-        appState.tickets[idx].status = document.getElementById('e-status').value;
-        appState.tickets[idx].priority = document.getElementById('e-priority').value;
-        appState.tickets[idx].notes = document.getElementById('e-notes').value;
-        await MockServer.set(DB_KEY, appState.tickets);
+        if (isConnectedToSupabase) {
+          const { data, error } = await supabase.from('tickets')
+            .update({ status, priority, notes })
+            .eq('id', id)
+            .select();
+          if (error) throw error;
+          
+          const idx = appState.tickets.findIndex(t => t.id === id);
+          if(idx !== -1 && data && data.length > 0) appState.tickets[idx] = data[0];
+        } else {
+          const idx = appState.tickets.findIndex(t => t.id === id);
+          if (idx !== -1) {
+            appState.tickets[idx].status = status;
+            appState.tickets[idx].priority = priority;
+            appState.tickets[idx].notes = notes;
+            localStorage.setItem('hd_backup_db', JSON.stringify(appState.tickets));
+          }
+        }
+
         showToast('200 OK: Record Updated', 'success');
         closeEditModal();
         renderUI();
       } catch(err) {
-        showToast(err.message, 'error');
+        showToast("Error updating Supabase: " + err.message, 'error');
       } finally {
         setBtnLoading('btn-update', false, 'Update DB');
       }
@@ -536,13 +557,19 @@
       const id = document.getElementById('e-id').value;
       
       try {
+        if (isConnectedToSupabase) {
+          const { error } = await supabase.from('tickets').delete().eq('id', id);
+          if (error) throw error;
+        } 
+        
         appState.tickets = appState.tickets.filter(t => t.id !== id);
-        await MockServer.set(DB_KEY, appState.tickets);
+        if(!isConnectedToSupabase) localStorage.setItem('hd_backup_db', JSON.stringify(appState.tickets));
+        
         showToast('200 OK: Record Destroyed', 'warning');
         closeEditModal();
         renderUI();
       } catch(err) {
-        showToast(err.message, 'error');
+        showToast("Error deleting from Supabase: " + err.message, 'error');
       } finally {
         setBtnLoading('btn-del', false, '<i class="fas fa-trash"></i> Delete');
       }
@@ -579,8 +606,8 @@
 
       // Render Pagination Info
       document.getElementById('pagination-info').innerText = `Showing ${totalItems === 0 ? 0 : start + 1}-${Math.min(start + appState.itemsPerPage, totalItems)} of ${totalItems} DB Rows`;
-      document.getElementById('btn-prev').disabled = appState.currentPage === 1;
-      document.getElementById('btn-next').disabled = appState.currentPage === totalPages;
+      document.getElementById('btn-prev').disabled = appState.currentPage <= 1;
+      document.getElementById('btn-next').disabled = appState.currentPage >= totalPages;
 
       // Render Grid
       const container = document.getElementById('tickets-container');

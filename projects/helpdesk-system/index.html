@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IT HELP DESK SYSTEM v1.0</title>
+  <title>IT HELP DESK SYSTEM v2.0 - Authenticated</title>
   
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -31,9 +31,6 @@
     }
   </script>
   
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
     body {
       background-color: #080C14;
@@ -45,9 +42,9 @@
         radial-gradient(circle at 85% 60%, rgba(79, 172, 254, 0.05) 0%, transparent 45%);
     }
     .glass-card {
-      background: rgba(15, 23, 42, 0.75);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.08);
       transition: all 0.3s ease;
     }
@@ -60,12 +57,67 @@
     ::-webkit-scrollbar-track { background: #080C14; }
     ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #00F2FE; }
+
+    /* Toast Animation */
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+    .toast-enter { animation: slideIn 0.3s forwards; }
+    .toast-exit { animation: slideOut 0.3s forwards; }
   </style>
 </head>
-<body class="antialiased">
+<body class="antialiased relative">
 
-  <!-- App Container -->
-  <div class="max-w-7xl mx-auto px-4 py-8">
+  <!-- ================= AUTHENTICATION SYSTEM ================= -->
+  <div id="auth-screen" class="fixed inset-0 z-[100] bg-cyber-bg flex items-center justify-center p-4 transition-opacity duration-500">
+    <div class="glass-card max-w-md w-full p-8 rounded-2xl border-t-2 border-t-cyan-500 shadow-2xl relative overflow-hidden">
+      <div class="absolute -top-10 -right-10 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl"></div>
+      
+      <div class="text-center mb-8">
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#00F2FE] to-[#4FACFE] p-0.5 mx-auto mb-4">
+          <div class="w-full h-full bg-[#080C14] rounded-[14px] flex items-center justify-center text-[#00F2FE] text-3xl">
+            <i class="fas fa-shield-halved"></i>
+          </div>
+        </div>
+        <h2 class="text-2xl font-bold text-white tracking-wide">SYSTEM ACCESS</h2>
+        <p class="text-sm text-slate-400 mt-1">Authentication Required</p>
+      </div>
+
+      <form id="login-form" class="space-y-5">
+        <div>
+          <label class="block text-xs font-mono text-slate-400 mb-1.5">Username (admin)</label>
+          <div class="relative">
+            <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
+            <input type="text" id="auth-user" class="w-full bg-slate-900/80 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-cyan-400 transition" placeholder="Enter username">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-mono text-slate-400 mb-1.5">Password (admin123)</label>
+          <div class="relative">
+            <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
+            <input type="password" id="auth-pass" class="w-full bg-slate-900/80 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-cyan-400 transition" placeholder="Enter password">
+          </div>
+        </div>
+        <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] text-[#080C14] font-bold text-sm hover:shadow-[0_0_15px_rgba(0,242,254,0.4)] transition mt-2">
+          Authenticate <i class="fas fa-arrow-right ml-1"></i>
+        </button>
+      </form>
+      <div class="mt-6 text-center text-xs text-slate-500 font-mono">
+        <i class="fas fa-database text-emerald-400 mr-1"></i> Connected to Local IndexedDB Database
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TOAST NOTIFICATION SYSTEM (ERROR HANDLING) ================= -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-[150] flex flex-col gap-3"></div>
+
+  <!-- ================= MAIN DASHBOARD UI ================= -->
+  <div id="app-dashboard" class="max-w-7xl mx-auto px-4 py-8 hidden opacity-0 transition-opacity duration-500">
     
     <!-- Header -->
     <header class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 glass-card p-4 rounded-xl">
@@ -76,14 +128,18 @@
           </div>
         </div>
         <div>
-          <h1 class="text-xl font-bold text-white tracking-wide">IT HELP DESK SYSTEM <span class="text-xs font-mono text-[#00F2FE]">v1.0</span></h1>
+          <h1 class="text-xl font-bold text-white tracking-wide">IT HELP DESK SYSTEM <span class="text-xs font-mono text-[#00F2FE]">v2.0</span></h1>
           <div class="flex items-center gap-2 mt-1">
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="text-xs font-mono text-emerald-400" id="db-status">System Online (Local Mode)</span>
+            <span class="text-xs font-mono text-emerald-400" id="db-status">System Online (Authenticated)</span>
           </div>
         </div>
       </div>
-      <div>
+      <div class="flex items-center gap-3">
+        <span class="text-sm text-slate-300 mr-2"><i class="fas fa-user-circle text-cyan-400 mr-1"></i> Admin</span>
+        <button onclick="logout()" class="px-4 py-2 rounded-lg border border-rose-500/30 text-rose-400 hover:bg-rose-500/10 transition text-sm font-mono flex items-center gap-2">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
         <a href="../../index.html" class="px-4 py-2 rounded-lg border border-white/10 hover:border-[#00F2FE] text-slate-300 hover:text-white transition text-sm font-mono flex items-center gap-2">
           <i class="fas fa-arrow-left"></i> Portfolio
         </a>
@@ -122,14 +178,14 @@
       </div>
     </div>
 
-    <!-- Controls -->
+    <!-- ================= SEARCH SYSTEM ================= -->
     <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
       <div class="flex-1 w-full flex items-center gap-3">
         <div class="relative w-full md:w-96">
           <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
-          <input type="text" id="search-input" placeholder="Search by Ticket ID, Name, or Device..." class="w-full bg-slate-900/80 border border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-[#00F2FE] transition">
+          <input type="text" id="search-input" placeholder="Search Database (ID, Name, Device)..." class="w-full bg-slate-900/80 border border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-[#00F2FE] transition shadow-inner">
         </div>
-        <select id="status-filter" class="bg-slate-900/80 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-slate-300 focus:outline-none focus:border-[#00F2FE] transition">
+        <select id="status-filter" class="bg-slate-900/80 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-slate-300 focus:outline-none focus:border-[#00F2FE] transition shadow-inner">
           <option value="All">All Statuses</option>
           <option value="Open">Open</option>
           <option value="In Progress">In Progress</option>
@@ -138,7 +194,7 @@
         </select>
       </div>
       <button onclick="openCreateModal()" class="w-full md:w-auto px-6 py-2.5 rounded-lg bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] text-[#080C14] font-bold text-sm hover:shadow-[0_0_15px_rgba(0,242,254,0.4)] transition flex items-center justify-center gap-2">
-        <i class="fas fa-plus"></i> New Ticket
+        <i class="fas fa-plus"></i> Create Ticket
       </button>
     </div>
 
@@ -149,25 +205,26 @@
 
   </div>
 
-  <!-- MODALS -->
-  <!-- Create Modal -->
-  <div id="create-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex justify-center items-start pt-10 pb-10 overflow-y-auto px-4">
-    <div class="glass-card w-full max-w-lg rounded-2xl border border-cyan-500/30 overflow-hidden">
-      <!-- Modal Header -->
+  <!-- ================= MODALS (CRUD) ================= -->
+  
+  <!-- CREATE Modal -->
+  <div id="create-modal" class="fixed inset-0 z-[110] bg-black/80 backdrop-blur-sm hidden flex justify-center items-start pt-10 pb-10 overflow-y-auto px-4">
+    <div class="glass-card w-full max-w-lg rounded-2xl border border-cyan-500/30 overflow-hidden shadow-2xl">
       <div class="p-5 border-b border-white/10 flex justify-between items-center bg-slate-900">
-        <h3 class="text-lg font-bold text-white"><i class="fas fa-plus-circle text-cyan-400 mr-2"></i> Create New Ticket</h3>
-        <button onclick="closeCreateModal()" class="text-slate-400 hover:text-white"><i class="fas fa-times"></i></button>
+        <h3 class="text-lg font-bold text-white"><i class="fas fa-plus-circle text-cyan-400 mr-2"></i> Create Database Entry</h3>
+        <button type="button" onclick="closeCreateModal()" class="text-slate-400 hover:text-white"><i class="fas fa-times"></i></button>
       </div>
-      <!-- Modal Body -->
-      <form id="create-form" class="p-6 space-y-4">
+      
+      <!-- CREATE form with Validation fields -->
+      <form id="create-form" class="p-6 space-y-4" novalidate>
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-mono text-slate-400 mb-1">Reporter Name *</label>
-            <input type="text" id="c-name" required class="w-full bg-slate-900 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+            <label class="block text-xs font-mono text-slate-400 mb-1">Reporter Name <span class="text-rose-400">*</span></label>
+            <input type="text" id="c-name" class="w-full bg-slate-900 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none transition">
           </div>
           <div>
-            <label class="block text-xs font-mono text-slate-400 mb-1">Email Address *</label>
-            <input type="email" id="c-email" required class="w-full bg-slate-900 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+            <label class="block text-xs font-mono text-slate-400 mb-1">Email Address <span class="text-rose-400">*</span></label>
+            <input type="email" id="c-email" class="w-full bg-slate-900 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none transition">
           </div>
         </div>
         <div class="grid grid-cols-2 gap-4">
@@ -179,7 +236,6 @@
               <option value="Server">Server</option>
               <option value="Mobile/Tablet">Mobile/Tablet</option>
               <option value="Software/App">Software/App</option>
-              <option value="Other">Other</option>
             </select>
           </div>
           <div>
@@ -203,29 +259,29 @@
           </select>
         </div>
         <div>
-          <label class="block text-xs font-mono text-slate-400 mb-1">Problem Description *</label>
-          <textarea id="c-desc" required rows="4" class="w-full bg-slate-900 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none resize-none"></textarea>
+          <label class="block text-xs font-mono text-slate-400 mb-1">Problem Description <span class="text-rose-400">*</span></label>
+          <textarea id="c-desc" rows="4" class="w-full bg-slate-900 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none resize-none transition"></textarea>
         </div>
         <div class="pt-4 flex justify-end gap-3 border-t border-white/10">
           <button type="button" onclick="closeCreateModal()" class="px-5 py-2 rounded-lg bg-slate-800 text-white text-sm font-medium hover:bg-slate-700 transition">Cancel</button>
-          <button type="submit" class="px-5 py-2 rounded-lg bg-cyan-500 text-[#080C14] text-sm font-bold hover:bg-cyan-400 transition">Submit Ticket</button>
+          <button type="submit" class="px-5 py-2 rounded-lg bg-cyan-500 text-[#080C14] text-sm font-bold hover:bg-cyan-400 transition shadow-[0_0_10px_rgba(0,242,254,0.3)]">Save to DB</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Edit/View Modal -->
-  <div id="edit-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex justify-center items-start pt-10 pb-10 overflow-y-auto px-4">
-    <div class="glass-card w-full max-w-lg rounded-2xl border border-amber-500/30 overflow-hidden">
-      <!-- Modal Header -->
+  <!-- UPDATE / DELETE Modal -->
+  <div id="edit-modal" class="fixed inset-0 z-[110] bg-black/80 backdrop-blur-sm hidden flex justify-center items-start pt-10 pb-10 overflow-y-auto px-4">
+    <div class="glass-card w-full max-w-lg rounded-2xl border border-amber-500/30 overflow-hidden shadow-2xl">
       <div class="p-5 border-b border-white/10 flex justify-between items-center bg-slate-900">
-        <h3 class="text-lg font-bold text-white"><i class="fas fa-edit text-amber-400 mr-2"></i> Update Ticket <span id="e-ticket-code" class="text-cyan-400 font-mono text-sm ml-2"></span></h3>
-        <button onclick="closeEditModal()" class="text-slate-400 hover:text-white"><i class="fas fa-times"></i></button>
+        <h3 class="text-lg font-bold text-white"><i class="fas fa-edit text-amber-400 mr-2"></i> Update Record <span id="e-ticket-code" class="text-cyan-400 font-mono text-sm ml-2"></span></h3>
+        <button type="button" onclick="closeEditModal()" class="text-slate-400 hover:text-white"><i class="fas fa-times"></i></button>
       </div>
-      <!-- Modal Body -->
+      
+      <!-- UPDATE form -->
       <form id="edit-form" class="p-6 space-y-4">
         <input type="hidden" id="e-id">
-        <div class="p-3 bg-slate-900 border border-white/5 rounded-lg text-sm text-slate-300 mb-4">
+        <div class="p-3 bg-slate-900 border border-white/5 rounded-lg text-sm text-slate-300 mb-4 shadow-inner">
           <div class="font-bold text-white mb-1" id="e-display-name"></div>
           <div class="text-xs text-slate-400" id="e-display-desc"></div>
         </div>
@@ -233,7 +289,7 @@
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="block text-xs font-mono text-slate-400 mb-1">Update Status</label>
-            <select id="e-status" class="w-full bg-slate-900 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:border-amber-400 focus:outline-none">
+            <select id="e-status" class="w-full bg-slate-900 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:border-amber-400 focus:outline-none transition">
               <option value="Open">Open</option>
               <option value="In Progress">In Progress</option>
               <option value="Resolved">Resolved</option>
@@ -242,7 +298,7 @@
           </div>
           <div>
             <label class="block text-xs font-mono text-slate-400 mb-1">Update Priority</label>
-            <select id="e-priority" class="w-full bg-slate-900 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:border-amber-400 focus:outline-none">
+            <select id="e-priority" class="w-full bg-slate-900 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:border-amber-400 focus:outline-none transition">
               <option value="Low">Low</option>
               <option value="Medium">Medium</option>
               <option value="High">High</option>
@@ -252,227 +308,229 @@
         </div>
         
         <div>
-          <label class="block text-xs font-mono text-slate-400 mb-1">Technician Notes / Diagnostics</label>
-          <textarea id="e-notes" rows="4" placeholder="Enter diagnostic logs or resolution notes..." class="w-full bg-slate-900 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:border-amber-400 focus:outline-none resize-none"></textarea>
+          <label class="block text-xs font-mono text-slate-400 mb-1">Technician Notes</label>
+          <textarea id="e-notes" rows="4" placeholder="Enter resolution notes..." class="w-full bg-slate-900 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:border-amber-400 focus:outline-none resize-none transition"></textarea>
         </div>
 
         <div class="pt-4 flex justify-between gap-3 border-t border-white/10 items-center">
-          <button type="button" onclick="deleteTicket()" class="px-4 py-2 rounded-lg border border-rose-500/50 text-rose-400 text-sm font-medium hover:bg-rose-500/10 transition"><i class="fas fa-trash"></i> Delete</button>
+          <!-- DELETE button -->
+          <button type="button" onclick="deleteTicket()" class="px-4 py-2 rounded-lg border border-rose-500/50 text-rose-400 text-sm font-medium hover:bg-rose-500/20 hover:text-rose-300 transition"><i class="fas fa-trash"></i> Delete Record</button>
           <div class="flex gap-2">
             <button type="button" onclick="closeEditModal()" class="px-5 py-2 rounded-lg bg-slate-800 text-white text-sm font-medium hover:bg-slate-700 transition">Cancel</button>
-            <button type="submit" class="px-5 py-2 rounded-lg bg-amber-500 text-[#080C14] text-sm font-bold hover:bg-amber-400 transition">Save Changes</button>
+            <button type="submit" class="px-5 py-2 rounded-lg bg-amber-500 text-[#080C14] text-sm font-bold hover:bg-amber-400 transition shadow-[0_0_10px_rgba(245,158,11,0.3)]">Update DB</button>
           </div>
         </div>
       </form>
     </div>
   </div>
 
+  <!-- ================= SCRIPTS ================= -->
   <script>
-    // Configuration & Fallback setup
-    const SUPABASE_URL = 'https://vfwkhyvecnryvdnclaow.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZmd2toeXZlY25yeXZkbmNsYW93Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEzOTE1MzUsImV4cCI6MjEwNjk2NzUzNX0.Ia9Tezt_jPUnI20Fs40m-deJMn5qQT2hABiOWwSdD6w';
-    const GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY';
-    
-    let supabaseClient = null;
-    let isLocalMode = true;
-
-    // Check if keys are provided to use Supabase
-    if (SUPABASE_URL !== 'https://YOUR_SUPABASE_PROJECT_URL.supabase.co') {
-      try {
-        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        isLocalMode = false;
-        document.getElementById('db-status').innerText = 'System Online (Supabase Connected)';
-      } catch (e) {
-        console.error('Supabase initialization failed, falling back to local.', e);
+    // --- Error Handling & Toast Notifications ---
+    function showToast(message, type = 'error') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      
+      let icon = 'fa-exclamation-circle text-rose-500';
+      let border = 'border-rose-500/50';
+      
+      if(type === 'success') {
+        icon = 'fa-check-circle text-emerald-500';
+        border = 'border-emerald-500/50';
+      } else if (type === 'warning') {
+        icon = 'fa-exclamation-triangle text-amber-500';
+        border = 'border-amber-500/50';
       }
+
+      toast.className = `toast-enter glass-card bg-slate-900/90 border-l-4 ${border} p-4 rounded shadow-2xl flex items-center gap-3 min-w-[250px]`;
+      toast.innerHTML = `<i class="fas ${icon} text-lg"></i> <span class="text-sm font-medium text-white">${message}</span>`;
+      
+      container.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.classList.remove('toast-enter');
+        toast.classList.add('toast-exit');
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
     }
 
-    // Local Fallback Data
+    // --- Authentication ---
+    const authScreen = document.getElementById('auth-screen');
+    const appDashboard = document.getElementById('app-dashboard');
+    const loginForm = document.getElementById('login-form');
+
+    // Check auth status
+    if (localStorage.getItem('hd_auth') === 'true') {
+      authScreen.classList.add('hidden');
+      appDashboard.classList.remove('hidden');
+      setTimeout(() => appDashboard.classList.remove('opacity-0'), 50);
+    }
+
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const user = document.getElementById('auth-user').value;
+      const pass = document.getElementById('auth-pass').value;
+
+      // Validation & Error Handling
+      if (!user || !pass) {
+        showToast('Credentials cannot be empty', 'error');
+        return;
+      }
+      
+      if (user === 'admin' && pass === 'admin123') {
+        localStorage.setItem('hd_auth', 'true');
+        showToast('Authentication Successful', 'success');
+        authScreen.classList.add('opacity-0');
+        setTimeout(() => {
+          authScreen.classList.add('hidden');
+          appDashboard.classList.remove('hidden');
+          setTimeout(() => appDashboard.classList.remove('opacity-0'), 50);
+          fetchTickets();
+        }, 500);
+      } else {
+        showToast('Invalid Access Credentials', 'error');
+      }
+    });
+
+    function logout() {
+      localStorage.removeItem('hd_auth');
+      appDashboard.classList.add('opacity-0');
+      setTimeout(() => {
+        appDashboard.classList.add('hidden');
+        authScreen.classList.remove('hidden');
+        setTimeout(() => authScreen.classList.remove('opacity-0'), 50);
+      }, 500);
+    }
+
+    // --- Database Simulation (LocalStorage CRUD) ---
+    const DB_KEY = 'helpdesk_tickets_db';
+    
     const defaultTickets = [
       {
-        id: '1',
-        code: 'TICK-1001',
-        reporter_name: 'Jane Doe',
-        reporter_email: 'jane@example.com',
-        device_type: 'Laptop/PC',
-        category: 'Hardware Failure',
-        priority: 'High',
-        status: 'Open',
+        id: '1', code: 'TICK-1001', reporter_name: 'Jane Doe', reporter_email: 'jane@example.com',
+        device_type: 'Laptop/PC', category: 'Hardware Failure', priority: 'High', status: 'Open',
         description: 'My laptop screen is flickering constantly after the recent update.',
-        notes: '',
-        created_at: new Date(Date.now() - 86400000).toISOString()
+        notes: '', created_at: new Date(Date.now() - 86400000).toISOString()
       },
       {
-        id: '2',
-        code: 'TICK-1002',
-        reporter_name: 'John Smith',
-        reporter_email: 'john@example.com',
-        device_type: 'Network/Router',
-        category: 'Network Connectivity',
-        priority: 'Critical',
-        status: 'In Progress',
+        id: '2', code: 'TICK-1002', reporter_name: 'John Smith', reporter_email: 'john@example.com',
+        device_type: 'Network/Router', category: 'Network Connectivity', priority: 'Critical', status: 'In Progress',
         description: 'Cannot connect to the office VPN from the 3rd floor Wi-Fi.',
-        notes: 'Checked AP configuration. Waiting for switch restart.',
-        created_at: new Date(Date.now() - 3600000).toISOString()
+        notes: 'Checked AP configuration. Waiting for switch restart.', created_at: new Date(Date.now() - 3600000).toISOString()
       }
     ];
 
-    let localTickets = [];
-    try {
-      const stored = localStorage.getItem('helpdesk_tickets');
-      localTickets = stored ? JSON.parse(stored) : defaultTickets;
-    } catch(e) {
-      localTickets = defaultTickets;
-    }
-
-    function saveLocalTickets() {
-      if (isLocalMode) {
-        localStorage.setItem('helpdesk_tickets', JSON.stringify(localTickets));
-      }
-    }
-
     let currentTickets = [];
 
-    // --- AI Integration ---
-    async function generateAIResponse(description, device, category) {
-      if (!GEMINI_API_KEY || GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY') {
-        return `[Automated AI Response - Mock Mode]\nBased on the reported issue with the ${device} (${category}), we recommend performing a standard power cycle and checking all physical connections. If the issue persists, our support technician will reach out shortly for advanced diagnostics.`;
-      }
-      
+    // READ Operations
+    function fetchTickets() {
       try {
-        const prompt = `As an IT Help Desk AI, provide a short, professional troubleshooting response for the following customer issue:\nDevice: ${device}\nCategory: ${category}\nDescription: ${description}`;
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }]
-          })
-        });
-        const data = await response.json();
-        return `[AI Auto-Generated Solution]\n${data.candidates[0].content.parts[0].text}`;
-      } catch (err) {
-        console.error('Gemini API Error:', err);
-        return '[Automated AI Response]\nError generating AI solution. A technician will review this ticket.';
-      }
-    }
-
-    // --- Core Data Fetching ---
-    async function fetchTickets() {
-      if (isLocalMode) {
-        currentTickets = [...localTickets].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-      } else {
-        const { data, error } = await supabaseClient.from('tickets').select('*').order('created_at', { ascending: false });
-        if (error) {
-          console.error('Error fetching tickets', error);
-          alert('Failed to fetch from Supabase. Falling back to local data.');
-          isLocalMode = true;
-          document.getElementById('db-status').innerText = 'System Online (Local Mode)';
-          currentTickets = [...localTickets];
-        } else {
-          currentTickets = data || [];
-        }
+        const stored = localStorage.getItem(DB_KEY);
+        currentTickets = stored ? JSON.parse(stored) : defaultTickets;
+        // Ensure default data persists if empty
+        if (!stored) saveDB(); 
+        currentTickets.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      } catch(e) {
+        showToast('Database Read Error', 'error');
+        currentTickets = defaultTickets;
       }
       renderUI();
     }
 
-    // --- Create Ticket ---
-    async function createTicket(e) {
+    function saveDB() {
+      try {
+        localStorage.setItem(DB_KEY, JSON.stringify(currentTickets));
+      } catch(e) {
+        showToast('Database Write Error: Storage Quota Exceeded', 'error');
+      }
+    }
+
+    // CREATE Operation + Validation
+    document.getElementById('create-form').addEventListener('submit', (e) => {
       e.preventDefault();
       
-      const submitBtn = document.querySelector('#create-form button[type="submit"]');
-      const originalText = submitBtn.innerText;
-      submitBtn.innerText = 'Generating AI Response...';
-      submitBtn.disabled = true;
+      const name = document.getElementById('c-name').value.trim();
+      const email = document.getElementById('c-email').value.trim();
+      const desc = document.getElementById('c-desc').value.trim();
 
-      const device_type = document.getElementById('c-device').value;
-      const category = document.getElementById('c-category').value;
-      const description = document.getElementById('c-desc').value;
-      
-      const aiNotes = await generateAIResponse(description, device_type, category);
+      // Form Validation with Error Handling
+      if (name.length < 2) {
+        showToast('Reporter name must be at least 2 characters', 'error');
+        return;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showToast('Invalid email address format', 'error');
+        return;
+      }
+      if (desc.length < 10) {
+        showToast('Description must be at least 10 characters', 'error');
+        return;
+      }
 
       const newTicket = {
+        id: Date.now().toString(),
         code: 'TICK-' + Math.floor(1000 + Math.random() * 9000),
-        reporter_name: document.getElementById('c-name').value,
-        reporter_email: document.getElementById('c-email').value,
-        device_type: device_type,
-        category: category,
+        reporter_name: name,
+        reporter_email: email,
+        device_type: document.getElementById('c-device').value,
+        category: document.getElementById('c-category').value,
         priority: document.getElementById('c-priority').value,
         status: 'Open',
-        description: description,
-        notes: aiNotes,
+        description: desc,
+        notes: 'System auto-assigned to technician pool.',
         created_at: new Date().toISOString()
       };
 
-      if (isLocalMode) {
-        newTicket.id = Date.now().toString();
-        localTickets.unshift(newTicket);
-        saveLocalTickets();
-      } else {
-        const { data, error } = await supabaseClient.from('tickets').insert([newTicket]).select();
-        if (error) {
-          console.error(error);
-          alert('Error creating ticket in DB.');
-          submitBtn.innerText = originalText;
-          submitBtn.disabled = false;
-          return;
-        }
-      }
+      currentTickets.unshift(newTicket);
+      saveDB();
       
-      submitBtn.innerText = originalText;
-      submitBtn.disabled = false;
+      showToast('Database Entry Created Successfully', 'success');
       closeCreateModal();
-      fetchTickets();
-    }
+      renderUI();
+    });
 
-    // --- Update Ticket ---
-    async function updateTicket(e) {
+    // UPDATE Operation
+    document.getElementById('edit-form').addEventListener('submit', (e) => {
       e.preventDefault();
       const id = document.getElementById('e-id').value;
-      const status = document.getElementById('e-status').value;
-      const priority = document.getElementById('e-priority').value;
-      const notes = document.getElementById('e-notes').value;
-
-      if (isLocalMode) {
-        const idx = localTickets.findIndex(t => t.id === id);
-        if (idx !== -1) {
-          localTickets[idx].status = status;
-          localTickets[idx].priority = priority;
-          localTickets[idx].notes = notes;
-          saveLocalTickets();
-        }
+      const idx = currentTickets.findIndex(t => t.id === id);
+      
+      if (idx !== -1) {
+        currentTickets[idx].status = document.getElementById('e-status').value;
+        currentTickets[idx].priority = document.getElementById('e-priority').value;
+        currentTickets[idx].notes = document.getElementById('e-notes').value.trim();
+        saveDB();
+        showToast('Database Record Updated', 'success');
       } else {
-        const { error } = await supabaseClient.from('tickets').update({ status, priority, notes }).eq('id', id);
-        if (error) {
-          console.error(error);
-          alert('Error updating ticket.');
-          return;
-        }
+        showToast('Record not found in Database', 'error');
       }
       
       closeEditModal();
-      fetchTickets();
-    }
+      renderUI();
+    });
 
-    // --- Delete Ticket ---
-    async function deleteTicket() {
+    // DELETE Operation
+    function deleteTicket() {
       const id = document.getElementById('e-id').value;
-      if (!confirm("Are you sure you want to delete this ticket permanently?")) return;
+      if (!confirm("CRITICAL WARNING: This will permanently delete the record from the database. Proceed?")) return;
 
-      if (isLocalMode) {
-        localTickets = localTickets.filter(t => t.id !== id);
-        saveLocalTickets();
+      const initialLength = currentTickets.length;
+      currentTickets = currentTickets.filter(t => t.id !== id);
+      
+      if (currentTickets.length < initialLength) {
+        saveDB();
+        showToast('Record Deleted Permanently', 'warning');
       } else {
-        const { error } = await supabaseClient.from('tickets').delete().eq('id', id);
-        if (error) {
-          console.error(error);
-          alert('Error deleting ticket.');
-          return;
-        }
+        showToast('Delete Failed: Record not found', 'error');
       }
       
       closeEditModal();
-      fetchTickets();
+      renderUI();
     }
+
+    // --- Search & Filter ---
+    document.getElementById('search-input').addEventListener('input', renderTicketsList);
+    document.getElementById('status-filter').addEventListener('change', renderTicketsList);
 
     // --- UI Renderers ---
     function renderUI() {
@@ -481,48 +539,10 @@
     }
 
     function renderMetrics() {
-      const total = currentTickets.length;
-      const open = currentTickets.filter(t => t.status === 'Open').length;
-      const inProg = currentTickets.filter(t => t.status === 'In Progress').length;
-      const resolved = currentTickets.filter(t => t.status === 'Resolved' || t.status === 'Closed').length;
-
-      document.getElementById('metric-total').innerText = total;
-      document.getElementById('metric-open').innerText = open;
-      document.getElementById('metric-progress').innerText = inProg;
-      document.getElementById('metric-resolved').innerText = resolved;
-    }
-
-    function getStatusColor(status) {
-      switch(status) {
-        case 'Open': return 'text-cyan-400 bg-cyan-400/10 border-cyan-400/30';
-        case 'In Progress': return 'text-amber-400 bg-amber-400/10 border-amber-400/30';
-        case 'Resolved': return 'text-emerald-400 bg-emerald-400/10 border-emerald-400/30';
-        case 'Closed': return 'text-slate-400 bg-slate-500/10 border-slate-500/30';
-        default: return 'text-white bg-white/10 border-white/30';
-      }
-    }
-
-    function getPriorityIcon(priority) {
-      switch(priority) {
-        case 'Critical': return '<i class="fas fa-exclamation-triangle text-rose-500"></i>';
-        case 'High': return '<i class="fas fa-arrow-up text-orange-500"></i>';
-        case 'Medium': return '<i class="fas fa-equals text-blue-400"></i>';
-        case 'Low': return '<i class="fas fa-arrow-down text-slate-400"></i>';
-        default: return '';
-      }
-    }
-
-    function getDeviceIcon(device) {
-      if (device.includes('Laptop')) return 'fa-laptop';
-      if (device.includes('Network')) return 'fa-network-wired';
-      if (device.includes('Server')) return 'fa-server';
-      if (device.includes('Mobile')) return 'fa-mobile-screen';
-      return 'fa-desktop';
-    }
-
-    function formatDate(dateString) {
-      const options = { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' };
-      return new Date(dateString).toLocaleDateString(undefined, options);
+      document.getElementById('metric-total').innerText = currentTickets.length;
+      document.getElementById('metric-open').innerText = currentTickets.filter(t => t.status === 'Open').length;
+      document.getElementById('metric-progress').innerText = currentTickets.filter(t => t.status === 'In Progress').length;
+      document.getElementById('metric-resolved').innerText = currentTickets.filter(t => t.status === 'Resolved' || t.status === 'Closed').length;
     }
 
     function renderTicketsList() {
@@ -530,7 +550,8 @@
       const searchTerm = document.getElementById('search-input').value.toLowerCase();
       const statusFilter = document.getElementById('status-filter').value;
 
-      let filtered = currentTickets.filter(t => {
+      // SEARCH Implementation
+      const filtered = currentTickets.filter(t => {
         const matchSearch = t.code.toLowerCase().includes(searchTerm) || 
                             t.reporter_name.toLowerCase().includes(searchTerm) || 
                             t.device_type.toLowerCase().includes(searchTerm);
@@ -540,31 +561,34 @@
 
       if (filtered.length === 0) {
         container.innerHTML = `
-          <div class="col-span-full glass-card p-10 text-center rounded-xl flex flex-col items-center justify-center">
-            <i class="fas fa-inbox text-4xl text-slate-500 mb-3"></i>
-            <p class="text-slate-400">No tickets found matching your criteria.</p>
-          </div>
-        `;
+          <div class="col-span-full glass-card p-10 text-center rounded-xl flex flex-col items-center justify-center border border-rose-500/20">
+            <i class="fas fa-search text-4xl text-rose-500/50 mb-3"></i>
+            <p class="text-rose-400">No records found in database matching search criteria.</p>
+          </div>`;
         return;
       }
 
+      const getStatusColor = (s) => s==='Open'?'text-cyan-400 bg-cyan-400/10 border-cyan-400/30' : s==='In Progress'?'text-amber-400 bg-amber-400/10 border-amber-400/30' : s==='Resolved'?'text-emerald-400 bg-emerald-400/10 border-emerald-400/30' : 'text-slate-400 bg-slate-500/10 border-slate-500/30';
+      const getPriorityIcon = (p) => p==='Critical'?'<i class="fas fa-exclamation-triangle text-rose-500"></i>':p==='High'?'<i class="fas fa-arrow-up text-orange-500"></i>':p==='Medium'?'<i class="fas fa-equals text-blue-400"></i>':'<i class="fas fa-arrow-down text-slate-400"></i>';
+      const getDeviceIcon = (d) => d.includes('Laptop')?'fa-laptop':d.includes('Network')?'fa-network-wired':d.includes('Server')?'fa-server':d.includes('Mobile')?'fa-mobile-screen':'fa-desktop';
+      const formatDate = (d) => new Date(d).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
+
       container.innerHTML = filtered.map(t => `
-        <div class="glass-card rounded-xl p-5 border-t-2 ${t.status === 'Open' ? 'border-t-cyan-500' : t.status === 'In Progress' ? 'border-t-amber-500' : t.status === 'Resolved' ? 'border-t-emerald-500' : 'border-t-slate-500'} flex flex-col justify-between cursor-pointer" onclick="openEditModal('${t.id}')">
+        <div class="glass-card rounded-xl p-5 border-t-2 ${t.status === 'Open' ? 'border-t-cyan-500' : t.status === 'In Progress' ? 'border-t-amber-500' : t.status === 'Resolved' ? 'border-t-emerald-500' : 'border-t-slate-500'} flex flex-col justify-between cursor-pointer hover:-translate-y-1 transition-transform" onclick="openEditModal('${t.id}')">
           <div>
             <div class="flex justify-between items-start mb-3">
-              <span class="font-mono text-xs font-bold text-[#00F2FE] bg-[#00F2FE]/10 px-2 py-1 rounded">${t.code}</span>
+              <span class="font-mono text-xs font-bold text-[#00F2FE] bg-[#00F2FE]/10 px-2 py-1 rounded border border-[#00F2FE]/20">${t.code}</span>
               <span class="text-xs px-2 py-1 rounded-full border ${getStatusColor(t.status)}">${t.status}</span>
             </div>
             <h4 class="text-white font-semibold mb-1 line-clamp-1">${t.category}</h4>
             <p class="text-xs text-slate-400 line-clamp-2 mb-4 h-8 overflow-hidden">${t.description}</p>
           </div>
-          
           <div class="border-t border-white/10 pt-3 flex justify-between items-center text-xs text-slate-400">
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 truncate max-w-[50%]">
               <i class="fas ${getDeviceIcon(t.device_type)}"></i>
-              <span class="truncate max-w-[100px]">${t.reporter_name}</span>
+              <span class="truncate">${t.reporter_name}</span>
             </div>
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2 whitespace-nowrap">
               ${getPriorityIcon(t.priority)}
               <span>${formatDate(t.created_at)}</span>
             </div>
@@ -574,41 +598,25 @@
     }
 
     // --- Modal Logic ---
-    function openCreateModal() {
-      document.getElementById('create-form').reset();
-      document.getElementById('create-modal').classList.remove('hidden');
-    }
-    function closeCreateModal() {
-      document.getElementById('create-modal').classList.add('hidden');
-    }
-
+    function openCreateModal() { document.getElementById('create-form').reset(); document.getElementById('create-modal').classList.remove('hidden'); }
+    function closeCreateModal() { document.getElementById('create-modal').classList.add('hidden'); }
     function openEditModal(id) {
       const t = currentTickets.find(ticket => ticket.id === id);
-      if (!t) return;
+      if (!t) return showToast('Error reading database record', 'error');
       
       document.getElementById('e-id').value = t.id;
       document.getElementById('e-ticket-code').innerText = t.code;
       document.getElementById('e-display-name').innerText = t.reporter_name + ' - ' + t.category;
       document.getElementById('e-display-desc').innerText = t.description;
-      
       document.getElementById('e-status').value = t.status;
       document.getElementById('e-priority').value = t.priority;
       document.getElementById('e-notes').value = t.notes || '';
-      
       document.getElementById('edit-modal').classList.remove('hidden');
     }
-    function closeEditModal() {
-      document.getElementById('edit-modal').classList.add('hidden');
-    }
+    function closeEditModal() { document.getElementById('edit-modal').classList.add('hidden'); }
 
-    // Event Listeners
-    document.getElementById('create-form').addEventListener('submit', createTicket);
-    document.getElementById('edit-form').addEventListener('submit', updateTicket);
-    document.getElementById('search-input').addEventListener('input', renderTicketsList);
-    document.getElementById('status-filter').addEventListener('change', renderTicketsList);
-
-    // Init
-    fetchTickets();
+    // Init if already authenticated
+    if (localStorage.getItem('hd_auth') === 'true') { fetchTickets(); }
   </script>
 </body>
 </html>

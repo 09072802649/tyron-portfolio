@@ -418,7 +418,12 @@
     // --- Supabase DB Initialization & Logic ---
     const _supabaseUrl = 'https://vfwkhyvecnryvdnclaow.supabase.co';
     const _supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZmd2toeXZlY25yeXZkbmNsYW93Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEzOTE1MzUsImV4cCI6MjEwNjk2NzUzNX0.Ia9Tezt_jPUnI20Fs40m-deJMn5qQT2hABiOWwSdD6w';
-    const supabase = window.supabase.createClient(_supabaseUrl, _supabaseKey);
+    let db = null;
+    try {
+      db = window.supabase.createClient(_supabaseUrl, _supabaseKey);
+    } catch(e) {
+      console.error('Supabase SDK failed to initialize:', e);
+    }
     let isConnectedToSupabase = false;
 
     let currentTickets = [];
@@ -426,7 +431,8 @@
     // READ Operations
     async function fetchTickets() {
       try {
-        const { data, error } = await supabase.from('tickets').select('*').order('created_at', { ascending: false });
+        if (!db) throw new Error('Supabase client not initialized');
+        const { data, error } = await db.from('tickets').select('*').order('created_at', { ascending: false });
         if (error) throw error;
         
         currentTickets = data || [];
@@ -481,8 +487,8 @@
       };
 
       try {
-        if (isConnectedToSupabase) {
-          const { data, error } = await supabase.from('tickets').insert([newTicket]).select();
+        if (isConnectedToSupabase && db) {
+          const { data, error } = await db.from('tickets').insert([newTicket]).select();
           if (error) throw error;
           currentTickets.unshift(data[0]);
         } else {
@@ -513,8 +519,8 @@
       const notes = document.getElementById('e-notes').value.trim();
       
       try {
-        if (isConnectedToSupabase) {
-          const { data, error } = await supabase.from('tickets').update({ status, priority, notes }).eq('id', id).select();
+        if (isConnectedToSupabase && db) {
+          const { data, error } = await db.from('tickets').update({ status, priority, notes }).eq('id', id).select();
           if (error) throw error;
           const idx = currentTickets.findIndex(t => t.id === id);
           if (idx !== -1 && data.length > 0) currentTickets[idx] = data[0];
@@ -546,8 +552,8 @@
       setBtnLoading('btn-del', true, '<i class="fas fa-trash"></i> Delete Record');
 
       try {
-        if (isConnectedToSupabase) {
-          const { error } = await supabase.from('tickets').delete().eq('id', id);
+        if (isConnectedToSupabase && db) {
+          const { error } = await db.from('tickets').delete().eq('id', id);
           if (error) throw error;
         }
 

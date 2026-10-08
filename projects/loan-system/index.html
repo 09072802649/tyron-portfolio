@@ -297,14 +297,19 @@
         const SUPABASE_URL = localStorage.getItem('supabase_url') || 'YOUR_SUPABASE_URL';
         const SUPABASE_KEY = localStorage.getItem('supabase_anon_key') || 'YOUR_SUPABASE_ANON_KEY';
         
-        let supabase = null;
+        let supabaseClient = null;
         let currentUser = null;
         let currentProfile = null;
         let isLoginMode = true;
 
+        // Mock state
+        let mockLoans = [
+            { id: 'LN-98421', principal: 15000, status: 'Ongoing', balance: 12500 }
+        ];
+
         try {
-            if (SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
-                supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            if (SUPABASE_URL !== 'YOUR_SUPABASE_URL' && window.supabase) {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             }
         } catch (e) {
             console.warn('Supabase not initialized properly.', e);
@@ -357,23 +362,24 @@
             btn.disabled = true;
 
             try {
-                if (!supabase) {
+                if (!supabaseClient) {
                     // MOCK LOGIN FOR PORTFOLIO PREVIEW
                     setTimeout(() => {
-                        mockLoginFlow();
+                        mockLoginFlow(email);
                     }, 800);
                     return;
                 }
 
                 if (isLoginMode) {
-                    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+                    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
                     if (error) throw error;
-                    await checkSession();
+                    // Mocking checkSession
+                    mockLoginFlow(email);
                 } else {
                     const name = document.getElementById('auth-name').value;
                     const role = document.getElementById('auth-role').value;
                     
-                    const { data, error } = await supabase.auth.signUp({
+                    const { data, error } = await supabaseClient.auth.signUp({
                         email, password,
                         options: { data: { full_name: name, role: role } }
                     });
@@ -389,10 +395,15 @@
             }
         }
 
-        async function mockLoginFlow() {
-            // Mocking for portfolio display
-            currentUser = { email: document.getElementById('auth-email').value };
-            currentProfile = { role: isLoginMode ? 'borrower' : document.getElementById('auth-role').value, fullname: 'Demo User' };
+        function mockLoginFlow(email) {
+            currentUser = { email: email };
+            
+            let autoRole = isLoginMode ? 'borrower' : document.getElementById('auth-role').value;
+            // Magic emails for testing roles
+            if (email.includes('admin')) autoRole = 'admin';
+            if (email.includes('collector')) autoRole = 'collector';
+
+            currentProfile = { role: autoRole, fullname: email.split('@')[0] };
             updateNavUI();
             routeToDashboard();
         }
@@ -414,7 +425,7 @@
         }
 
         async function signOut() {
-            if (supabase) await supabase.auth.signOut();
+            if (supabaseClient) await supabaseClient.auth.signOut();
             currentUser = null;
             currentProfile = null;
             updateNavUI();
@@ -439,7 +450,6 @@
 
         // --- Data Loading & Mocking ---
         function loadAdminData() {
-            // Mock data population
             document.getElementById('admin-stat-loans').innerText = '124';
             document.getElementById('admin-stat-requests').innerText = '8';
             document.getElementById('admin-stat-disbursed').innerText = '₱1,245,000.00';
@@ -461,24 +471,41 @@
 
         function loadBorrowerData() {
             document.getElementById('borrower-welcome').innerText = `Welcome back, ${currentProfile?.fullname || 'User'}.`;
-            document.getElementById('borrower-balance').innerText = '₱12,500.00';
-            document.getElementById('borrower-next-amount').innerText = '₱1,250.00';
+            
+            let totalBalance = mockLoans.reduce((sum, l) => sum + l.balance, 0);
+            document.getElementById('borrower-balance').innerText = `₱${totalBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            document.getElementById('borrower-next-amount').innerText = `₱${(totalBalance * 0.1).toLocaleString('en-US', {minimumFractionDigits: 2})}`;
             document.getElementById('borrower-next-date').innerText = 'Oct 15, 2026';
             
             const tbody = document.getElementById('borrower-loans-list');
-            tbody.innerHTML = `
+            if (mockLoans.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-slate-500">No loan records found.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = mockLoans.map(loan => `
                 <tr class="hover:bg-slate-50 transition">
-                    <td class="px-6 py-4 font-mono text-brand-600 font-medium">LN-98421</td>
-                    <td class="px-6 py-4 font-mono">₱15,000.00</td>
-                    <td class="px-6 py-4"><span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wide">Ongoing</span></td>
-                    <td class="px-6 py-4 font-mono text-right font-medium">₱12,500.00</td>
+                    <td class="px-6 py-4 font-mono text-brand-600 font-medium">${loan.id}</td>
+                    <td class="px-6 py-4 font-mono">₱${loan.principal.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                    <td class="px-6 py-4"><span class="${loan.status === 'Ongoing' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'} px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wide">${loan.status}</span></td>
+                    <td class="px-6 py-4 font-mono text-right font-medium">₱${loan.balance.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
                 </tr>
-            `;
+            `).join('');
         }
 
         function submitLoanRequest(e) {
             e.preventDefault();
-            alert('Loan request submitted successfully! (Mocked for portfolio)');
+            const amount = parseFloat(document.getElementById('req-amount').value);
+            const id = 'LN-' + Math.floor(10000 + Math.random() * 90000);
+            
+            mockLoans.unshift({
+                id: id,
+                principal: amount,
+                status: 'Pending',
+                balance: amount
+            });
+
+            loadBorrowerData();
             closeModal('loan-request-modal');
         }
 

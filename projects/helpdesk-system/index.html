@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IT HELP DESK SYSTEM v2.0 - Authenticated</title>
+  <title>IT HELP DESK SYSTEM v2.5 - Admin + Supabase</title>
   
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -31,6 +31,9 @@
     }
   </script>
   
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     body {
       background-color: #080C14;
@@ -85,7 +88,7 @@
           </div>
         </div>
         <h2 class="text-2xl font-bold text-white tracking-wide">SYSTEM ACCESS</h2>
-        <p class="text-sm text-slate-400 mt-1">Authentication Required</p>
+        <p class="text-sm text-slate-400 mt-1">Admin Authentication Required</p>
       </div>
 
       <form id="login-form" class="space-y-5">
@@ -107,9 +110,6 @@
           Authenticate <i class="fas fa-arrow-right ml-1"></i>
         </button>
       </form>
-      <div class="mt-6 text-center text-xs text-slate-500 font-mono">
-        <i class="fas fa-database text-emerald-400 mr-1"></i> Connected to Local IndexedDB Database
-      </div>
     </div>
   </div>
 
@@ -128,10 +128,10 @@
           </div>
         </div>
         <div>
-          <h1 class="text-xl font-bold text-white tracking-wide">IT HELP DESK SYSTEM <span class="text-xs font-mono text-[#00F2FE]">v2.0</span></h1>
+          <h1 class="text-xl font-bold text-white tracking-wide">IT HELP DESK SYSTEM <span class="text-xs font-mono text-[#00F2FE]">v2.5</span></h1>
           <div class="flex items-center gap-2 mt-1">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="text-xs font-mono text-emerald-400" id="db-status">System Online (Authenticated)</span>
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" id="status-indicator"></span>
+            <span class="text-xs font-mono text-emerald-400" id="db-status">Connecting to Database...</span>
           </div>
         </div>
       </div>
@@ -264,7 +264,7 @@
         </div>
         <div class="pt-4 flex justify-end gap-3 border-t border-white/10">
           <button type="button" onclick="closeCreateModal()" class="px-5 py-2 rounded-lg bg-slate-800 text-white text-sm font-medium hover:bg-slate-700 transition">Cancel</button>
-          <button type="submit" class="px-5 py-2 rounded-lg bg-cyan-500 text-[#080C14] text-sm font-bold hover:bg-cyan-400 transition shadow-[0_0_10px_rgba(0,242,254,0.3)]">Save to DB</button>
+          <button type="submit" id="btn-submit-ticket" class="px-5 py-2 rounded-lg bg-cyan-500 text-[#080C14] text-sm font-bold hover:bg-cyan-400 transition shadow-[0_0_10px_rgba(0,242,254,0.3)]">Save to DB</button>
         </div>
       </form>
     </div>
@@ -314,10 +314,10 @@
 
         <div class="pt-4 flex justify-between gap-3 border-t border-white/10 items-center">
           <!-- DELETE button -->
-          <button type="button" onclick="deleteTicket()" class="px-4 py-2 rounded-lg border border-rose-500/50 text-rose-400 text-sm font-medium hover:bg-rose-500/20 hover:text-rose-300 transition"><i class="fas fa-trash"></i> Delete Record</button>
+          <button type="button" onclick="deleteTicket()" id="btn-del" class="px-4 py-2 rounded-lg border border-rose-500/50 text-rose-400 text-sm font-medium hover:bg-rose-500/20 hover:text-rose-300 transition"><i class="fas fa-trash"></i> Delete Record</button>
           <div class="flex gap-2">
             <button type="button" onclick="closeEditModal()" class="px-5 py-2 rounded-lg bg-slate-800 text-white text-sm font-medium hover:bg-slate-700 transition">Cancel</button>
-            <button type="submit" class="px-5 py-2 rounded-lg bg-amber-500 text-[#080C14] text-sm font-bold hover:bg-amber-400 transition shadow-[0_0_10px_rgba(245,158,11,0.3)]">Update DB</button>
+            <button type="submit" id="btn-update" class="px-5 py-2 rounded-lg bg-amber-500 text-[#080C14] text-sm font-bold hover:bg-amber-400 transition shadow-[0_0_10px_rgba(245,158,11,0.3)]">Update DB</button>
           </div>
         </div>
       </form>
@@ -352,6 +352,19 @@
         toast.classList.add('toast-exit');
         setTimeout(() => toast.remove(), 300);
       }, 3500);
+    }
+    
+    function setBtnLoading(btnId, isLoading, originalText) {
+      const btn = document.getElementById(btnId);
+      if(isLoading) {
+        btn.disabled = true;
+        btn.innerHTML = `Processing...`;
+        btn.classList.add('opacity-75');
+      } else {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+        btn.classList.remove('opacity-75');
+      }
     }
 
     // --- Authentication ---
@@ -402,51 +415,45 @@
       }, 500);
     }
 
-    // --- Database Simulation (LocalStorage CRUD) ---
-    const DB_KEY = 'helpdesk_tickets_db';
-    
-    const defaultTickets = [
-      {
-        id: '1', code: 'TICK-1001', reporter_name: 'Jane Doe', reporter_email: 'jane@example.com',
-        device_type: 'Laptop/PC', category: 'Hardware Failure', priority: 'High', status: 'Open',
-        description: 'My laptop screen is flickering constantly after the recent update.',
-        notes: '', created_at: new Date(Date.now() - 86400000).toISOString()
-      },
-      {
-        id: '2', code: 'TICK-1002', reporter_name: 'John Smith', reporter_email: 'john@example.com',
-        device_type: 'Network/Router', category: 'Network Connectivity', priority: 'Critical', status: 'In Progress',
-        description: 'Cannot connect to the office VPN from the 3rd floor Wi-Fi.',
-        notes: 'Checked AP configuration. Waiting for switch restart.', created_at: new Date(Date.now() - 3600000).toISOString()
-      }
-    ];
+    // --- Supabase DB Initialization & Logic ---
+    const _supabaseUrl = 'https://vfwkhyvecnryvdnclaow.supabase.co';
+    const _supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZmd2toeXZlY25yeXZkbmNsYW93Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEzOTE1MzUsImV4cCI6MjEwNjk2NzUzNX0.Ia9Tezt_jPUnI20Fs40m-deJMn5qQT2hABiOWwSdD6w';
+    const supabase = window.supabase.createClient(_supabaseUrl, _supabaseKey);
+    let isConnectedToSupabase = false;
 
     let currentTickets = [];
 
     // READ Operations
-    function fetchTickets() {
+    async function fetchTickets() {
       try {
-        const stored = localStorage.getItem(DB_KEY);
-        currentTickets = stored ? JSON.parse(stored) : defaultTickets;
-        // Ensure default data persists if empty
-        if (!stored) saveDB(); 
-        currentTickets.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-      } catch(e) {
-        showToast('Database Read Error', 'error');
-        currentTickets = defaultTickets;
+        const { data, error } = await supabase.from('tickets').select('*').order('created_at', { ascending: false });
+        if (error) throw error;
+        
+        currentTickets = data || [];
+        isConnectedToSupabase = true;
+        
+        // Update UI Indicator
+        document.getElementById('db-status').innerText = "System Online (Supabase Database)";
+        document.getElementById('db-status').className = "text-xs font-mono text-emerald-400";
+        document.getElementById('status-indicator').className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
+        
+      } catch(err) {
+        console.error("Supabase Error:", err);
+        showToast("Supabase Error: Using Local Storage Fallback", 'warning');
+        
+        // Update UI Indicator
+        document.getElementById('db-status').innerText = "System Online (Local Mode)";
+        document.getElementById('db-status').className = "text-xs font-mono text-amber-400";
+        document.getElementById('status-indicator').className = "w-2 h-2 rounded-full bg-amber-500";
+        
+        const stored = localStorage.getItem('helpdesk_backup_db');
+        currentTickets = stored ? JSON.parse(stored) : [];
       }
       renderUI();
     }
 
-    function saveDB() {
-      try {
-        localStorage.setItem(DB_KEY, JSON.stringify(currentTickets));
-      } catch(e) {
-        showToast('Database Write Error: Storage Quota Exceeded', 'error');
-      }
-    }
-
     // CREATE Operation + Validation
-    document.getElementById('create-form').addEventListener('submit', (e) => {
+    document.getElementById('create-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       
       const name = document.getElementById('c-name').value.trim();
@@ -454,21 +461,13 @@
       const desc = document.getElementById('c-desc').value.trim();
 
       // Form Validation with Error Handling
-      if (name.length < 2) {
-        showToast('Reporter name must be at least 2 characters', 'error');
-        return;
-      }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        showToast('Invalid email address format', 'error');
-        return;
-      }
-      if (desc.length < 10) {
-        showToast('Description must be at least 10 characters', 'error');
-        return;
-      }
+      if (name.length < 2) return showToast('Reporter name must be at least 2 characters', 'error');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showToast('Invalid email address format', 'error');
+      if (desc.length < 10) return showToast('Description must be at least 10 characters', 'error');
+
+      setBtnLoading('btn-submit-ticket', true, 'Save to DB');
 
       const newTicket = {
-        id: Date.now().toString(),
         code: 'TICK-' + Math.floor(1000 + Math.random() * 9000),
         reporter_name: name,
         reporter_email: email,
@@ -481,51 +480,90 @@
         created_at: new Date().toISOString()
       };
 
-      currentTickets.unshift(newTicket);
-      saveDB();
-      
-      showToast('Database Entry Created Successfully', 'success');
-      closeCreateModal();
-      renderUI();
+      try {
+        if (isConnectedToSupabase) {
+          const { data, error } = await supabase.from('tickets').insert([newTicket]).select();
+          if (error) throw error;
+          currentTickets.unshift(data[0]);
+        } else {
+          newTicket.id = Date.now().toString();
+          currentTickets.unshift(newTicket);
+          localStorage.setItem('helpdesk_backup_db', JSON.stringify(currentTickets));
+        }
+        
+        showToast('Database Entry Created Successfully', 'success');
+        closeCreateModal();
+        renderUI();
+      } catch(err) {
+        showToast("Create Error: " + err.message, 'error');
+      } finally {
+        setBtnLoading('btn-submit-ticket', false, 'Save to DB');
+      }
     });
 
     // UPDATE Operation
-    document.getElementById('edit-form').addEventListener('submit', (e) => {
+    document.getElementById('edit-form').addEventListener('submit', async (e) => {
       e.preventDefault();
+      
+      setBtnLoading('btn-update', true, 'Update DB');
+
       const id = document.getElementById('e-id').value;
-      const idx = currentTickets.findIndex(t => t.id === id);
+      const status = document.getElementById('e-status').value;
+      const priority = document.getElementById('e-priority').value;
+      const notes = document.getElementById('e-notes').value.trim();
       
-      if (idx !== -1) {
-        currentTickets[idx].status = document.getElementById('e-status').value;
-        currentTickets[idx].priority = document.getElementById('e-priority').value;
-        currentTickets[idx].notes = document.getElementById('e-notes').value.trim();
-        saveDB();
+      try {
+        if (isConnectedToSupabase) {
+          const { data, error } = await supabase.from('tickets').update({ status, priority, notes }).eq('id', id).select();
+          if (error) throw error;
+          const idx = currentTickets.findIndex(t => t.id === id);
+          if (idx !== -1 && data.length > 0) currentTickets[idx] = data[0];
+        } else {
+          const idx = currentTickets.findIndex(t => t.id === id);
+          if (idx !== -1) {
+            currentTickets[idx].status = status;
+            currentTickets[idx].priority = priority;
+            currentTickets[idx].notes = notes;
+            localStorage.setItem('helpdesk_backup_db', JSON.stringify(currentTickets));
+          }
+        }
+        
         showToast('Database Record Updated', 'success');
-      } else {
-        showToast('Record not found in Database', 'error');
+        closeEditModal();
+        renderUI();
+      } catch (err) {
+        showToast('Update Error: ' + err.message, 'error');
+      } finally {
+        setBtnLoading('btn-update', false, 'Update DB');
       }
-      
-      closeEditModal();
-      renderUI();
     });
 
     // DELETE Operation
-    function deleteTicket() {
+    async function deleteTicket() {
       const id = document.getElementById('e-id').value;
       if (!confirm("CRITICAL WARNING: This will permanently delete the record from the database. Proceed?")) return;
 
-      const initialLength = currentTickets.length;
-      currentTickets = currentTickets.filter(t => t.id !== id);
-      
-      if (currentTickets.length < initialLength) {
-        saveDB();
+      setBtnLoading('btn-del', true, '<i class="fas fa-trash"></i> Delete Record');
+
+      try {
+        if (isConnectedToSupabase) {
+          const { error } = await supabase.from('tickets').delete().eq('id', id);
+          if (error) throw error;
+        }
+
+        currentTickets = currentTickets.filter(t => t.id !== id);
+        if (!isConnectedToSupabase) {
+          localStorage.setItem('helpdesk_backup_db', JSON.stringify(currentTickets));
+        }
+        
         showToast('Record Deleted Permanently', 'warning');
-      } else {
-        showToast('Delete Failed: Record not found', 'error');
+        closeEditModal();
+        renderUI();
+      } catch(err) {
+        showToast('Delete Error: ' + err.message, 'error');
+      } finally {
+        setBtnLoading('btn-del', false, '<i class="fas fa-trash"></i> Delete Record');
       }
-      
-      closeEditModal();
-      renderUI();
     }
 
     // --- Search & Filter ---

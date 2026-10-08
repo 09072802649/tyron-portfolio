@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Academic Performance & Data Analytics Dashboard</title>
+    
+    <!-- Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    
+    <!-- Styling -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #080C14;
+            color: #e2e8f0;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(0, 242, 254, 0.03), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.03), transparent 25%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .glass-panel:hover {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-header {
+            background: rgba(8, 12, 20, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(0, 242, 254, 0.15);
+        }
+
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(to right, #00F2FE, #4FACFE);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00F2FE 0%, #4FACFE 100%);
+            color: #080C14;
+            font-weight: 600;
+            padding: 0.6rem 1.25rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #e2e8f0;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #080C14; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155; 
+        }
+
+        /* Data Table Styles */
+        select option {
+            background-color: #0f172a;
+            color: white;
+        }
+    </style>
+</head>
+<body class="flex flex-col">
+
+    <!-- Header Navigation -->
+    <nav class="glass-header sticky top-0 z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <a href="../../index.html" class="text-sm text-slate-400 hover:text-white transition-colors mb-1 inline-block">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Portfolio
+                </a>
+                <h1 class="text-2xl font-bold text-white tracking-tight">STUDENT ACADEMIC PERFORMANCE <span class="text-gradient">& DATA ANALYTICS DASHBOARD</span></h1>
+                <div class="flex items-center mt-1">
+                    <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse mr-2"></span>
+                    <span class="text-xs text-emerald-400 font-medium tracking-wider">SYSTEM ONLINE (ACADEMIC DATASET ACTIVE)</span>
+                </div>
+            </div>
+            <!-- Directly linking to the actual existing Excel File -->
+            <a href="DELA%20CRUZ%20-%204A%20EXAM.xlsx" download class="btn-primary">
+                <i class="fas fa-file-excel mr-2"></i>Download Original Excel File
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        
+        <!-- KPI Scorecards -->
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="glass-panel p-6 relative overflow-hidden group">
+                <div class="absolute -right-4 -top-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <i class="fas fa-users text-8xl text-cyan-400"></i>
+                </div>
+                <h4 class="text-slate-400 text-sm font-medium mb-1">Total Students Analyzed</h4>
+                <div class="text-3xl font-bold text-white" id="kpi-volume">50</div>
+                <div class="text-xs text-emerald-400 mt-2 flex items-center">
+                    <i class="fas fa-check-circle mr-1"></i> Clean Data / No Duplicates
+                </div>
+            </div>
+            
+            <div class="glass-panel p-6 relative overflow-hidden group">
+                <div class="absolute -right-4 -top-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <i class="fas fa-chart-line text-8xl text-amber-400"></i>
+                </div>
+                <h4 class="text-slate-400 text-sm font-medium mb-1">Average Final Grade</h4>
+                <div class="text-3xl font-bold text-white" id="kpi-avg">77.34</div>
+                <div class="text-xs text-slate-400 mt-2 flex items-center">
+                    <i class="fas fa-bullseye mr-1"></i> Median: 78.3
+                </div>
+            </div>
+
+            <div class="glass-panel p-6 relative overflow-hidden group">
+                <div class="absolute -right-4 -top-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <i class="fas fa-crown text-8xl text-purple-400"></i>
+                </div>
+                <h4 class="text-slate-400 text-sm font-medium mb-1">Highest Performing Program</h4>
+                <div class="text-2xl font-bold text-white mt-1" id="kpi-highest">BSIT</div>
+                <div class="text-xs text-blue-400 mt-2 flex items-center">
+                    <i class="fas fa-arrow-up mr-1"></i> Avg Final Grade: 80.07
+                </div>
+            </div>
+
+            <div class="glass-panel p-6 relative overflow-hidden group">
+                <div class="absolute -right-4 -top-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <i class="fas fa-graduation-cap text-8xl text-emerald-400"></i>
+                </div>
+                <h4 class="text-slate-400 text-sm font-medium mb-1">Overall Passing Rate</h4>
+                <div class="text-3xl font-bold text-white" id="kpi-compliance">64%</div>
+                <div class="text-xs text-slate-400 mt-2 flex items-center">
+                    Passed: 32 | Failed: 18
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts Grid Row 1 -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Line Chart (Trend) -->
+            <div class="glass-panel p-6 col-span-1 lg:col-span-2">
+                <h3 class="text-lg font-bold mb-4 flex items-center text-slate-200">
+                    <i class="fas fa-chart-line text-cyan-400 mr-2"></i>Study Hours vs Final Grade Correlation
+                </h3>
+                <div class="h-64 relative w-full">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Doughnut Chart (Status) -->
+            <div class="glass-panel p-6 col-span-1">
+                <h3 class="text-lg font-bold mb-4 flex items-center text-slate-200">
+                    <i class="fas fa-chart-pie text-emerald-400 mr-2"></i>Pass / Fail Proportion
+                </h3>
+                <div class="h-64 relative w-full">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts Grid Row 2 & Exec Summary -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Bar Chart (Departmental) -->
+            <div class="glass-panel p-6 col-span-1">
+                <h3 class="text-lg font-bold mb-4 flex items-center text-slate-200">
+                    <i class="fas fa-layer-group text-purple-400 mr-2"></i>Program Performance
+                </h3>
+                <div class="h-64 relative w-full">
+                    <canvas id="deptChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Executive Summary (Direct from Excel Analysis) -->
+            <div class="glass-panel p-6 col-span-1 lg:col-span-2 flex flex-col">
+                <h3 class="text-lg font-bold mb-4 border-b border-slate-700/50 pb-3 flex items-center text-slate-200">
+                    <i class="fas fa-lightbulb text-amber-400 mr-2"></i>Data Analysis Results
+                </h3>
+                <div class="flex-grow space-y-4 overflow-y-auto pr-2 text-sm text-slate-300">
+                    <div>
+                        <h4 class="font-semibold text-cyan-400">Task 1 & 2: Inspect and Clean Raw Data</h4>
+                        <p class="ml-4 border-l-2 border-slate-700 pl-3 py-1">No missing values and Invalid values. No Duplicate data and No Data entry errors.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-purple-400">Task 3: Descriptive Statistics for Final Grades</h4>
+                        <ul class="ml-4 border-l-2 border-slate-700 pl-3 py-1 grid grid-cols-2 gap-2">
+                            <li><span class="text-slate-400">Mean:</span> <strong class="text-white">77.338</strong></li>
+                            <li><span class="text-slate-400">Median:</span> <strong class="text-white">78.3</strong></li>
+                            <li><span class="text-slate-400">Minimum:</span> <strong class="text-white">61.8</strong></li>
+                            <li><span class="text-slate-400">Maximum:</span> <strong class="text-white">92.9</strong></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-emerald-400">Task 4: Average Metrics</h4>
+                        <ul class="ml-4 border-l-2 border-slate-700 pl-3 py-1 grid grid-cols-2 gap-2">
+                            <li><span class="text-slate-400">Study Hours:</span> <strong class="text-white">5.06</strong></li>
+                            <li><span class="text-slate-400">Attendance:</span> <strong class="text-white">84.26%</strong></li>
+                            <li><span class="text-slate-400">Midterm Score:</span> <strong class="text-white">77.3</strong></li>
+                            <li><span class="text-slate-400">Final Exam Score:</span> <strong class="text-white">55.0</strong></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-amber-400">Task 6 & 7: Program Performance Analysis</h4>
+                        <div class="ml-4 border-l-2 border-slate-700 pl-3 py-1">
+                            <p><strong>BSCS:</strong> 17 Students | Avg Grade: 73.68 | Pass Rate: 52.94%</p>
+                            <p><strong>BSIS:</strong> 15 Students | Avg Grade: 78.20 | Pass Rate: 60.00%</p>
+                            <p><strong>BSIT:</strong> 18 Students | Avg Grade: 80.07 | Pass Rate: 77.78%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SQL Query Engine Preview -->
+        <section class="glass-panel p-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                <h3 class="text-lg font-bold flex items-center text-slate-200">
+                    <i class="fas fa-code text-blue-400 mr-2"></i>SQL Aggregation Logic
+                </h3>
+                <div class="flex gap-2 border-b border-slate-700/50 w-full sm:w-auto">
+                    <button class="sql-tab-btn px-4 py-2 text-sm font-medium border-b-2 border-cyan-400 text-cyan-400" data-target="sql-dept">Program Performance</button>
+                    <button class="sql-tab-btn px-4 py-2 text-sm font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition-colors" data-target="sql-trend">Descriptive Stats</button>
+                    <button class="sql-tab-btn px-4 py-2 text-sm font-medium border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition-colors" data-target="sql-compliance">Pass/Fail Count</button>
+                </div>
+            </div>
+
+            <div class="bg-[#0b1120] rounded-lg p-5 font-mono text-sm overflow-x-auto border border-slate-700/50 shadow-inner">
+                <!-- SQL 1 -->
+                <div id="sql-dept" class="sql-pane block">
+                    <div class="text-slate-500 mb-3">-- Task 6&7 Program Performance Analysis (BSIT, BSIS, BSCS)</div>
+                    <div><span class="text-blue-400 font-semibold">SELECT</span></div>
+                    <div class="pl-6"><span class="text-slate-200">Program,</span></div>
+                    <div class="pl-6"><span class="text-emerald-400">COUNT</span><span class="text-slate-200">(*) </span><span class="text-purple-400 font-semibold">AS</span><span class="text-slate-200"> Number_of_Students,</span></div>
+                    <div class="pl-6"><span class="text-emerald-400">AVG</span><span class="text-slate-200">(Study_Hours) </span><span class="text-purple-400 font-semibold">AS</span><span class="text-slate-200"> Average_Study_Hours,</span></div>
+                    <div class="pl-6"><span class="text-emerald-400">AVG</span><span class="text-slate-200">(Final_Grade) </span><span class="text-purple-400 font-semibold">AS</span><span class="text-slate-200"> Average_Final_Grade</span></div>
+                    <div><span class="text-blue-400 font-semibold">FROM</span></div>
+                    <div class="pl-6"><span class="text-amber-300">student_academic_records</span></div>
+                    <div><span class="text-blue-400 font-semibold">GROUP BY</span></div>
+                    <div class="pl-6"><span class="text-slate-200">Program</span></div>
+                    <div><span class="text-blue-400 font-semibold">ORDER BY</span></div>
+                    <div class="pl-6"><span class="text-slate-200">Average_Final_Grade </span><span class="text-blue-400 font-semibold">DESC</span><span class="text-slate-200">;</span></div>
+                </div>
+
+                <!-- SQL 2 -->
+                <div id="sql-trend" class="sql-pane hidden">
+                    <div class="text-slate-500 mb-3">-- Task 3 Descriptive Statistics for Final Grades</div>
+                    <div><span class="text-blue-400 font-semibold">SELECT</span></div>
+                    <div class="pl-6"><span class="text-emerald-400">AVG</span><span class="text-slate-200">(Final_Grade) </span><span class="text-purple-400 font-semibold">AS</span><span class="text-slate-200"> Mean,</span></div>
+                    <div class="pl-6"><span class="text-emerald-400">MIN</span><span class="text-slate-200">(Final_Grade) </span><span class="text-purple-400 font-semibold">AS</span><span class="text-slate-200"> Minimum,</span></div>
+                    <div class="pl-6"><span class="text-emerald-400">MAX</span><span class="text-slate-200">(Final_Grade) </span><span class="text-purple-400 font-semibold">AS</span><span class="text-slate-200"> Maximum</span></div>
+                    <div><span class="text-blue-400 font-semibold">FROM</span></div>
+                    <div class="pl-6"><span class="text-amber-300">student_academic_records</span><span class="text-slate-200">;</span></div>
+                </div>
+
+                <!-- SQL 3 -->
+                <div id="sql-compliance" class="sql-pane hidden">
+                    <div class="text-slate-500 mb-3">-- Task 5 Pass/Fail Count and Overall Passing Percentage</div>
+                    <div><span class="text-blue-400 font-semibold">SELECT</span></div>
+                    <div class="pl-6"><span class="text-slate-200">Passed,</span></div>
+                    <div class="pl-6"><span class="text-emerald-400">COUNT</span><span class="text-slate-200">(*) </span><span class="text-purple-400 font-semibold">AS</span><span class="text-slate-200"> Student_Count,</span></div>
+                    <div class="pl-6"><span class="text-emerald-400">ROUND</span><span class="text-slate-200">(</span><span class="text-emerald-400">COUNT</span><span class="text-slate-200">(*) * 100.0 / (</span><span class="text-blue-400 font-semibold">SELECT </span><span class="text-emerald-400">COUNT</span><span class="text-slate-200">(*) </span><span class="text-blue-400 font-semibold">FROM</span><span class="text-amber-300"> student_academic_records</span><span class="text-slate-200">), 2) </span><span class="text-purple-400 font-semibold">AS</span><span class="text-slate-200"> Percentage</span></div>
+                    <div><span class="text-blue-400 font-semibold">FROM</span></div>
+                    <div class="pl-6"><span class="text-amber-300">student_academic_records</span></div>
+                    <div><span class="text-blue-400 font-semibold">GROUP BY</span></div>
+                    <div class="pl-6"><span class="text-slate-200">Passed;</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Data Table -->
+        <section class="glass-panel p-6">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 border-b border-slate-700/50 pb-4">
+                <h3 class="text-lg font-bold flex items-center text-slate-200">
+                    <i class="fas fa-table text-emerald-400 mr-2"></i>Raw Dataset Explorer
+                </h3>
+                <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                    <div class="relative w-full sm:w-64">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="search-input" placeholder="Search ID or Program..." class="w-full bg-[#0f172a] border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all text-white placeholder-slate-500 shadow-inner">
+                    </div>
+                    <select id="department-filter" class="bg-[#0f172a] border border-slate-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all text-white shadow-inner appearance-none cursor-pointer">
+                        <option value="all">All Programs</option>
+                        <option value="BSIT">BSIT</option>
+                        <option value="BSIS">BSIS</option>
+                        <option value="BSCS">BSCS</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto rounded-lg border border-slate-700/50 shadow-inner bg-[#0b1120]">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-800/80 text-xs uppercase tracking-wider text-slate-400 border-b border-slate-700/50">
+                            <th class="p-4 font-medium">Student ID</th>
+                            <th class="p-4 font-medium">Program</th>
+                            <th class="p-4 font-medium">Study Hours</th>
+                            <th class="p-4 font-medium">Attendance</th>
+                            <th class="p-4 font-medium">Final Grade</th>
+                            <th class="p-4 font-medium">Passed</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body" class="text-sm text-slate-300 divide-y divide-slate-800/50">
+                        <!-- Data populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-between items-center mt-4 text-sm text-slate-400 gap-4">
+                <span id="showing-records-text">Showing 0 records</span>
+                <div class="flex items-center gap-2">
+                    <button class="px-3 py-1.5 bg-slate-800 border border-slate-700 rounded hover:bg-slate-700 transition disabled:opacity-50 disabled:cursor-not-allowed" id="prev-page">Previous</button>
+                    <span class="px-4 py-1.5 bg-[#0b1120] border border-slate-700 rounded font-medium">Page <span id="current-page" class="text-cyan-400">1</span></span>
+                    <button class="px-3 py-1.5 bg-slate-800 border border-slate-700 rounded hover:bg-slate-700 transition disabled:opacity-50 disabled:cursor-not-allowed" id="next-page">Next</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Application Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Actual Data embedded directly to ensure it works without a local web server (CORS-safe)
+            const fullData = [
+                {"Student_ID":"S3000","Age":24,"Gender":"Female","Program":"BSIT","Study_Hours":7,"Attendance_Pct":83,"Assignments_Score":69,"Midterm_Score":60,"Final_Exam_Score":60,"Final_Grade":61.8,"Passed":"No"},
+                {"Student_ID":"S3013","Age":22,"Gender":"Female","Program":"BSIT","Study_Hours":6,"Attendance_Pct":92,"Assignments_Score":61,"Midterm_Score":67,"Final_Exam_Score":59,"Final_Grade":61.8,"Passed":"No"},
+                {"Student_ID":"S3047","Age":21,"Gender":"Male","Program":"BSCS","Study_Hours":1,"Attendance_Pct":78,"Assignments_Score":73,"Midterm_Score":58,"Final_Exam_Score":62,"Final_Grade":63,"Passed":"No"},
+                {"Student_ID":"S3021","Age":19,"Gender":"Male","Program":"BSIS","Study_Hours":7,"Attendance_Pct":83,"Assignments_Score":65,"Midterm_Score":76,"Final_Exam_Score":56,"Final_Grade":63.8,"Passed":"No"},
+                {"Student_ID":"S3006","Age":24,"Gender":"Male","Program":"BSIS","Study_Hours":7,"Attendance_Pct":79,"Assignments_Score":69,"Midterm_Score":55,"Final_Exam_Score":68,"Final_Grade":64.3,"Passed":"No"},
+                {"Student_ID":"S3018","Age":25,"Gender":"Male","Program":"BSIT","Study_Hours":7,"Attendance_Pct":86,"Assignments_Score":69,"Midterm_Score":70,"Final_Exam_Score":61,"Final_Grade":65.3,"Passed":"No"},
+                {"Student_ID":"S3017","Age":19,"Gender":"Female","Program":"BSCS","Study_Hours":4,"Attendance_Pct":75,"Assignments_Score":66,"Midterm_Score":74,"Final_Exam_Score":60,"Final_Grade":65.4,"Passed":"No"},
+                {"Student_ID":"S3040","Age":23,"Gender":"Female","Program":"BSCS","Study_Hours":7,"Attendance_Pct":78,"Assignments_Score":74,"Midterm_Score":72,"Final_Exam_Score":58,"Final_Grade":65.4,"Passed":"No"},
+                {"Student_ID":"S3046","Age":24,"Gender":"Male","Program":"BSCS","Study_Hours":8,"Attendance_Pct":94,"Assignments_Score":85,"Midterm_Score":71,"Final_Exam_Score":56,"Final_Grade":66.3,"Passed":"No"},
+                {"Student_ID":"S3041","Age":21,"Gender":"Male","Program":"BSCS","Study_Hours":3,"Attendance_Pct":85,"Assignments_Score":82,"Midterm_Score":62,"Final_Exam_Score":64,"Final_Grade":67,"Passed":"No"},
+                {"Student_ID":"S3016","Age":18,"Gender":"Male","Program":"BSIS","Study_Hours":3,"Attendance_Pct":100,"Assignments_Score":86,"Midterm_Score":71,"Final_Exam_Score":57,"Final_Grade":67,"Passed":"No"},
+                {"Student_ID":"S3045","Age":19,"Gender":"Male","Program":"BSIT","Study_Hours":5,"Attendance_Pct":80,"Assignments_Score":96,"Midterm_Score":67,"Final_Exam_Score":58,"Final_Grade":68.3,"Passed":"No"},
+                {"Student_ID":"S3048","Age":23,"Gender":"Male","Program":"BSCS","Study_Hours":3,"Attendance_Pct":87,"Assignments_Score":96,"Midterm_Score":63,"Final_Exam_Score":67,"Final_Grade":71.6,"Passed":"No"},
+                {"Student_ID":"S3022","Age":25,"Gender":"Female","Program":"BSCS","Study_Hours":1,"Attendance_Pct":81,"Assignments_Score":84,"Midterm_Score":68,"Final_Exam_Score":69,"Final_Grade":71.7,"Passed":"No"},
+                {"Student_ID":"S3014","Age":25,"Gender":"Female","Program":"BSCS","Study_Hours":7,"Attendance_Pct":88,"Assignments_Score":90,"Midterm_Score":69,"Final_Exam_Score":66,"Final_Grade":71.7,"Passed":"No"},
+                {"Student_ID":"S3028","Age":24,"Gender":"Male","Program":"BSIS","Study_Hours":8,"Attendance_Pct":99,"Assignments_Score":74,"Midterm_Score":65,"Final_Exam_Score":75,"Final_Grade":71.8,"Passed":"No"},
+                {"Student_ID":"S3009","Age":25,"Gender":"Male","Program":"BSIS","Study_Hours":7,"Attendance_Pct":93,"Assignments_Score":61,"Midterm_Score":72,"Final_Exam_Score":78,"Final_Grade":72.8,"Passed":"No"},
+                {"Student_ID":"S3001","Age":23,"Gender":"Female","Program":"BSIS","Study_Hours":5,"Attendance_Pct":90,"Assignments_Score":89,"Midterm_Score":95,"Final_Exam_Score":55,"Final_Grade":73.8,"Passed":"No"},
+                {"Student_ID":"S3010","Age":20,"Gender":"Male","Program":"BSCS","Study_Hours":6,"Attendance_Pct":99,"Assignments_Score":98,"Midterm_Score":88,"Final_Exam_Score":58,"Final_Grade":75,"Passed":"Yes"},
+                {"Student_ID":"S3036","Age":20,"Gender":"Female","Program":"BSCS","Study_Hours":8,"Attendance_Pct":80,"Assignments_Score":76,"Midterm_Score":96,"Final_Exam_Score":63,"Final_Grade":75.5,"Passed":"Yes"},
+                {"Student_ID":"S3012","Age":23,"Gender":"Male","Program":"BSIT","Study_Hours":5,"Attendance_Pct":75,"Assignments_Score":76,"Midterm_Score":95,"Final_Exam_Score":64,"Final_Grade":75.7,"Passed":"Yes"},
+                {"Student_ID":"S3024","Age":20,"Gender":"Male","Program":"BSIT","Study_Hours":4,"Attendance_Pct":79,"Assignments_Score":98,"Midterm_Score":88,"Final_Exam_Score":60,"Final_Grade":76,"Passed":"Yes"},
+                {"Student_ID":"S3042","Age":23,"Gender":"Female","Program":"BSCS","Study_Hours":2,"Attendance_Pct":94,"Assignments_Score":78,"Midterm_Score":95,"Final_Exam_Score":64,"Final_Grade":76.1,"Passed":"Yes"},
+                {"Student_ID":"S3032","Age":18,"Gender":"Male","Program":"BSCS","Study_Hours":6,"Attendance_Pct":78,"Assignments_Score":88,"Midterm_Score":61,"Final_Exam_Score":83,"Final_Grade":77.4,"Passed":"Yes"},
+                {"Student_ID":"S3027","Age":20,"Gender":"Male","Program":"BSIS","Study_Hours":1,"Attendance_Pct":97,"Assignments_Score":97,"Midterm_Score":76,"Final_Exam_Score":72,"Final_Grade":78.2,"Passed":"Yes"},
+                {"Student_ID":"S3011","Age":19,"Gender":"Female","Program":"BSCS","Study_Hours":6,"Attendance_Pct":73,"Assignments_Score":91,"Midterm_Score":59,"Final_Exam_Score":85,"Final_Grade":78.4,"Passed":"Yes"},
+                {"Student_ID":"S3020","Age":21,"Gender":"Female","Program":"BSIT","Study_Hours":7,"Attendance_Pct":73,"Assignments_Score":74,"Midterm_Score":91,"Final_Exam_Score":73,"Final_Grade":78.6,"Passed":"Yes"},
+                {"Student_ID":"S3030","Age":20,"Gender":"Female","Program":"BSCS","Study_Hours":8,"Attendance_Pct":82,"Assignments_Score":79,"Midterm_Score":57,"Final_Exam_Score":92,"Final_Grade":78.9,"Passed":"Yes"},
+                {"Student_ID":"S3019","Age":20,"Gender":"Male","Program":"BSIT","Study_Hours":1,"Attendance_Pct":76,"Assignments_Score":96,"Midterm_Score":55,"Final_Exam_Score":87,"Final_Grade":79.2,"Passed":"Yes"},
+                {"Student_ID":"S3035","Age":21,"Gender":"Male","Program":"BSIS","Study_Hours":8,"Attendance_Pct":76,"Assignments_Score":80,"Midterm_Score":98,"Final_Exam_Score":69,"Final_Grade":79.9,"Passed":"Yes"},
+                {"Student_ID":"S3007","Age":18,"Gender":"Female","Program":"BSCS","Study_Hours":6,"Attendance_Pct":80,"Assignments_Score":88,"Midterm_Score":62,"Final_Exam_Score":88,"Final_Grade":80.2,"Passed":"Yes"},
+                {"Student_ID":"S3003","Age":24,"Gender":"Male","Program":"BSIT","Study_Hours":5,"Attendance_Pct":84,"Assignments_Score":81,"Midterm_Score":93,"Final_Exam_Score":73,"Final_Grade":80.6,"Passed":"Yes"},
+                {"Student_ID":"S3004","Age":25,"Gender":"Male","Program":"BSIT","Study_Hours":6,"Attendance_Pct":86,"Assignments_Score":85,"Midterm_Score":94,"Final_Exam_Score":71,"Final_Grade":80.7,"Passed":"Yes"},
+                {"Student_ID":"S3026","Age":20,"Gender":"Male","Program":"BSCS","Study_Hours":5,"Attendance_Pct":91,"Assignments_Score":80,"Midterm_Score":93,"Final_Exam_Score":74,"Final_Grade":80.9,"Passed":"Yes"},
+                {"Student_ID":"S3049","Age":20,"Gender":"Female","Program":"BSIT","Study_Hours":2,"Attendance_Pct":74,"Assignments_Score":75,"Midterm_Score":72,"Final_Exam_Score":90,"Final_Grade":81.6,"Passed":"Yes"},
+                {"Student_ID":"S3029","Age":24,"Gender":"Female","Program":"BSIS","Study_Hours":5,"Attendance_Pct":99,"Assignments_Score":86,"Midterm_Score":62,"Final_Exam_Score":92,"Final_Grade":81.8,"Passed":"Yes"},
+                {"Student_ID":"S3002","Age":22,"Gender":"Male","Program":"BSIS","Study_Hours":3,"Attendance_Pct":91,"Assignments_Score":61,"Midterm_Score":91,"Final_Exam_Score":85,"Final_Grade":82,"Passed":"Yes"},
+                {"Student_ID":"S3033","Age":25,"Gender":"Male","Program":"BSIS","Study_Hours":6,"Attendance_Pct":73,"Assignments_Score":69,"Midterm_Score":78,"Final_Exam_Score":92,"Final_Grade":83.2,"Passed":"Yes"},
+                {"Student_ID":"S3044","Age":20,"Gender":"Female","Program":"BSIS","Study_Hours":6,"Attendance_Pct":98,"Assignments_Score":85,"Midterm_Score":61,"Final_Exam_Score":99,"Final_Grade":84.8,"Passed":"Yes"},
+                {"Student_ID":"S3043","Age":21,"Gender":"Female","Program":"BSIS","Study_Hours":2,"Attendance_Pct":82,"Assignments_Score":98,"Midterm_Score":88,"Final_Exam_Score":81,"Final_Grade":86.5,"Passed":"Yes"},
+                {"Student_ID":"S3025","Age":20,"Gender":"Female","Program":"BSCS","Study_Hours":6,"Attendance_Pct":77,"Assignments_Score":73,"Midterm_Score":80,"Final_Exam_Score":99,"Final_Grade":88.1,"Passed":"Yes"},
+                {"Student_ID":"S3034","Age":20,"Gender":"Female","Program":"BSIT","Study_Hours":3,"Attendance_Pct":75,"Assignments_Score":98,"Midterm_Score":87,"Final_Exam_Score":86,"Final_Grade":88.7,"Passed":"Yes"},
+                {"Student_ID":"S3037","Age":25,"Gender":"Female","Program":"BSIT","Study_Hours":8,"Attendance_Pct":73,"Assignments_Score":99,"Midterm_Score":82,"Final_Exam_Score":89,"Final_Grade":88.9,"Passed":"Yes"},
+                {"Student_ID":"S3039","Age":22,"Gender":"Female","Program":"BSIT","Study_Hours":2,"Attendance_Pct":81,"Assignments_Score":81,"Midterm_Score":91,"Final_Exam_Score":92,"Final_Grade":89.5,"Passed":"Yes"},
+                {"Student_ID":"S3038","Age":24,"Gender":"Male","Program":"BSIT","Study_Hours":2,"Attendance_Pct":92,"Assignments_Score":100,"Midterm_Score":81,"Final_Exam_Score":91,"Final_Grade":89.8,"Passed":"Yes"},
+                {"Student_ID":"S3023","Age":23,"Gender":"Male","Program":"BSIS","Study_Hours":8,"Attendance_Pct":91,"Assignments_Score":80,"Midterm_Score":90,"Final_Exam_Score":95,"Final_Grade":90.5,"Passed":"Yes"},
+                {"Student_ID":"S3031","Age":24,"Gender":"Female","Program":"BSIT","Study_Hours":3,"Attendance_Pct":78,"Assignments_Score":75,"Midterm_Score":89,"Final_Exam_Score":98,"Final_Grade":90.7,"Passed":"Yes"},
+                {"Student_ID":"S3008","Age":23,"Gender":"Female","Program":"BSIT","Study_Hours":7,"Attendance_Pct":87,"Assignments_Score":91,"Midterm_Score":100,"Final_Exam_Score":86,"Final_Grade":91.2,"Passed":"Yes"},
+                {"Student_ID":"S3005","Age":24,"Gender":"Female","Program":"BSIS","Study_Hours":5,"Attendance_Pct":83,"Assignments_Score":84,"Midterm_Score":86,"Final_Exam_Score":100,"Final_Grade":92.6,"Passed":"Yes"},
+                {"Student_ID":"S3015","Age":24,"Gender":"Male","Program":"BSIT","Study_Hours":5,"Attendance_Pct":85,"Assignments_Score":93,"Midterm_Score":91,"Final_Exam_Score":94,"Final_Grade":92.9,"Passed":"Yes"}
+            ];
+
+            let filteredData = [...fullData];
+            let currentPage = 1;
+            const itemsPerPage = 10;
+            
+            // Chart global defaults
+            Chart.defaults.color = '#94a3b8';
+            Chart.defaults.font.family = "'Inter', sans-serif";
+
+            // Initialize Charts
+            const initCharts = () => {
+                // 1. Group by Study Hours (Trend Chart / Bar)
+                const studyGroups = {};
+                fullData.forEach(item => {
+                    if(!studyGroups[item.Study_Hours]) studyGroups[item.Study_Hours] = { sum: 0, count: 0 };
+                    studyGroups[item.Study_Hours].sum += item.Final_Grade;
+                    studyGroups[item.Study_Hours].count++;
+                });
+                
+                const hours = Object.keys(studyGroups).sort((a,b) => a-b);
+                const avgGradesByHour = hours.map(h => studyGroups[h].sum / studyGroups[h].count);
+                
+                const trendCtx = document.getElementById('trendChart').getContext('2d');
+                const gradientLine = trendCtx.createLinearGradient(0, 0, 0, 400);
+                gradientLine.addColorStop(0, 'rgba(0, 242, 254, 0.4)');
+                gradientLine.addColorStop(1, 'rgba(0, 242, 254, 0.0)');
+
+                new Chart(trendCtx, {
+                    type: 'line',
+                    data: {
+                        labels: hours.map(h => h + ' hrs'),
+                        datasets: [{
+                            label: 'Average Final Grade',
+                            data: avgGradesByHour,
+                            borderColor: '#00F2FE',
+                            backgroundColor: gradientLine,
+                            borderWidth: 2,
+                            pointBackgroundColor: '#080C14',
+                            pointBorderColor: '#00F2FE',
+                            pointBorderWidth: 2,
+                            pointRadius: 4,
+                            fill: true,
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { grid: { color: 'rgba(255,255,255,0.05)' } },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+
+                // 2. Pass / Fail Status (Doughnut)
+                const statusCtx = document.getElementById('statusChart').getContext('2d');
+                new Chart(statusCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Passed', 'Failed'],
+                        datasets: [{
+                            data: [32, 18],
+                            backgroundColor: ['#10B981', '#EF4444'],
+                            borderWidth: 0,
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '75%',
+                        plugins: {
+                            legend: { position: 'bottom', labels: { padding: 20, usePointStyle: true } }
+                        }
+                    }
+                });
+
+                // 3. Program Performance (Bar)
+                const deptCtx = document.getElementById('deptChart').getContext('2d');
+                new Chart(deptCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['BSIT', 'BSIS', 'BSCS'],
+                        datasets: [{
+                            label: 'Average Final Grade',
+                            data: [80.07, 78.20, 73.68],
+                            backgroundColor: ['#00F2FE', '#8B5CF6', '#F59E0B'],
+                            borderRadius: 6,
+                            barThickness: 40
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { grid: { color: 'rgba(255,255,255,0.05)' }, min: 60 },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            };
+
+            initCharts();
+
+            // SQL Tabs Interaction
+            const sqlTabs = document.querySelectorAll('.sql-tab-btn');
+            const sqlPanes = document.querySelectorAll('.sql-pane');
+
+            sqlTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    sqlTabs.forEach(t => {
+                        t.classList.remove('border-cyan-400', 'text-cyan-400');
+                        t.classList.add('border-transparent', 'text-slate-400');
+                    });
+                    tab.classList.add('border-cyan-400', 'text-cyan-400');
+                    tab.classList.remove('border-transparent', 'text-slate-400');
+                    
+                    sqlPanes.forEach(p => p.classList.add('hidden'));
+                    document.getElementById(tab.getAttribute('data-target')).classList.remove('hidden');
+                });
+            });
+
+            // Data Table rendering & Pagination
+            const renderTable = () => {
+                const tbody = document.getElementById('table-body');
+                tbody.innerHTML = '';
+                
+                const startIdx = (currentPage - 1) * itemsPerPage;
+                const endIdx = startIdx + itemsPerPage;
+                const paginatedData = filteredData.slice(startIdx, endIdx);
+                
+                if (paginatedData.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-500">No records found.</td></tr>`;
+                }
+                
+                paginatedData.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-slate-800/30 transition-colors group';
+                    
+                    let statusBadge = row.Passed === 'Yes' 
+                        ? '<span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"><i class="fas fa-check-circle mr-1.5"></i>Passed</span>'
+                        : '<span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-red-500/10 text-red-400 border border-red-500/20"><i class="fas fa-times-circle mr-1.5"></i>Failed</span>';
+                    
+                    tr.innerHTML = `
+                        <td class="p-4 font-mono text-cyan-400 text-xs">${row.Student_ID}</td>
+                        <td class="p-4 text-slate-200 font-medium">${row.Program}</td>
+                        <td class="p-4 font-mono text-slate-300">${row.Study_Hours} hrs</td>
+                        <td class="p-4 font-mono text-slate-300">${row.Attendance_Pct}%</td>
+                        <td class="p-4 font-mono font-medium ${row.Final_Grade >= 75 ? 'text-emerald-400' : 'text-amber-400'}">${row.Final_Grade}</td>
+                        <td class="p-4">${statusBadge}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+                
+                const showingStart = filteredData.length > 0 ? startIdx + 1 : 0;
+                const showingEnd = Math.min(endIdx, filteredData.length);
+                document.getElementById('showing-records-text').innerHTML = `Showing <span class="text-white font-medium">${showingStart}</span> to <span class="text-white font-medium">${showingEnd}</span> of <span class="text-white font-medium">${filteredData.length}</span> records`;
+                
+                document.getElementById('current-page').innerText = currentPage;
+                
+                document.getElementById('prev-page').disabled = currentPage === 1;
+                document.getElementById('next-page').disabled = endIdx >= filteredData.length;
+            };
+
+            renderTable();
+
+            // Filtering
+            const applyFilters = () => {
+                const term = document.getElementById('search-input').value.toLowerCase();
+                const prog = document.getElementById('department-filter').value;
+                
+                filteredData = fullData.filter(row => {
+                    const matchesTerm = row.Student_ID.toLowerCase().includes(term) || row.Program.toLowerCase().includes(term);
+                    const matchesProg = prog === 'all' || row.Program === prog;
+                    return matchesTerm && matchesProg;
+                });
+                currentPage = 1;
+                renderTable();
+            };
+
+            document.getElementById('search-input').addEventListener('input', applyFilters);
+            document.getElementById('department-filter').addEventListener('change', applyFilters);
+
+            document.getElementById('prev-page').addEventListener('click', () => {
+                if (currentPage > 1) { currentPage--; renderTable(); }
+            });
+
+            document.getElementById('next-page').addEventListener('click', () => {
+                if (currentPage * itemsPerPage < filteredData.length) { currentPage++; renderTable(); }
+            });
+        });
+    </script>
+</body>
+</html>

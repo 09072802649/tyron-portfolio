@@ -69,11 +69,15 @@
       font-family: 'Inter', sans-serif;
       overflow-x: hidden;
       background-image: 
-        radial-gradient(circle at 15% 20%, rgba(0, 242, 254, 0.06) 0%, transparent 40%),
-        radial-gradient(circle at 85% 60%, rgba(79, 172, 254, 0.05) 0%, transparent 45%),
-        radial-gradient(circle at 50% 85%, rgba(127, 0, 255, 0.04) 0%, transparent 40%),
-        radial-gradient(rgba(0, 242, 254, 0.04) 1px, transparent 1px);
-      background-size: 100% 100%, 100% 100%, 100% 100%, 36px 36px;
+        linear-gradient(rgba(8, 12, 20, 0.8), rgba(8, 12, 20, 0.9)),
+        url('assets/background.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+
+
+
+
       background-attachment: fixed;
     }
 
@@ -180,15 +184,15 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-20">
         <!-- Logo <TD.> with Cyan Gradient Ring -->
-        <a href="#hero" class="flex items-center gap-3 group focus:outline-none">
+        <a href="#hero" class="flex items-center group focus:outline-none">
           <div class="relative w-11 h-11 rounded-xl p-[2px] bg-gradient-to-tr from-[#00F2FE] via-[#4FACFE] to-[#7F00FF] transition-transform duration-300 group-hover:scale-105 shadow-cyan-sm">
             <div class="w-full h-full bg-[#080C14] rounded-[10px] flex items-center justify-center">
-              <span class="font-mono font-bold text-lg text-white group-hover:text-[#00F2FE] transition-colors">&lt;TD.&gt;</span>
+              <span class="font-mono font-bold text-lg text-white group-hover:text-[#00F2FE] transition-colors">TJ</span>
             </div>
           </div>
           <div class="flex flex-col">
-            <span class="font-bold text-white tracking-wide text-sm sm:text-base group-hover:text-[#00F2FE] transition-colors">Tyron Dela Cruz</span>
-            <span class="text-[10px] font-mono tracking-widest text-[#94A3B8] uppercase">BSIT Senior &bull; Tech Lead</span>
+
+
           </div>
         </a>
 
@@ -222,7 +226,7 @@
       <div>
         <div class="flex items-center justify-between pb-6 border-b border-slate-800">
           <div class="flex items-center gap-2">
-            <span class="font-mono font-bold text-lg text-[#00F2FE]">&lt;TD.&gt;</span>
+            <span class="font-mono font-bold text-lg text-[#00F2FE]">TJ</span>
             <span class="text-sm font-semibold text-white">Menu Navigation</span>
           </div>
           <button id="close-drawer-btn" class="p-2 text-slate-400 hover:text-white focus:outline-none" aria-label="Close menu">
@@ -276,12 +280,12 @@
           <div class="neon-ring-container w-40 h-40 sm:w-48 sm:h-48 rounded-full p-1 flex items-center justify-center">
             <div class="relative w-full h-full rounded-full bg-[#0B1120] border-2 border-[#00F2FE]/40 overflow-hidden flex items-center justify-center z-10 shadow-2xl">
               <!-- Profile Portrait Graphic Representation -->
-              <div class="absolute inset-0 bg-gradient-to-b from-[#00F2FE]/20 via-[#4FACFE]/10 to-[#080C14] opacity-80"></div>
-              <div class="text-center z-20 flex flex-col items-center">
-                <i class="fas fa-user-gear text-4xl sm:text-5xl text-[#00F2FE] mb-1.5 drop-shadow-[0_0_15px_rgba(0,242,254,0.7)]"></i>
-                <span class="font-mono text-xs font-bold text-white tracking-widest">&lt;TD.DEV&gt;</span>
-                <span class="text-[9px] text-[#4FACFE] font-mono uppercase tracking-wider">Network &bull; Data &bull; Web</span>
-              </div>
+              <div class="absolute inset-0 bg-gradient-to-b from-[#00F2FE]/20 via-[#4FACFE]/10 to-[#080C14] opacity-30 z-20 pointer-events-none"></div>
+              <img src="assets/profile.jpg" alt="Profile" class="w-full h-full object-cover z-10">
+
+
+
+
             </div>
           </div>
           <!-- Tech status indicator badge -->
@@ -336,9 +340,9 @@
     <!-- 2. ABOUT ME SECTION -->
     <section id="about" class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div class="text-center mb-16">
-        <div class="inline-flex items-center gap-2 text-xs font-mono text-[#00F2FE] tracking-widest uppercase mb-2">
-          <i class="fas fa-terminal"></i> 01 // Overview
-        </div>
+
+
+
         <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">About Me</h2>
         <div class="w-20 h-1 bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] mx-auto mt-4 rounded-full"></div>
       </div>
@@ -1240,6 +1244,7 @@
               </div>
             </div>
           </div>
+
         </div>
 
         <!-- Employability Summary Quick Card -->
@@ -1294,7 +1299,7 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
         <!-- Cert 1: Cyber Awareness -->
-        <div class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between hover:border-[#00F2FE]/40 transition group">
+        <button type="button" onclick="openCertModal('assets/certificates/cyber-awareness.png', 'Cyber Awareness')" class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between hover:border-[#00F2FE]/40 transition group text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#00F2FE]">
           <div>
             <div class="flex items-center justify-between mb-4">
               <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-[#00F2FE] group-hover:scale-110 transition-transform">
@@ -1312,10 +1317,10 @@
             <span>Issuer: Tech Security Cert</span>
             <span class="text-emerald-400"><i class="fas fa-check-circle mr-1"></i> Completed</span>
           </div>
-        </div>
+        </button>
 
         <!-- Cert 2: Web Dev 101 -->
-        <div class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between hover:border-[#4FACFE]/40 transition group">
+        <button type="button" onclick="openCertModal('assets/certificates/web-dev-101.png', 'Web Dev 101: System Integration')" class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between hover:border-[#4FACFE]/40 transition group text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#4FACFE]">
           <div>
             <div class="flex items-center justify-between mb-4">
               <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-[#4FACFE] group-hover:scale-110 transition-transform">
@@ -1333,10 +1338,10 @@
             <span>Issuer: Modern Web Institute</span>
             <span class="text-emerald-400"><i class="fas fa-check-circle mr-1"></i> Completed</span>
           </div>
-        </div>
+        </button>
 
         <!-- Cert 3: QA 101 -->
-        <div class="glass-card rounded-2xl p-6 border border-purple-500/40 transition group">
+        <button type="button" onclick="openCertModal('assets/certificates/qa-101.png', 'QA 101: Software Quality')" class="glass-card rounded-2xl p-6 border border-purple-500/40 hover:border-purple-400/50 transition group text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-400 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-4">
               <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
@@ -1354,10 +1359,10 @@
             <span>Issuer: QA Software Alliance</span>
             <span class="text-emerald-400"><i class="fas fa-check-circle mr-1"></i> Completed</span>
           </div>
-        </div>
+        </button>
 
         <!-- Cert 4: Pro Skills -->
-        <div class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between hover:border-emerald-500/40 transition group">
+        <button type="button" onclick="openCertModal('assets/certificates/pro-skills.png', 'Pro Skills for Tech Pros')" class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between hover:border-emerald-500/40 transition group text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-400">
           <div>
             <div class="flex items-center justify-between mb-4">
               <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
@@ -1375,10 +1380,10 @@
             <span>Issuer: Tech Leadership Forum</span>
             <span class="text-emerald-400"><i class="fas fa-check-circle mr-1"></i> Completed</span>
           </div>
-        </div>
+        </button>
 
         <!-- Cert 5: Arduino 101 -->
-        <div class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between hover:border-amber-500/40 transition group">
+        <button type="button" onclick="openCertModal('assets/certificates/arduino-101.png', 'Arduino 101')" class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between hover:border-amber-500/40 transition group text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-400">
           <div>
             <div class="flex items-center justify-between mb-4">
               <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform">
@@ -1396,7 +1401,7 @@
             <span>Issuer: Embedded Systems Academy</span>
             <span class="text-emerald-400"><i class="fas fa-check-circle mr-1"></i> Completed</span>
           </div>
-        </div>
+        </button>
 
         <!-- Academic Honor Badge: Dean's Lister -->
         <div class="glass-card rounded-2xl p-6 border border-amber-500/30 bg-amber-500/5 flex flex-col justify-between hover:border-amber-500 transition group">
@@ -1421,6 +1426,7 @@
 
       </div>
     </section>
+
 
     <!-- 9. IT CAREER DEVELOPMENT PLAN -->
     <section id="career-plan" class="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
@@ -1666,7 +1672,7 @@
               <a href="https://github.com/09072802649/tyron-portfolio" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-slate-900 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white hover:border-[#00F2FE] hover:shadow-cyan-sm transition">
                 <i class="fab fa-github text-base"></i>
               </a>
-              <a href="https://linkedin.com/in/tyron-delacruz" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-slate-900 border border-white/10 flex items-center justify-center text-slate-300 hover:text-[#00F2FE] hover:border-[#00F2FE] hover:shadow-cyan-sm transition">
+              <a href="https://www.linkedin.com/in/tyronjohn-delacruz-69032a442/?isSelfProfile=true" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-slate-900 border border-white/10 flex items-center justify-center text-slate-300 hover:text-[#00F2FE] hover:border-[#00F2FE] hover:shadow-cyan-sm transition">
                 <i class="fab fa-linkedin-in text-base"></i>
               </a>
               <a href="mailto:tyronjohndelacruz@gmail.com" class="w-10 h-10 rounded-xl bg-slate-900 border border-white/10 flex items-center justify-center text-slate-300 hover:text-cyan-400 hover:border-[#00F2FE] hover:shadow-cyan-sm transition">
@@ -1911,6 +1917,21 @@ ORDER BY peak_mbps DESC LIMIT 5;</code></pre>
     </div>
   </div>
 
+  <!-- 5. Certificate Image Modal -->
+  <div id="modal-certificate" class="modal fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-card rounded-2xl max-w-4xl w-full border border-cyan-500/30 overflow-hidden shadow-2xl relative flex flex-col">
+      <div class="p-4 sm:p-6 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0">
+        <h4 id="modal-certificate-title" class="text-base sm:text-lg font-bold text-white pr-4">Certificate</h4>
+        <button type="button" onclick="closeModal('modal-certificate')" class="text-slate-400 hover:text-white p-1 bg-slate-800 hover:bg-slate-700 rounded-full w-8 h-8 flex items-center justify-center shrink-0 transition-colors">
+          <i class="fas fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <div class="p-0 bg-slate-950 flex-1 overflow-auto flex items-center justify-center min-h-[50vh]">
+        <img id="modal-certificate-img" src="" alt="Certificate" class="max-w-full h-auto object-contain">
+      </div>
+    </div>
+  </div>
+
   <!-- FLOATING TOAST NOTIFICATION -->
   <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-32 opacity-0 transition-all duration-300 pointer-events-none">
     <div class="glass-card rounded-xl p-4 border border-[#00F2FE]/40 bg-slate-900/95 shadow-cyan-glow flex items-center gap-3 max-w-sm pointer-events-auto">
@@ -2083,6 +2104,19 @@ ORDER BY peak_mbps DESC LIMIT 5;</code></pre>
     function openModal(modalId) {
       const modal = document.getElementById(modalId);
       if (modal) {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function openCertModal(imageSrc, titleText) {
+      const modal = document.getElementById('modal-certificate');
+      const img = document.getElementById('modal-certificate-img');
+      const title = document.getElementById('modal-certificate-title');
+      
+      if (modal && img && title) {
+        img.src = imageSrc;
+        title.textContent = titleText;
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
       }

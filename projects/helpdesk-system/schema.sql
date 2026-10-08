@@ -37,3 +37,12 @@ CREATE POLICY "Allow public update access" ON tickets
 -- Allow anyone to DELETE tickets
 CREATE POLICY "Allow public delete access" ON tickets
   FOR DELETE USING (true);
+
+-- 3. Enable Realtime Updates
+-- To make auto-updating work in the UI across Admin and User views:
+-- Run this block in your Supabase SQL Editor or via Database settings
+BEGIN;
+  DROP PUBLICATION IF EXISTS supabase_realtime;
+  CREATE PUBLICATION supabase_realtime;
+COMMIT;
+ALTER PUBLICATION supabase_realtime ADD TABLE tickets;

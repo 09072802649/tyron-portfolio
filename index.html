@@ -16,6 +16,8 @@
 
   <!-- Three.js CDN for 3D Interactive Visualizations -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- World Land Vector Polygons Dataset -->
+  <script src="assets/world-land.js"></script>
 
   <!-- Tailwind CSS CDN with Custom Configurations -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -270,6 +272,66 @@
       <!-- 3D Dot Wireframe Globe Canvas Background -->
       <canvas id="hero-globe-canvas" class="absolute inset-0 w-full h-full pointer-events-none -z-10"></canvas>
 
+      <!-- Floating Sci-Fi HUD Tooltip for Global Satellite & Network Nodes -->
+      <div id="globe-hud-tooltip" class="fixed pointer-events-none z-50 opacity-0 transition-all duration-200 transform scale-95" style="left: -9999px; top: -9999px;">
+        <div class="relative p-4 rounded-xl bg-[#080C14]/95 backdrop-blur-2xl border border-[#00F2FE]/50 shadow-[0_0_35px_rgba(0,242,254,0.35)] min-w-[280px] max-w-[340px] text-xs font-mono text-slate-300">
+          <!-- Cyber corner brackets -->
+          <div class="absolute -top-1 -left-1 w-2.5 h-2.5 border-t-2 border-l-2 border-[#00F2FE]"></div>
+          <div class="absolute -top-1 -right-1 w-2.5 h-2.5 border-t-2 border-r-2 border-[#00F2FE]"></div>
+          <div class="absolute -bottom-1 -left-1 w-2.5 h-2.5 border-b-2 border-l-2 border-[#00F2FE]"></div>
+          <div class="absolute -bottom-1 -right-1 w-2.5 h-2.5 border-b-2 border-r-2 border-[#00F2FE]"></div>
+          
+          <!-- Header: Icon, Type Badge & Status -->
+          <div class="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-white/10">
+            <div class="flex items-center gap-2">
+              <span id="hud-icon" class="text-base">🛰️</span>
+              <span id="hud-type-tag" class="text-[9px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-[#00F2FE]/20 text-[#00F2FE] border border-[#00F2FE]/30">LEO SATELLITE</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+              <span id="hud-status" class="text-[9px] text-emerald-400 font-bold uppercase tracking-wider">ONLINE</span>
+            </div>
+          </div>
+          
+          <!-- Name & Subtitle -->
+          <h4 id="hud-title" class="text-sm font-bold text-white mb-0.5 tracking-tight">Starlink v2 #4082</h4>
+          <p id="hud-subtitle" class="text-[10px] text-cyan-400/90 mb-2.5 font-sans">Low Earth Orbit • 550 km Altitude</p>
+          
+          <!-- Connected To Section -->
+          <div class="p-2.5 rounded-lg bg-[#0B1120]/90 border border-white/10 mb-2.5">
+            <div class="text-[9px] uppercase font-semibold text-[#00F2FE] flex items-center gap-1.5 mb-1 tracking-wider">
+              <i class="fas fa-network-wired text-[9px]"></i>
+              <span>INTERCONNECTED WITH:</span>
+            </div>
+            <div id="hud-connected-to" class="text-[11px] text-slate-100 font-sans font-medium leading-relaxed">
+              Manila Gateway (PH) &amp; Tokyo IX (JP) via Laser Downlink • O3b MEO via ISL
+            </div>
+          </div>
+          
+          <!-- Telemetry Data Grid -->
+          <div class="grid grid-cols-2 gap-2 text-[10px]">
+            <div class="bg-slate-900/70 p-1.5 rounded border border-white/5">
+              <span class="text-slate-400 text-[9px] block">LATENCY / PING</span>
+              <span id="hud-latency" class="text-emerald-300 font-bold font-mono">22 ms</span>
+            </div>
+            <div class="bg-slate-900/70 p-1.5 rounded border border-white/5">
+              <span class="text-slate-400 text-[9px] block">THROUGHPUT / RATE</span>
+              <span id="hud-bandwidth" class="text-cyan-300 font-bold font-mono">1.4 Gbps</span>
+            </div>
+            <div class="bg-slate-900/70 p-1.5 rounded border border-white/5 col-span-2">
+              <span class="text-slate-400 text-[9px] block">PROTOCOL / SPECTRUM</span>
+              <span id="hud-specs" class="text-slate-200 font-mono truncate block">Ka-Band Beam + Optical Laser ISL</span>
+            </div>
+          </div>
+          
+          <!-- Footer info -->
+          <div class="mt-2.5 pt-2 border-t border-white/10 text-[9px] text-slate-400 flex items-center justify-between">
+            <span class="flex items-center gap-1"><i class="fas fa-satellite-dish text-[#00F2FE]"></i> REAL-TIME TELEMETRY</span>
+            <span id="hud-pin-hint" class="text-[#00F2FE]/80 font-sans">Click to lock inspection</span>
+          </div>
+        </div>
+      </div>
+
       <!-- Ambient glow lights from Globe Hero reference -->
       <div class="absolute inset-0 bg-gradient-to-t from-[#080C14]/70 via-transparent to-[#080C14]/40 pointer-events-none -z-10"></div>
       <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-[#00F2FE]/10 rounded-full blur-3xl animate-pulse pointer-events-none -z-10"></div>
@@ -277,11 +339,20 @@
 
       <div class="max-w-4xl mx-auto text-center flex flex-col items-center relative z-10">
         <!-- Global Network Infrastructure Badge (from DotGlobeHero design) -->
-        <div class="relative inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#00F2FE]/20 via-[#00F2FE]/10 to-[#00F2FE]/20 border border-[#00F2FE]/30 backdrop-blur-xl shadow-2xl mb-8 group animate-float">
+        <div class="relative inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#00F2FE]/20 via-[#00F2FE]/10 to-[#00F2FE]/20 border border-[#00F2FE]/30 backdrop-blur-xl shadow-2xl mb-3 group animate-float">
           <div class="absolute inset-0 rounded-full bg-gradient-to-r from-[#00F2FE]/15 via-transparent to-[#00F2FE]/15 animate-pulse"></div>
           <div class="w-2 h-2 bg-[#00F2FE] rounded-full animate-ping"></div>
           <span class="relative z-10 text-xs font-mono font-bold text-[#00F2FE] tracking-widest uppercase">GLOBAL NETWORK INFRASTRUCTURE</span>
           <div class="w-2 h-2 bg-[#00F2FE] rounded-full animate-ping"></div>
+        </div>
+
+        <!-- Interactive Satellite & Backbone Topology Sub-pill -->
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-[#00F2FE]/30 text-[11px] font-mono text-cyan-300 mb-8 shadow-sm backdrop-blur-md">
+          <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="font-semibold tracking-wide">3D WORLD MAP • SATNET &amp; SUBSEA FIBER</span>
+          <span class="text-slate-500">|</span>
+          <span class="text-slate-300 text-[10px] hidden sm:inline">Live Earth continents, orbiting satellites &amp; subsea fiber lines</span>
+          <span class="text-slate-300 text-[10px] sm:hidden">Hover network items to inspect</span>
         </div>
 
         <!-- Avatar Container with Animated Neon Glowing Ring -->
@@ -457,184 +528,230 @@
         <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">Technical Skills</h2>
         <p class="text-slate-400 text-sm max-w-xl mx-auto mt-2">Categorized competencies spanning software development, network topologies, data pipelines, and hardware diagnostics.</p>
         <div class="w-20 h-1 bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] mx-auto mt-4 rounded-full"></div>
+        <div class="inline-flex items-center gap-2 mt-4 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-xs font-mono text-cyan-300">
+          <i class="fas fa-hand-pointer text-cyan-400 animate-pulse"></i>
+          <span>Interactive: Click any skill card or specific tag below to inspect practical project examples &amp; live demos</span>
+        </div>
       </div>
 
       <!-- Skills Grid (7 Core Categories) -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
         <!-- 1. Web Development -->
-        <div class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between">
+        <div class="skill-card-trigger glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between cursor-pointer hover:border-cyan-400/40 hover:shadow-[0_0_25px_rgba(0,242,254,0.15)] transition-all group relative" data-category="web_dev" role="button" tabindex="0" title="Click to inspect Web Development examples">
           <div>
             <div class="flex items-center justify-between mb-4">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-[#00F2FE]/10 border border-[#00F2FE]/30 flex items-center justify-center text-[#00F2FE]">
+                <div class="w-10 h-10 rounded-xl bg-[#00F2FE]/10 border border-[#00F2FE]/30 flex items-center justify-center text-[#00F2FE] group-hover:scale-105 transition-transform">
                   <i class="fas fa-globe text-lg"></i>
                 </div>
-                <h3 class="text-base font-bold text-white">Web Development</h3>
+                <h3 class="text-base font-bold text-white group-hover:text-cyan-300 transition-colors">Web Development</h3>
               </div>
               <span class="text-xs font-mono text-[#00F2FE] bg-[#00F2FE]/10 px-2 py-0.5 rounded">90%</span>
             </div>
             <p class="text-xs text-slate-400 mb-4">Building responsive, accessible, dynamic user experiences and modular web architectures.</p>
             <div class="flex flex-wrap gap-1.5 font-mono text-xs">
-              <span class="bg-slate-900/80 text-cyan-300 border border-cyan-500/20 px-2.5 py-1 rounded">HTML5</span>
-              <span class="bg-slate-900/80 text-cyan-300 border border-cyan-500/20 px-2.5 py-1 rounded">CSS3</span>
-              <span class="bg-slate-900/80 text-cyan-300 border border-cyan-500/20 px-2.5 py-1 rounded">JavaScript (ES6+)</span>
-              <span class="bg-slate-900/80 text-cyan-300 border border-cyan-500/20 px-2.5 py-1 rounded">Responsive Layouts</span>
-              <span class="bg-slate-900/80 text-cyan-300 border border-cyan-500/20 px-2.5 py-1 rounded">API Integration</span>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-cyan-300 border border-cyan-500/20 px-2.5 py-1 rounded hover:bg-cyan-500/20 hover:border-cyan-400/60 transition-all cursor-pointer inline-flex items-center gap-1" data-category="web_dev" data-sub="html5">HTML5 <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60"></i></button>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-cyan-300 border border-cyan-500/20 px-2.5 py-1 rounded hover:bg-cyan-500/20 hover:border-cyan-400/60 transition-all cursor-pointer inline-flex items-center gap-1" data-category="web_dev" data-sub="css3">CSS3 <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60"></i></button>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-cyan-300 border border-cyan-500/20 px-2.5 py-1 rounded hover:bg-cyan-500/20 hover:border-cyan-400/60 transition-all cursor-pointer inline-flex items-center gap-1" data-category="web_dev" data-sub="js">JavaScript (ES6+) <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60"></i></button>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-cyan-300 border border-cyan-500/20 px-2.5 py-1 rounded hover:bg-cyan-500/20 hover:border-cyan-400/60 transition-all cursor-pointer inline-flex items-center gap-1" data-category="web_dev" data-sub="responsive">Responsive Layouts <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60"></i></button>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-cyan-300 border border-cyan-500/20 px-2.5 py-1 rounded hover:bg-cyan-500/20 hover:border-cyan-400/60 transition-all cursor-pointer inline-flex items-center gap-1" data-category="web_dev" data-sub="api">API Integration <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60"></i></button>
             </div>
           </div>
-          <div class="w-full bg-slate-800/80 h-1.5 rounded-full mt-6 overflow-hidden">
-            <div class="bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] h-full rounded-full" style="width: 90%;"></div>
+          <div>
+            <div class="w-full bg-slate-800/80 h-1.5 rounded-full mt-6 overflow-hidden">
+              <div class="bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] h-full rounded-full" style="width: 90%;"></div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-xs font-mono text-slate-400 group-hover:text-cyan-300 transition-colors">
+              <span class="flex items-center gap-1.5"><i class="fas fa-terminal text-[#00F2FE]"></i> Inspect Live Examples</span>
+              <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+            </div>
           </div>
         </div>
 
         <!-- 2. Programming & Scripting -->
-        <div class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between">
+        <div class="skill-card-trigger glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between cursor-pointer hover:border-[#4FACFE]/40 hover:shadow-[0_0_25px_rgba(79,172,254,0.15)] transition-all group relative" data-category="programming" role="button" tabindex="0" title="Click to inspect Programming & Scripting examples">
           <div>
             <div class="flex items-center justify-between mb-4">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-[#4FACFE]/10 border border-[#4FACFE]/30 flex items-center justify-center text-[#4FACFE]">
+                <div class="w-10 h-10 rounded-xl bg-[#4FACFE]/10 border border-[#4FACFE]/30 flex items-center justify-center text-[#4FACFE] group-hover:scale-105 transition-transform">
                   <i class="fas fa-code text-lg"></i>
                 </div>
-                <h3 class="text-base font-bold text-white">Programming &amp; Scripting</h3>
+                <h3 class="text-base font-bold text-white group-hover:text-[#4FACFE] transition-colors">Programming &amp; Scripting</h3>
               </div>
               <span class="text-xs font-mono text-[#4FACFE] bg-[#4FACFE]/10 px-2 py-0.5 rounded">85%</span>
             </div>
             <p class="text-xs text-slate-400 mb-4">Algorithmic logic, object-oriented concepts, and automation scripting for routine system operations.</p>
             <div class="flex flex-wrap gap-1.5 font-mono text-xs">
-              <span class="bg-slate-900/80 text-blue-300 border border-blue-500/20 px-2.5 py-1 rounded">Python</span>
-              <span class="bg-slate-900/80 text-blue-300 border border-blue-500/20 px-2.5 py-1 rounded">C++ Fundamentals</span>
-              <span class="bg-slate-900/80 text-blue-300 border border-blue-500/20 px-2.5 py-1 rounded">Automation Scripts</span>
-              <span class="bg-slate-900/80 text-blue-300 border border-blue-500/20 px-2.5 py-1 rounded">Object-Oriented Logic</span>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-blue-300 border border-blue-500/20 px-2.5 py-1 rounded hover:bg-blue-500/20 hover:border-blue-400/60 transition-all cursor-pointer inline-flex items-center gap-1" data-category="programming" data-sub="python">Python <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60"></i></button>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-blue-300 border border-blue-500/20 px-2.5 py-1 rounded hover:bg-blue-500/20 hover:border-blue-400/60 transition-all cursor-pointer inline-flex items-center gap-1" data-category="programming" data-sub="cpp">C++ Fundamentals <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60"></i></button>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-blue-300 border border-blue-500/20 px-2.5 py-1 rounded hover:bg-blue-500/20 hover:border-blue-400/60 transition-all cursor-pointer inline-flex items-center gap-1" data-category="programming" data-sub="automation">Automation Scripts <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60"></i></button>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-blue-300 border border-blue-500/20 px-2.5 py-1 rounded hover:bg-blue-500/20 hover:border-blue-400/60 transition-all cursor-pointer inline-flex items-center gap-1" data-category="programming" data-sub="oop">Object-Oriented Logic <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60"></i></button>
             </div>
           </div>
-          <div class="w-full bg-slate-800/80 h-1.5 rounded-full mt-6 overflow-hidden">
-            <div class="bg-gradient-to-r from-[#4FACFE] to-[#7F00FF] h-full rounded-full" style="width: 85%;"></div>
+          <div>
+            <div class="w-full bg-slate-800/80 h-1.5 rounded-full mt-6 overflow-hidden">
+              <div class="bg-gradient-to-r from-[#4FACFE] to-[#7F00FF] h-full rounded-full" style="width: 85%;"></div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-xs font-mono text-slate-400 group-hover:text-blue-300 transition-colors">
+              <span class="flex items-center gap-1.5"><i class="fas fa-terminal text-[#4FACFE]"></i> Inspect Live Examples</span>
+              <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+            </div>
           </div>
         </div>
 
         <!-- 3. Database Systems -->
-        <div class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between">
+        <div class="skill-card-trigger glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between cursor-pointer hover:border-purple-400/40 hover:shadow-[0_0_25px_rgba(168,85,247,0.15)] transition-all group relative" data-category="database" role="button" tabindex="0" title="Click to inspect Database Systems examples">
           <div>
             <div class="flex items-center justify-between mb-4">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 group-hover:scale-105 transition-transform">
                   <i class="fas fa-database text-lg"></i>
                 </div>
-                <h3 class="text-base font-bold text-white">Database Systems</h3>
+                <h3 class="text-base font-bold text-white group-hover:text-purple-300 transition-colors">Database Systems</h3>
               </div>
               <span class="text-xs font-mono text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded">88%</span>
             </div>
             <p class="text-xs text-slate-400 mb-4">Relational schema modeling, multi-table queries, normalization rules, and index optimization.</p>
             <div class="flex flex-wrap gap-1.5 font-mono text-xs">
-              <span class="bg-slate-900/80 text-purple-300 border border-purple-500/20 px-2.5 py-1 rounded">SQL</span>
-              <span class="bg-slate-900/80 text-purple-300 border border-purple-500/20 px-2.5 py-1 rounded">MySQL</span>
-              <span class="bg-slate-900/80 text-purple-300 border border-purple-500/20 px-2.5 py-1 rounded">ERD System Design</span>
-              <span class="bg-slate-900/80 text-purple-300 border border-purple-500/20 px-2.5 py-1 rounded">Database Normalization</span>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-purple-300 border border-purple-500/20 px-2.5 py-1 rounded hover:bg-purple-500/20 hover:border-purple-400/60 transition-all cursor-pointer inline-flex items-center gap-1" data-category="database" data-sub="sql">SQL <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60"></i></button>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-purple-300 border border-purple-500/20 px-2.5 py-1 rounded hover:bg-purple-500/20 hover:border-purple-400/60 transition-all cursor-pointer inline-flex items-center gap-1" data-category="database" data-sub="mysql">MySQL <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60"></i></button>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-purple-300 border border-purple-500/20 px-2.5 py-1 rounded hover:bg-purple-500/20 hover:border-purple-400/60 transition-all cursor-pointer inline-flex items-center gap-1" data-category="database" data-sub="erd">ERD System Design <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60"></i></button>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-purple-300 border border-purple-500/20 px-2.5 py-1 rounded hover:bg-purple-500/20 hover:border-purple-400/60 transition-all cursor-pointer inline-flex items-center gap-1" data-category="database" data-sub="normalization">Database Normalization <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60"></i></button>
             </div>
           </div>
-          <div class="w-full bg-slate-800/80 h-1.5 rounded-full mt-6 overflow-hidden">
-            <div class="bg-gradient-to-r from-purple-500 to-indigo-500 h-full rounded-full" style="width: 88%;"></div>
+          <div>
+            <div class="w-full bg-slate-800/80 h-1.5 rounded-full mt-6 overflow-hidden">
+              <div class="bg-gradient-to-r from-purple-500 to-indigo-500 h-full rounded-full" style="width: 88%;"></div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-xs font-mono text-slate-400 group-hover:text-purple-300 transition-colors">
+              <span class="flex items-center gap-1.5"><i class="fas fa-terminal text-purple-400"></i> Inspect Live Examples</span>
+              <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+            </div>
           </div>
         </div>
 
         <!-- 4. Networking & Infrastructure -->
-        <div class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between">
+        <div class="skill-card-trigger glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between cursor-pointer hover:border-emerald-400/40 hover:shadow-[0_0_25px_rgba(16,185,129,0.15)] transition-all group relative" data-category="networking" role="button" tabindex="0" title="Click to inspect Networking & Infrastructure examples">
           <div>
             <div class="flex items-center justify-between mb-4">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform">
                   <i class="fas fa-network-wired text-lg"></i>
                 </div>
-                <h3 class="text-base font-bold text-white">Networking &amp; Infrastructure</h3>
+                <h3 class="text-base font-bold text-white group-hover:text-emerald-300 transition-colors">Networking &amp; Infrastructure</h3>
               </div>
               <span class="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">92%</span>
             </div>
             <p class="text-xs text-slate-400 mb-4">Subnet planning, gateway configuration, switch/router setup, and packet troubleshooting.</p>
             <div class="flex flex-wrap gap-1.5 font-mono text-xs">
-              <span class="bg-slate-900/80 text-emerald-300 border border-emerald-500/20 px-2.5 py-1 rounded">TCP/IP</span>
-              <span class="bg-slate-900/80 text-emerald-300 border border-emerald-500/20 px-2.5 py-1 rounded">Subnetting (VLSM/CIDR)</span>
-              <span class="bg-slate-900/80 text-emerald-300 border border-emerald-500/20 px-2.5 py-1 rounded">Routing Protocols</span>
-              <span class="bg-slate-900/80 text-emerald-300 border border-emerald-500/20 px-2.5 py-1 rounded">Hardware Configuration</span>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-emerald-300 border border-emerald-500/20 px-2.5 py-1 rounded hover:bg-emerald-500/20 hover:border-emerald-400/60 transition-all cursor-pointer inline-flex items-center gap-1" data-category="networking" data-sub="tcp">TCP/IP <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60"></i></button>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-emerald-300 border border-emerald-500/20 px-2.5 py-1 rounded hover:bg-emerald-500/20 hover:border-emerald-400/60 transition-all cursor-pointer inline-flex items-center gap-1" data-category="networking" data-sub="subnetting">Subnetting (VLSM/CIDR) <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60"></i></button>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-emerald-300 border border-emerald-500/20 px-2.5 py-1 rounded hover:bg-emerald-500/20 hover:border-emerald-400/60 transition-all cursor-pointer inline-flex items-center gap-1" data-category="networking" data-sub="routing">Routing Protocols <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60"></i></button>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-emerald-300 border border-emerald-500/20 px-2.5 py-1 rounded hover:bg-emerald-500/20 hover:border-emerald-400/60 transition-all cursor-pointer inline-flex items-center gap-1" data-category="networking" data-sub="hardware_config">Hardware Configuration <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60"></i></button>
             </div>
           </div>
-          <div class="w-full bg-slate-800/80 h-1.5 rounded-full mt-6 overflow-hidden">
-            <div class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full" style="width: 92%;"></div>
+          <div>
+            <div class="w-full bg-slate-800/80 h-1.5 rounded-full mt-6 overflow-hidden">
+              <div class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full" style="width: 92%;"></div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-xs font-mono text-slate-400 group-hover:text-emerald-300 transition-colors">
+              <span class="flex items-center gap-1.5"><i class="fas fa-terminal text-emerald-400"></i> Inspect Live Examples</span>
+              <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+            </div>
           </div>
         </div>
 
         <!-- 5. Cybersecurity & QA -->
-        <div class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between">
+        <div class="skill-card-trigger glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between cursor-pointer hover:border-rose-400/40 hover:shadow-[0_0_25px_rgba(244,63,94,0.15)] transition-all group relative" data-category="cybersecurity" role="button" tabindex="0" title="Click to inspect Cybersecurity & QA examples">
           <div>
             <div class="flex items-center justify-between mb-4">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400">
+                <div class="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 group-hover:scale-105 transition-transform">
                   <i class="fas fa-shield-halved text-lg"></i>
                 </div>
-                <h3 class="text-base font-bold text-white">Cybersecurity &amp; QA</h3>
+                <h3 class="text-base font-bold text-white group-hover:text-rose-300 transition-colors">Cybersecurity &amp; QA</h3>
               </div>
               <span class="text-xs font-mono text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded">86%</span>
             </div>
             <p class="text-xs text-slate-400 mb-4">Vulnerability identification, attack vector mitigation, test case design, and systematic bug tracking.</p>
             <div class="flex flex-wrap gap-1.5 font-mono text-xs">
-              <span class="bg-slate-900/80 text-rose-300 border border-rose-500/20 px-2.5 py-1 rounded">Threat Mitigation</span>
-              <span class="bg-slate-900/80 text-rose-300 border border-rose-500/20 px-2.5 py-1 rounded">Vulnerability Assessment</span>
-              <span class="bg-slate-900/80 text-rose-300 border border-rose-500/20 px-2.5 py-1 rounded">Software QA Testing</span>
-              <span class="bg-slate-900/80 text-rose-300 border border-rose-500/20 px-2.5 py-1 rounded">Bug Tracking</span>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-rose-300 border border-rose-500/20 px-2.5 py-1 rounded hover:bg-rose-500/20 hover:border-rose-400/60 transition-all cursor-pointer inline-flex items-center gap-1" data-category="cybersecurity" data-sub="threat_mitigation">Threat Mitigation <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60"></i></button>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-rose-300 border border-rose-500/20 px-2.5 py-1 rounded hover:bg-rose-500/20 hover:border-rose-400/60 transition-all cursor-pointer inline-flex items-center gap-1" data-category="cybersecurity" data-sub="vulnerability">Vulnerability Assessment <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60"></i></button>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-rose-300 border border-rose-500/20 px-2.5 py-1 rounded hover:bg-rose-500/20 hover:border-rose-400/60 transition-all cursor-pointer inline-flex items-center gap-1" data-category="cybersecurity" data-sub="qa">Software QA Testing <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60"></i></button>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-rose-300 border border-rose-500/20 px-2.5 py-1 rounded hover:bg-rose-500/20 hover:border-rose-400/60 transition-all cursor-pointer inline-flex items-center gap-1" data-category="cybersecurity" data-sub="bug_tracking">Bug Tracking <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60"></i></button>
             </div>
           </div>
-          <div class="w-full bg-slate-800/80 h-1.5 rounded-full mt-6 overflow-hidden">
-            <div class="bg-gradient-to-r from-rose-500 to-pink-500 h-full rounded-full" style="width: 86%;"></div>
+          <div>
+            <div class="w-full bg-slate-800/80 h-1.5 rounded-full mt-6 overflow-hidden">
+              <div class="bg-gradient-to-r from-rose-500 to-pink-500 h-full rounded-full" style="width: 86%;"></div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-xs font-mono text-slate-400 group-hover:text-rose-300 transition-colors">
+              <span class="flex items-center gap-1.5"><i class="fas fa-terminal text-rose-400"></i> Inspect Live Examples</span>
+              <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+            </div>
           </div>
         </div>
 
         <!-- 6. IT Support & Hardware -->
-        <div class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between">
+        <div class="skill-card-trigger glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between cursor-pointer hover:border-amber-400/40 hover:shadow-[0_0_25px_rgba(245,158,11,0.15)] transition-all group relative" data-category="it_support" role="button" tabindex="0" title="Click to inspect IT Support & Hardware examples">
           <div>
             <div class="flex items-center justify-between mb-4">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 group-hover:scale-105 transition-transform">
                   <i class="fas fa-screwdriver-wrench text-lg"></i>
                 </div>
-                <h3 class="text-base font-bold text-white">IT Support &amp; Hardware</h3>
+                <h3 class="text-base font-bold text-white group-hover:text-amber-300 transition-colors">IT Support &amp; Hardware</h3>
               </div>
               <span class="text-xs font-mono text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded">95%</span>
             </div>
             <p class="text-xs text-slate-400 mb-4">Workstation assembly, component diagnostics, thermal management, and rapid OS repair.</p>
             <div class="flex flex-wrap gap-1.5 font-mono text-xs">
-              <span class="bg-slate-900/80 text-amber-300 border border-amber-500/20 px-2.5 py-1 rounded">PC Hardware Assembly</span>
-              <span class="bg-slate-900/80 text-amber-300 border border-amber-500/20 px-2.5 py-1 rounded">Diagnostic Troubleshooting</span>
-              <span class="bg-slate-900/80 text-amber-300 border border-amber-500/20 px-2.5 py-1 rounded">System Maintenance</span>
-              <span class="bg-slate-900/80 text-amber-300 border border-amber-500/20 px-2.5 py-1 rounded">OS Recovery</span>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-amber-300 border border-amber-500/20 px-2.5 py-1 rounded hover:bg-amber-500/20 hover:border-amber-400/60 transition-all cursor-pointer inline-flex items-center gap-1" data-category="it_support" data-sub="pc_assembly">PC Hardware Assembly <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60"></i></button>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-amber-300 border border-amber-500/20 px-2.5 py-1 rounded hover:bg-amber-500/20 hover:border-amber-400/60 transition-all cursor-pointer inline-flex items-center gap-1" data-category="it_support" data-sub="diagnostics">Diagnostic Troubleshooting <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60"></i></button>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-amber-300 border border-amber-500/20 px-2.5 py-1 rounded hover:bg-amber-500/20 hover:border-amber-400/60 transition-all cursor-pointer inline-flex items-center gap-1" data-category="it_support" data-sub="maintenance">System Maintenance <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60"></i></button>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-amber-300 border border-amber-500/20 px-2.5 py-1 rounded hover:bg-amber-500/20 hover:border-amber-400/60 transition-all cursor-pointer inline-flex items-center gap-1" data-category="it_support" data-sub="os_recovery">OS Recovery <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60"></i></button>
             </div>
           </div>
-          <div class="w-full bg-slate-800/80 h-1.5 rounded-full mt-6 overflow-hidden">
-            <div class="bg-gradient-to-r from-amber-500 to-yellow-400 h-full rounded-full" style="width: 95%;"></div>
+          <div>
+            <div class="w-full bg-slate-800/80 h-1.5 rounded-full mt-6 overflow-hidden">
+              <div class="bg-gradient-to-r from-amber-500 to-yellow-400 h-full rounded-full" style="width: 95%;"></div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-xs font-mono text-slate-400 group-hover:text-amber-300 transition-colors">
+              <span class="flex items-center gap-1.5"><i class="fas fa-terminal text-amber-400"></i> Inspect Live Examples</span>
+              <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+            </div>
           </div>
         </div>
 
         <!-- 7. Data & Tools -->
-        <div class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between md:col-span-2 lg:col-span-3">
+        <div class="skill-card-trigger glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between md:col-span-2 lg:col-span-3 cursor-pointer hover:border-cyan-400/40 hover:shadow-[0_0_25px_rgba(6,182,212,0.15)] transition-all group relative" data-category="productivity" role="button" tabindex="0" title="Click to inspect Data & Productivity Tools examples">
           <div>
             <div class="flex items-center justify-between mb-4">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+                <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 group-hover:scale-105 transition-transform">
                   <i class="fas fa-chart-line text-lg"></i>
                 </div>
-                <h3 class="text-base font-bold text-white">Data &amp; Productivity Tools</h3>
+                <h3 class="text-base font-bold text-white group-hover:text-cyan-300 transition-colors">Data &amp; Productivity Tools</h3>
               </div>
               <span class="text-xs font-mono text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded">90%</span>
             </div>
             <p class="text-xs text-slate-400 mb-4">Analytical spreadsheet modeling, Git source control, digital design assets, and workflow script automation.</p>
             <div class="flex flex-wrap gap-2 font-mono text-xs">
-              <span class="bg-slate-900/80 text-slate-200 border border-cyan-500/30 px-3 py-1.5 rounded-md"><i class="fas fa-table mr-1.5 text-emerald-400"></i> Excel/Sheets Data Analytics</span>
-              <span class="bg-slate-900/80 text-slate-200 border border-cyan-500/30 px-3 py-1.5 rounded-md"><i class="fab fa-git-alt mr-1.5 text-orange-400"></i> Git/GitHub Version Control</span>
-              <span class="bg-slate-900/80 text-slate-200 border border-cyan-500/30 px-3 py-1.5 rounded-md"><i class="fas fa-palette mr-1.5 text-pink-400"></i> Graphic Design &amp; UI Wireframes</span>
-              <span class="bg-slate-900/80 text-slate-200 border border-cyan-500/30 px-3 py-1.5 rounded-md"><i class="fas fa-gears mr-1.5 text-blue-400"></i> Process Automation</span>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-slate-200 border border-cyan-500/30 px-3 py-1.5 rounded-md hover:bg-cyan-500/20 hover:border-cyan-400 transition-all cursor-pointer inline-flex items-center" data-category="productivity" data-sub="excel"><i class="fas fa-table mr-1.5 text-emerald-400"></i> Excel/Sheets Data Analytics <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60 ml-1"></i></button>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-slate-200 border border-cyan-500/30 px-3 py-1.5 rounded-md hover:bg-cyan-500/20 hover:border-cyan-400 transition-all cursor-pointer inline-flex items-center" data-category="productivity" data-sub="git"><i class="fab fa-git-alt mr-1.5 text-orange-400"></i> Git/GitHub Version Control <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60 ml-1"></i></button>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-slate-200 border border-cyan-500/30 px-3 py-1.5 rounded-md hover:bg-cyan-500/20 hover:border-cyan-400 transition-all cursor-pointer inline-flex items-center" data-category="productivity" data-sub="ui_design"><i class="fas fa-palette mr-1.5 text-pink-400"></i> Graphic Design &amp; UI Wireframes <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60 ml-1"></i></button>
+              <button type="button" class="skill-tag-pill bg-slate-900/80 text-slate-200 border border-cyan-500/30 px-3 py-1.5 rounded-md hover:bg-cyan-500/20 hover:border-cyan-400 transition-all cursor-pointer inline-flex items-center" data-category="productivity" data-sub="automation_tools"><i class="fas fa-gears mr-1.5 text-blue-400"></i> Process Automation <i class="fas fa-arrow-up-right-from-square text-[9px] opacity-60 ml-1"></i></button>
             </div>
           </div>
-          <div class="w-full bg-slate-800/80 h-1.5 rounded-full mt-6 overflow-hidden">
-            <div class="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 h-full rounded-full" style="width: 90%;"></div>
+          <div>
+            <div class="w-full bg-slate-800/80 h-1.5 rounded-full mt-6 overflow-hidden">
+              <div class="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 h-full rounded-full" style="width: 90%;"></div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-xs font-mono text-slate-400 group-hover:text-cyan-300 transition-colors">
+              <span class="flex items-center gap-1.5"><i class="fas fa-terminal text-cyan-400"></i> Inspect Live Examples</span>
+              <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+            </div>
           </div>
         </div>
 
@@ -2114,6 +2231,117 @@ ORDER BY peak_mbps DESC LIMIT 5;</code></pre>
     </div>
   </div>
 
+  <!-- 6. SKILL PRACTICAL EXAMPLES & INTERACTIVE DEMONSTRATION MODAL -->
+  <div id="skill-example-modal" class="fixed inset-0 z-50 bg-[#080C14]/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 opacity-0 pointer-events-none transition-all duration-300" role="dialog" aria-modal="true" aria-labelledby="skill-modal-title">
+    <div id="skill-modal-container" class="glass-card rounded-2xl max-w-4xl w-full border border-cyan-500/30 overflow-hidden shadow-[0_0_50px_rgba(0,242,254,0.18)] relative flex flex-col max-h-[92vh] bg-[#0A101D]/95 transform scale-95 transition-transform duration-300">
+      
+      <!-- Modal Header -->
+      <div class="p-4 sm:p-5 bg-slate-900/90 border-b border-white/10 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-3">
+          <div id="skill-modal-icon-container" class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0">
+            <i id="skill-modal-icon" class="fas fa-globe text-lg"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <h3 id="skill-modal-title" class="text-base sm:text-lg font-bold text-white tracking-tight">Web Development</h3>
+              <span id="skill-modal-badge" class="text-xs font-mono px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">90% Proficiency</span>
+            </div>
+            <p id="skill-modal-subtitle" class="text-xs text-slate-400">Practical implementation &amp; real-world system architecture</p>
+          </div>
+        </div>
+        <button type="button" id="skill-modal-close" class="text-slate-400 hover:text-white p-1.5 bg-slate-800/80 hover:bg-slate-700/80 rounded-xl w-9 h-9 flex items-center justify-center shrink-0 border border-white/10 transition-colors" aria-label="Close modal">
+          <i class="fas fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Sub-Skill Tabs Strip -->
+      <div class="bg-slate-950/80 border-b border-white/5 px-4 sm:px-6 py-2.5 flex items-center gap-2 overflow-x-auto shrink-0 scrollbar-thin">
+        <span class="text-[11px] font-mono text-slate-400 uppercase tracking-wider shrink-0 mr-1"><i class="fas fa-layer-group text-cyan-400 mr-1"></i> Sub-Skills:</span>
+        <div id="skill-subtabs-list" class="flex items-center gap-2">
+          <!-- Dynamic Sub Tabs Injected Here -->
+        </div>
+      </div>
+
+      <!-- Modal Body (Scrollable) -->
+      <div class="p-4 sm:p-6 overflow-y-auto space-y-5 text-xs text-slate-300 flex-1">
+        
+        <!-- Context Alert / Project Deployment Banner -->
+        <div id="skill-example-context-box" class="p-3.5 rounded-xl bg-slate-900/80 border border-cyan-500/20 flex items-start gap-3">
+          <div class="w-7 h-7 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0 mt-0.5">
+            <i class="fas fa-diagram-project text-xs"></i>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center justify-between flex-wrap gap-1">
+              <span id="skill-example-project-tag" class="text-[11px] font-mono font-semibold text-cyan-300 uppercase tracking-wider">PROJECT INTEGRATION: GOCASH LENDING SYSTEM</span>
+              <span id="skill-example-tech-tag" class="text-[10px] font-mono text-slate-400">PRODUCTION CODEBASE</span>
+            </div>
+            <p id="skill-example-desc" class="text-xs text-slate-300 mt-1 leading-relaxed">
+              Demonstrating automated loan installment calculation with dynamic daily interest projection and receipt ledger binding.
+            </p>
+          </div>
+        </div>
+
+        <!-- Code Snippet Container -->
+        <div class="rounded-xl overflow-hidden border border-white/10 bg-slate-950 flex flex-col">
+          <div class="bg-slate-900/90 px-4 py-2 border-b border-white/5 flex items-center justify-between text-[11px] font-mono text-slate-400">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-rose-500/60 inline-block"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-500/60 inline-block"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/60 inline-block"></span>
+              <span id="skill-code-filename" class="text-slate-300 font-medium ml-2">api/loan_calculator.js</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span id="skill-code-lang" class="text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded text-[10px]">JavaScript ES6+</span>
+              <button type="button" id="skill-copy-btn" class="hover:text-cyan-300 transition-colors flex items-center gap-1.5 px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-slate-300">
+                <i class="fas fa-copy text-[11px]"></i>
+                <span id="skill-copy-text">Copy</span>
+              </button>
+            </div>
+          </div>
+          <pre class="p-4 text-slate-200 font-mono text-[11.5px] leading-relaxed overflow-x-auto max-h-64 scrollbar-thin"><code id="skill-code-content"></code></pre>
+        </div>
+
+        <!-- Live Interactive Simulation / Execution Output -->
+        <div class="rounded-xl border border-white/10 bg-slate-900/60 p-4 space-y-3">
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <div class="flex items-center gap-2 text-xs font-mono font-semibold text-white">
+              <i class="fas fa-play-circle text-cyan-400"></i>
+              <span>Interactive Demonstration &amp; Output</span>
+            </div>
+            <span class="text-[10px] font-mono text-slate-400 bg-slate-800/80 px-2 py-0.5 rounded border border-white/5">LIVE CLIENT SIMULATION</span>
+          </div>
+
+          <div id="skill-demo-interactive-area" class="space-y-3">
+            <!-- Dynamic Interactive Controls and Output Container -->
+          </div>
+        </div>
+
+        <!-- Key Competency Takeaways -->
+        <div>
+          <h4 class="text-xs font-mono text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+            <i class="fas fa-circle-check text-cyan-400 text-xs"></i> Key Competencies Demonstrated:
+          </h4>
+          <div id="skill-competency-list" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <!-- Dynamic 3 points -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-3 sm:p-4 bg-slate-900/90 border-t border-white/10 flex items-center justify-between flex-wrap gap-2 shrink-0">
+        <a id="skill-modal-project-link" href="#projects" class="inline-flex items-center gap-2 text-xs font-mono text-cyan-300 hover:text-cyan-200 bg-cyan-500/10 hover:bg-cyan-500/20 px-3.5 py-1.5 rounded-lg border border-cyan-500/30 transition-all">
+          <i class="fas fa-arrow-up-right-from-square text-[10px]"></i>
+          <span id="skill-modal-project-link-text">View Related Project</span>
+        </a>
+        <button type="button" id="skill-modal-footer-close" class="px-4 py-1.5 rounded-lg text-xs font-mono text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 transition">
+          Close Inspector
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- FLOATING TOAST NOTIFICATION -->
   <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-32 opacity-0 transition-all duration-300 pointer-events-none">
     <div class="glass-card rounded-xl p-4 border border-[#00F2FE]/40 bg-slate-900/95 shadow-cyan-glow flex items-center gap-3 max-w-sm pointer-events-auto">
@@ -2779,7 +3007,7 @@ ORDER BY peak_mbps DESC LIMIT 5;</code></pre>
       renderLoop();
     })();
 
-    // 7c. 3D Dot Wireframe Globe in Hero Background (from DotGlobeHero component)
+    // 7c. 3D Global Network Infrastructure & Orbiting Satellite Constellation
     (function initHeroGlobe() {
       const canvas = document.getElementById('hero-globe-canvas');
       if (!canvas || typeof THREE === 'undefined') return;
@@ -2787,14 +3015,26 @@ ORDER BY peak_mbps DESC LIMIT 5;</code></pre>
       const heroSection = document.getElementById('hero');
       if (!heroSection) return;
 
+      const hudTooltip = document.getElementById('globe-hud-tooltip');
+      const hudIcon = document.getElementById('hud-icon');
+      const hudTypeTag = document.getElementById('hud-type-tag');
+      const hudStatus = document.getElementById('hud-status');
+      const hudTitle = document.getElementById('hud-title');
+      const hudSubtitle = document.getElementById('hud-subtitle');
+      const hudConnectedTo = document.getElementById('hud-connected-to');
+      const hudLatency = document.getElementById('hud-latency');
+      const hudBandwidth = document.getElementById('hud-bandwidth');
+      const hudSpecs = document.getElementById('hud-specs');
+      const hudPinHint = document.getElementById('hud-pin-hint');
+
       let renderer, scene, camera;
       try {
         const testGl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
         if (!testGl) return;
 
         scene = new THREE.Scene();
-        camera = new THREE.PerspectiveCamera(55, 1, 0.1, 100);
-        camera.position.set(0, 0, 3.4);
+        camera = new THREE.PerspectiveCamera(52, 1, 0.1, 100);
+        camera.position.set(0, 0, 3.65);
 
         renderer = new THREE.WebGLRenderer({
           canvas: canvas,
@@ -2813,28 +3053,168 @@ ORDER BY peak_mbps DESC LIMIT 5;</code></pre>
         const height = heroSection.clientHeight || canvas.clientHeight || window.innerHeight;
         if (width === 0 || height === 0) return;
         camera.aspect = width / height;
+        // Adjust camera distance dynamically for mobile & ultra-wide
+        if (camera.aspect < 1) {
+          camera.position.z = 4.4;
+        } else if (camera.aspect < 1.35) {
+          camera.position.z = 3.95;
+        } else {
+          camera.position.z = 3.65;
+        }
         camera.updateProjectionMatrix();
         renderer.setSize(width, height, false);
       }
       updateSize();
       window.addEventListener('resize', updateSize);
 
+      const GLOBE_RADIUS = 1.50;
       const globeGroup = new THREE.Group();
       scene.add(globeGroup);
 
-      // 1. Primary Cyan Wireframe Sphere (DotGlobeHero)
-      const sphereGeo = new THREE.SphereGeometry(1.5, 48, 48);
+      // Separate group for satellites and space links (satellites orbit independently)
+      const spaceGroup = new THREE.Group();
+      scene.add(spaceGroup);
+
+      // 1. Procedural In-Memory Canvas World Map & 3D Continental Coastlines
+      function generateWorldMapCanvas() {
+        const c = document.createElement('canvas');
+        c.width = 2048;
+        c.height = 1024;
+        const ctx = c.getContext('2d');
+
+        // A. Deep Midnight Ocean Background
+        ctx.fillStyle = '#060B14';
+        ctx.fillRect(0, 0, 2048, 1024);
+
+        // B. Ocean Depth Radial Gradient
+        const grad = ctx.createLinearGradient(0, 0, 0, 1024);
+        grad.addColorStop(0, '#04070F');
+        grad.addColorStop(0.5, '#0A1526');
+        grad.addColorStop(1, '#04070F');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 2048, 1024);
+
+        // C. Navigation Graticule Grid (Meridians & Parallels)
+        ctx.strokeStyle = 'rgba(0, 242, 254, 0.08)';
+        ctx.lineWidth = 1;
+        for (let x = 0; x <= 2048; x += 2048 / 24) {
+          ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 1024); ctx.stroke();
+        }
+        for (let y = 0; y <= 1024; y += 1024 / 12) {
+          ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(2048, y); ctx.stroke();
+        }
+
+        // Equator & Prime Meridian Highlighted
+        ctx.strokeStyle = 'rgba(0, 242, 254, 0.25)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(0, 512); ctx.lineTo(2048, 512); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(1024, 0); ctx.lineTo(1024, 1024); ctx.stroke();
+
+        // D. Draw All World Continents from High-Precision Vector Polygons
+        const landPolygons = (typeof window !== 'undefined' && window.WORLD_LAND_POLYGONS) ? window.WORLD_LAND_POLYGONS : [];
+        if (landPolygons && landPolygons.length > 0) {
+          landPolygons.forEach(poly => {
+            if (poly.length < 3) return;
+            ctx.beginPath();
+            poly.forEach(([lon, lat], i) => {
+              const px = ((lon + 180) / 360) * 2048;
+              const py = ((90 - lat) / 180) * 1024;
+              if (i === 0) ctx.moveTo(px, py);
+              else ctx.lineTo(px, py);
+            });
+            ctx.closePath();
+
+            // Glowing Continent Landmass Fill
+            ctx.fillStyle = 'rgba(0, 242, 254, 0.42)';
+            ctx.fill();
+
+            // Sharp Glowing Cyan Continental Coastlines
+            ctx.shadowColor = '#00F2FE';
+            ctx.shadowBlur = 6;
+            ctx.strokeStyle = '#00F2FE';
+            ctx.lineWidth = 3.0;
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+          });
+        }
+
+        return c;
+      }
+
+      // 1a. In-Memory Canvas Texture (100% Reliable, zero CORS/file:// issues)
+      const worldMapCanvas = generateWorldMapCanvas();
+      const worldCanvasTexture = new THREE.CanvasTexture(worldMapCanvas);
+      worldCanvasTexture.wrapS = THREE.ClampToEdgeWrapping;
+      worldCanvasTexture.wrapT = THREE.ClampToEdgeWrapping;
+
+      // Progressive Image Overlay if Available
+      const darkEarthImg = new Image();
+      darkEarthImg.crossOrigin = 'anonymous';
+      darkEarthImg.onload = () => {
+        try {
+          const ctx = worldMapCanvas.getContext('2d');
+          ctx.globalCompositeOperation = 'destination-over';
+          ctx.drawImage(darkEarthImg, 0, 0, 2048, 1024);
+          ctx.globalCompositeOperation = 'source-over';
+          worldCanvasTexture.needsUpdate = true;
+        } catch (e) {
+          // Graceful fallback to pure canvas vector map
+        }
+      };
+      darkEarthImg.src = 'assets/earth-dark.jpg';
+
+      // 1b. Base Earth Sphere with World Map
+      const worldSphereGeo = new THREE.SphereGeometry(GLOBE_RADIUS * 0.990, 64, 64);
+      const worldSphereMat = new THREE.MeshBasicMaterial({
+        map: worldCanvasTexture,
+        transparent: false
+      });
+      const worldSphereMesh = new THREE.Mesh(worldSphereGeo, worldSphereMat);
+      globeGroup.add(worldSphereMesh);
+
+      // 1c. 3D Glowing Continental Coastline Vector Meshes in Scene
+      const coastlinesGroup = new THREE.Group();
+      globeGroup.add(coastlinesGroup);
+
+      const landPolys = (typeof window !== 'undefined' && window.WORLD_LAND_POLYGONS) ? window.WORLD_LAND_POLYGONS : [];
+      landPolys.forEach(poly => {
+        if (poly.length < 3) return;
+        const pts = poly.map(([lon, lat]) => latLonToVector3(lat, lon, GLOBE_RADIUS * 1.002));
+        const lineGeo = new THREE.BufferGeometry().setFromPoints(pts);
+        const lineMat = new THREE.LineBasicMaterial({
+          color: 0x00F2FE,
+          transparent: true,
+          opacity: 0.85,
+          linewidth: 2
+        });
+        const line = new THREE.Line(lineGeo, lineMat);
+        coastlinesGroup.add(line);
+      });
+
+      // 1d. Atmospheric Outer Space Rim Halo
+      const atmosphereGeo = new THREE.SphereGeometry(GLOBE_RADIUS * 1.028, 48, 48);
+      const atmosphereMat = new THREE.MeshBasicMaterial({
+        color: 0x00F2FE,
+        transparent: true,
+        opacity: 0.10,
+        side: THREE.BackSide
+      });
+      const atmosphereMesh = new THREE.Mesh(atmosphereGeo, atmosphereMat);
+      globeGroup.add(atmosphereMesh);
+
+      // 1e. Holographic Cyan Wireframe Grid Overlay
+      const sphereGeo = new THREE.SphereGeometry(GLOBE_RADIUS, 44, 44);
       const wireframeMat = new THREE.MeshBasicMaterial({
         color: 0x00F2FE,
         transparent: true,
-        opacity: 0.18,
+        opacity: 0.14,
         wireframe: true
       });
       const wireframeMesh = new THREE.Mesh(sphereGeo, wireframeMat);
       globeGroup.add(wireframeMesh);
 
-      // 2. Secondary Inner Violet Core
-      const innerGeo = new THREE.SphereGeometry(1.42, 32, 32);
+      // 1f. Secondary Inner Core
+      const innerGeo = new THREE.SphereGeometry(GLOBE_RADIUS * 0.94, 32, 32);
       const innerMat = new THREE.MeshBasicMaterial({
         color: 0x7F00FF,
         transparent: true,
@@ -2844,65 +3224,1040 @@ ORDER BY peak_mbps DESC LIMIT 5;</code></pre>
       const innerMesh = new THREE.Mesh(innerGeo, innerMat);
       globeGroup.add(innerMesh);
 
-      // 3. Global Network Node Dots
-      const dotCount = 220;
-      const dotGeo = new THREE.BufferGeometry();
-      const dotPositions = new Float32Array(dotCount * 3);
-      for (let i = 0; i < dotCount; i++) {
-        const phi = Math.acos(-1 + (2 * i) / dotCount);
-        const theta = Math.sqrt(dotCount * Math.PI) * phi;
-        const r = 1.51;
-        dotPositions[i * 3] = r * Math.cos(theta) * Math.sin(phi);
-        dotPositions[i * 3 + 1] = r * Math.sin(theta) * Math.sin(phi);
-        dotPositions[i * 3 + 2] = r * Math.cos(phi);
+      // Helper: Spherical Coordinate Mapping (Lat/Lon -> Vector3)
+      function latLonToVector3(lat, lon, radius) {
+        const phi = (90 - lat) * (Math.PI / 180);
+        const theta = (lon + 180) * (Math.PI / 180);
+        const x = -(radius * Math.sin(phi) * Math.cos(theta));
+        const z = radius * Math.sin(phi) * Math.sin(theta);
+        const y = radius * Math.cos(phi);
+        return new THREE.Vector3(x, y, z);
       }
-      dotGeo.setAttribute('position', new THREE.BufferAttribute(dotPositions, 3));
-      const dotMat = new THREE.PointsMaterial({
+
+      // 3. Dense Continental Landmass & Grid Points
+      const continentClusters = [
+        // East Asia & Philippines
+        { lat: 14.6, lon: 121.0, spread: 18, count: 35 },
+        { lat: 35.6, lon: 139.7, spread: 15, count: 30 },
+        // Southeast Asia
+        { lat: 1.3, lon: 103.8, spread: 16, count: 25 },
+        // Europe
+        { lat: 50.1, lon: 10.0, spread: 22, count: 45 },
+        // North America
+        { lat: 38.0, lon: -97.0, spread: 28, count: 50 },
+        // Oceania
+        { lat: -28.0, lon: 135.0, spread: 20, count: 25 },
+        // South America
+        { lat: -15.0, lon: -55.0, spread: 22, count: 25 },
+        // Africa
+        { lat: 5.0, lon: 20.0, spread: 25, count: 30 },
+      ];
+
+      const surfacePoints = [];
+      // Distribute clustered continent dots
+      continentClusters.forEach(cluster => {
+        for (let i = 0; i < cluster.count; i++) {
+          const lat = cluster.lat + (Math.random() - 0.5) * cluster.spread;
+          const lon = cluster.lon + (Math.random() - 0.5) * cluster.spread;
+          surfacePoints.push(latLonToVector3(lat, lon, GLOBE_RADIUS * 1.004));
+        }
+      });
+      // Global background Fibonacci distribution dots
+      const bgDotCount = 140;
+      for (let i = 0; i < bgDotCount; i++) {
+        const phi = Math.acos(-1 + (2 * i) / bgDotCount);
+        const theta = Math.sqrt(bgDotCount * Math.PI) * phi;
+        const r = GLOBE_RADIUS * 1.003;
+        surfacePoints.push(new THREE.Vector3(
+          r * Math.cos(theta) * Math.sin(phi),
+          r * Math.sin(theta) * Math.sin(phi),
+          r * Math.cos(phi)
+        ));
+      }
+
+      const surfacePointsGeo = new THREE.BufferGeometry().setFromPoints(surfacePoints);
+      const surfacePointsMat = new THREE.PointsMaterial({
         color: 0x00F2FE,
-        size: 0.045,
+        size: 0.038,
         transparent: true,
-        opacity: 0.85
+        opacity: 0.75
       });
-      const dotsMesh = new THREE.Points(dotGeo, dotMat);
-      globeGroup.add(dotsMesh);
+      const surfacePointsMesh = new THREE.Points(surfacePointsGeo, surfacePointsMat);
+      globeGroup.add(surfacePointsMesh);
 
-      // 4. Subtle Orbital Ring
-      const ringGeo = new THREE.RingGeometry(1.75, 1.78, 64);
-      const ringMat = new THREE.MeshBasicMaterial({
-        color: 0x4FACFE,
-        transparent: true,
-        opacity: 0.25,
-        side: THREE.DoubleSide
+      // 4. Subtle Latitude / Longitude Telemetry Rings
+      [0.0, 0.45, -0.45].forEach(yFactor => {
+        const rRing = Math.sqrt(Math.max(0, GLOBE_RADIUS * GLOBE_RADIUS - (GLOBE_RADIUS * yFactor) * (GLOBE_RADIUS * yFactor)));
+        const ringGeo = new THREE.RingGeometry(rRing - 0.003, rRing + 0.003, 64);
+        const ringMat = new THREE.MeshBasicMaterial({
+          color: 0x4FACFE,
+          transparent: true,
+          opacity: yFactor === 0 ? 0.22 : 0.12,
+          side: THREE.DoubleSide
+        });
+        const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+        ringMesh.rotation.x = Math.PI / 2;
+        ringMesh.position.y = GLOBE_RADIUS * yFactor;
+        globeGroup.add(ringMesh);
       });
-      const ringMesh = new THREE.Mesh(ringGeo, ringMat);
-      ringMesh.rotation.x = Math.PI / 2.6;
-      globeGroup.add(ringMesh);
 
-      // Ambient & Point light
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+      // 5. DATA: Major World Internet Exchange Hubs & Ground Stations
+      const GROUND_HUBS = [
+        {
+          id: 'hub_manila',
+          name: 'Manila Core Gateway (PH-IX)',
+          city: 'Manila, Philippines',
+          lat: 14.5995,
+          lon: 120.9842,
+          role: 'Primary Trans-Pacific & SEA Subsea Cable Landing',
+          asn: 'AS132145 (Converge / PLDT Tier-1)',
+          latency: '11 ms',
+          throughput: '14.8 Tbps',
+          color: 0x00F2FE,
+          status: 'ACTIVE • OPERATIONAL',
+          cables: 'SJC2, SEA-US, PLCN Landing',
+          links: ['Tokyo Mega IX', 'Singapore Hub', 'Starlink v2 LEO', 'GPS Space Vehicle']
+        },
+        {
+          id: 'hub_tokyo',
+          name: 'Tokyo Internet Exchange (JPIX)',
+          city: 'Tokyo, Japan',
+          lat: 35.6762,
+          lon: 139.6503,
+          role: 'East Asia Primary Routing & Terabit Core',
+          asn: 'AS7506 (Equinix TY3 / JPIX)',
+          latency: '26 ms',
+          throughput: '42.6 Tbps',
+          color: 0x00F2FE,
+          status: 'ACTIVE • OPERATIONAL',
+          cables: 'FASTER, PC-1, Trans-Pacific Express',
+          links: ['Manila Gateway', 'Silicon Valley IX', 'Sydney Pacific Hub', 'Starlink v2 LEO']
+        },
+        {
+          id: 'hub_singapore',
+          name: 'Singapore Equinix Hub (SG-IX)',
+          city: 'Singapore',
+          lat: 1.3521,
+          lon: 103.8198,
+          role: 'Southeast Asia Central Financial Backbone',
+          asn: 'AS4657 (Singtel / StarHub Global)',
+          latency: '19 ms',
+          throughput: '38.2 Tbps',
+          color: 0x00F2FE,
+          status: 'ACTIVE • OPERATIONAL',
+          cables: 'SEA-ME-WE 5, APG, Indigo Subsea',
+          links: ['Manila Gateway', 'Dubai UAE-IX', 'O3b mPOWER MEO']
+        },
+        {
+          id: 'hub_sydney',
+          name: 'Sydney Pacific Hub (AusIX)',
+          city: 'Sydney, Australia',
+          lat: -33.8688,
+          lon: 151.2093,
+          role: 'Oceania Continental Teleport & Carrier IX',
+          asn: 'AS7575 (AARNet Oceania Core)',
+          latency: '62 ms',
+          throughput: '18.4 Tbps',
+          color: 0x4FACFE,
+          status: 'ACTIVE • OPERATIONAL',
+          cables: 'Southern Cross, JGA-South Cable',
+          links: ['Tokyo Mega IX', 'Honolulu Teleport', 'GPS Space Vehicle']
+        },
+        {
+          id: 'hub_sf',
+          name: 'Silicon Valley Gateway (SVIX)',
+          city: 'San Francisco, USA',
+          lat: 37.7749,
+          lon: -122.4194,
+          role: 'US West Coast Cloud & Subsea Cable Terminal',
+          asn: 'AS15169 (Google / Meta Global Backbone)',
+          latency: '82 ms',
+          throughput: '64.0 Tbps',
+          color: 0x00F2FE,
+          status: 'ACTIVE • OPERATIONAL',
+          cables: 'PLCN, Hawaiki, Pacific Express',
+          links: ['Tokyo Mega IX', 'New York NYIIX', 'Honolulu Teleport', 'ViaSat-3 Americas']
+        },
+        {
+          id: 'hub_nyc',
+          name: 'New York NYIIX (60 Hudson)',
+          city: 'New York, USA',
+          lat: 40.7128,
+          lon: -74.0060,
+          role: 'Trans-Atlantic Financial & Carrier Hotel',
+          asn: 'AS8075 (Microsoft Azure Backbone)',
+          latency: '124 ms',
+          throughput: '58.5 Tbps',
+          color: 0x4FACFE,
+          status: 'ACTIVE • OPERATIONAL',
+          cables: 'Apollo, TAT-14, Dunant Subsea',
+          links: ['Silicon Valley IX', 'London LINX', 'São Paulo IX.br', 'ViaSat-3 Americas']
+        },
+        {
+          id: 'hub_london',
+          name: 'London Internet Exchange (LINX)',
+          city: 'London, United Kingdom',
+          lat: 51.5074,
+          lon: -0.1278,
+          role: 'Western European Central Exchange & Teleport',
+          asn: 'AS5459 (LINX Telehouse North)',
+          latency: '148 ms',
+          throughput: '52.0 Tbps',
+          color: 0x00F2FE,
+          status: 'ACTIVE • OPERATIONAL',
+          cables: 'AC-1, CrossChannel DWDM Fiber',
+          links: ['New York NYIIX', 'Frankfurt DE-CIX', 'Johannesburg Hub', 'Iridium-NEXT #114']
+        },
+        {
+          id: 'hub_frankfurt',
+          name: 'Frankfurt Core (DE-CIX)',
+          city: 'Frankfurt, Germany',
+          lat: 50.1109,
+          lon: 8.6821,
+          role: 'Global Highest Peak Throughput Exchange',
+          asn: 'AS6695 (DE-CIX Continental Routing)',
+          latency: '154 ms',
+          throughput: '78.2 Tbps',
+          color: 0x00F2FE,
+          status: 'ACTIVE • OPERATIONAL',
+          cables: 'Pan-European Terrestrial Optical Ring',
+          links: ['London LINX', 'Dubai UAE-IX']
+        },
+        {
+          id: 'hub_dubai',
+          name: 'Dubai UAE-IX (Datamena)',
+          city: 'Dubai, UAE',
+          lat: 25.2048,
+          lon: 55.2708,
+          role: 'Middle East & North Africa (MENA) Teleport',
+          asn: 'AS58293 (UAE-IX Core)',
+          latency: '112 ms',
+          throughput: '24.1 Tbps',
+          color: 0x4FACFE,
+          status: 'ACTIVE • OPERATIONAL',
+          cables: 'SEA-ME-WE 4, AAE-1 Subsea Cable',
+          links: ['Singapore Hub', 'Frankfurt DE-CIX', 'O3b mPOWER MEO']
+        },
+        {
+          id: 'hub_saopaulo',
+          name: 'São Paulo IX.br (NIC.br)',
+          city: 'São Paulo, Brazil',
+          lat: -23.5505,
+          lon: -46.6333,
+          role: 'South American Interconnection Core',
+          asn: 'AS26162 (IX.br Brazil)',
+          latency: '190 ms',
+          throughput: '32.4 Tbps',
+          color: 0x4FACFE,
+          status: 'ACTIVE • OPERATIONAL',
+          cables: 'Monet, Seabras-1, Tannat Fiber',
+          links: ['New York NYIIX', 'ViaSat-3 Americas']
+        },
+        {
+          id: 'hub_joburg',
+          name: 'Johannesburg NAPAfrica (JB1)',
+          city: 'Johannesburg, South Africa',
+          lat: -26.2041,
+          lon: 28.0473,
+          role: 'Sub-Saharan Africa Primary Transit Exchange',
+          asn: 'AS37105 (NAPAfrica Teraco Core)',
+          latency: '215 ms',
+          throughput: '12.6 Tbps',
+          color: 0x4FACFE,
+          status: 'ACTIVE • OPERATIONAL',
+          cables: '2Africa, WACS, SAT-3 Cable',
+          links: ['London LINX', 'Iridium-NEXT #114']
+        },
+        {
+          id: 'hub_honolulu',
+          name: 'Honolulu Pacific Teleport',
+          city: 'Honolulu, Hawaii, USA',
+          lat: 21.3069,
+          lon: -157.8583,
+          role: 'Mid-Pacific Optical Repeater & Sat Teleport',
+          asn: 'AS33588 (Pacific Carrier Node)',
+          latency: '48 ms',
+          throughput: '16.0 Tbps',
+          color: 0x00F2FE,
+          status: 'ACTIVE • OPERATIONAL',
+          cables: 'Japan-US, SEA-US Hawaiian Branch',
+          links: ['Silicon Valley IX', 'Sydney Pacific Hub', 'GPS Space Vehicle']
+        }
+      ];
+
+      // Build Ground Hub Meshes
+      const hubMap = {};
+      const interactiveObjects = [];
+      const beaconRings = [];
+
+      GROUND_HUBS.forEach(hub => {
+        const pos = latLonToVector3(hub.lat, hub.lon, GLOBE_RADIUS * 1.008);
+        hub.pos = pos;
+
+        const hubGroup = new THREE.Group();
+        hubGroup.position.copy(pos);
+
+        // Orient node outward along sphere normal
+        const normal = pos.clone().normalize();
+        hubGroup.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), normal);
+
+        // Core glowing dot
+        const coreGeo = new THREE.SphereGeometry(0.038, 12, 12);
+        const coreMat = new THREE.MeshBasicMaterial({ color: hub.color });
+        const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+        hubGroup.add(coreMesh);
+
+        // Animated Pulsing Beacon Ring
+        const ringGeo = new THREE.RingGeometry(0.045, 0.08, 24);
+        const ringMat = new THREE.MeshBasicMaterial({
+          color: hub.color,
+          transparent: true,
+          opacity: 0.75,
+          side: THREE.DoubleSide
+        });
+        const beaconRing = new THREE.Mesh(ringGeo, ringMat);
+        hubGroup.add(beaconRing);
+        beaconRings.push({ mesh: beaconRing, baseScale: 1.0, speed: 2.5 + Math.random() });
+
+        // Vertical Pin/Antenna
+        const pinGeo = new THREE.CylinderGeometry(0.005, 0.005, 0.06, 6);
+        const pinMat = new THREE.MeshBasicMaterial({ color: 0x4FACFE, transparent: true, opacity: 0.8 });
+        const pinMesh = new THREE.Mesh(pinGeo, pinMat);
+        pinMesh.rotation.x = Math.PI / 2;
+        pinMesh.position.z = 0.03;
+        hubGroup.add(pinMesh);
+
+        // Invisible Raycasting Hit Sphere
+        const hitGeo = new THREE.SphereGeometry(0.20, 10, 10);
+        const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+        const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+        hitMesh.userData = { type: 'hub', data: hub, group: hubGroup, coreMat, beaconRing };
+        hubGroup.add(hitMesh);
+        interactiveObjects.push(hitMesh);
+
+        globeGroup.add(hubGroup);
+        hub.group = hubGroup;
+        hub.coreMat = coreMat;
+        hub.beaconRing = beaconRing;
+        hubMap[hub.id] = hub;
+      });
+
+      // 6. DATA: Real-World Global Subsea & Terrestrial Cable Connections
+      const NETWORK_CABLES = [
+        { id: 'c_mnl_tyo', from: 'hub_manila', to: 'hub_tokyo', name: 'SJC2 / Asia Direct Subsea Fiber', ping: '24 ms', bw: '68 Tbps', desc: 'Direct Manila-Tokyo Low Latency Route' },
+        { id: 'c_mnl_sg', from: 'hub_manila', to: 'hub_singapore', name: 'SEA-US / APG High Capacity Cable', ping: '18 ms', bw: '54 Tbps', desc: 'Southeast Asia High-Speed Interconnect' },
+        { id: 'c_tyo_sf', from: 'hub_tokyo', to: 'hub_sf', name: 'FASTER / Trans-Pacific Subsea Express', ping: '78 ms', bw: '84 Tbps', desc: 'Japan-US Trans-Pacific Optical Trunk' },
+        { id: 'c_tyo_syd', from: 'hub_tokyo', to: 'hub_sydney', name: 'JGA Asia-Australia Optical Link', ping: '65 ms', bw: '36 Tbps', desc: 'Western Pacific North-South Subsea Cable' },
+        { id: 'c_sg_dxb', from: 'hub_singapore', to: 'hub_dubai', name: 'SEA-ME-WE 5 Indian Ocean Trunk', ping: '82 ms', bw: '48 Tbps', desc: 'Asia to Middle East Subsea Backbone' },
+        { id: 'c_dxb_fra', from: 'hub_dubai', to: 'hub_frankfurt', name: 'AAE-1 Eurasian High-Speed Optical Route', ping: '94 ms', bw: '40 Tbps', desc: 'Middle East - Europe Continental Interconnect' },
+        { id: 'c_fra_lon', from: 'hub_frankfurt', to: 'hub_london', name: 'Pan-European Terrestrial Optical Ring', ping: '12 ms', bw: '96 Tbps', desc: 'Frankfurt-London High Density Peering' },
+        { id: 'c_lon_nyc', from: 'hub_london', to: 'hub_nyc', name: 'Apollo / Trans-Atlantic 100G Fiber', ping: '58 ms', bw: '120 Tbps', desc: 'Trans-Atlantic Financial Core Route' },
+        { id: 'c_sf_nyc', from: 'hub_sf', to: 'hub_nyc', name: 'US Trans-Continental Optical Mesh', ping: '42 ms', bw: '100 Tbps', desc: 'Silicon Valley to New York Backbone' },
+        { id: 'c_sf_hnl', from: 'hub_sf', to: 'hub_honolulu', name: 'Hawaiki Mid-Pacific Optical Cable', ping: '38 ms', bw: '44 Tbps', desc: 'California to Hawaii Subsea Link' },
+        { id: 'c_hnl_syd', from: 'hub_honolulu', to: 'hub_sydney', name: 'Southern Cross Oceania Subsea Cable', ping: '54 ms', bw: '42 Tbps', desc: 'Hawaii to Australia Trans-Pacific Highway' },
+        { id: 'c_nyc_sp', from: 'hub_nyc', to: 'hub_saopaulo', name: 'Monet / Seabras-1 South America Line', ping: '108 ms', bw: '72 Tbps', desc: 'North America - South America Optical Gateway' },
+        { id: 'c_lon_jnb', from: 'hub_london', to: 'hub_joburg', name: '2Africa West Coast Subsea Route', ping: '136 ms', bw: '32 Tbps', desc: 'Europe to Southern Africa Subsea Ring' }
+      ];
+
+      // Helper: 3D Great-Circle Arc Curve with Elevation
+      function createCurvedArc(p1, p2, elevation = 0.16) {
+        const mid = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5);
+        const dist = p1.distanceTo(p2);
+        if (mid.length() > 0.001) {
+          mid.normalize();
+          const peakRadius = GLOBE_RADIUS + Math.min(dist * 0.22 + elevation, 0.42);
+          mid.multiplyScalar(peakRadius);
+        }
+        return new THREE.QuadraticBezierCurve3(p1, mid, p2);
+      }
+
+      // Build Network Cable Lines & Traveling Photon Packets
+      const cableList = [];
+      const cablePackets = [];
+
+      NETWORK_CABLES.forEach(cable => {
+        const h1 = hubMap[cable.from];
+        const h2 = hubMap[cable.to];
+        if (!h1 || !h2) return;
+
+        const curve = createCurvedArc(h1.pos, h2.pos);
+        const points = curve.getPoints(36);
+        const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
+        const lineMat = new THREE.LineBasicMaterial({
+          color: 0x00E5FF,
+          transparent: true,
+          opacity: 0.48,
+          linewidth: 1.5
+        });
+        const lineMesh = new THREE.Line(lineGeo, lineMat);
+        globeGroup.add(lineMesh);
+
+        // Invisible Raycasting Hit Tube around Cable
+        const tubeGeo = new THREE.TubeGeometry(curve, 18, 0.045, 6, false);
+        const tubeMat = new THREE.MeshBasicMaterial({ visible: false });
+        const tubeMesh = new THREE.Mesh(tubeGeo, tubeMat);
+        tubeMesh.userData = {
+          type: 'cable',
+          data: cable,
+          fromHub: h1,
+          toHub: h2,
+          lineMat: lineMat
+        };
+        globeGroup.add(tubeMesh);
+        interactiveObjects.push(tubeMesh);
+
+        cableList.push({ data: cable, curve, lineMat, h1, h2 });
+
+        // Traveling Light Packet (Data Pulse) along cable
+        const packetGeo = new THREE.SphereGeometry(0.018, 8, 8);
+        const packetMat = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
+        const packetMesh = new THREE.Mesh(packetGeo, packetMat);
+        globeGroup.add(packetMesh);
+        cablePackets.push({
+          mesh: packetMesh,
+          curve: curve,
+          progress: Math.random(),
+          speed: 0.005 + Math.random() * 0.004
+        });
+      });
+
+      // 7. DATA: Orbiting Satellites with Telemetry & World Connectivity
+      const SATELLITES = [
+        {
+          id: 'sat_starlink',
+          name: 'Starlink v2 LEO #4082',
+          constellation: 'Starlink Gen2 Mega-Constellation',
+          tag: 'LEO BROADBAND',
+          orbitRadius: 1.95,
+          inclination: 53.0,
+          orbitSpeed: 0.0055,
+          angle: 0.8,
+          nodeAngle: 0.3,
+          color: 0x00F2FE,
+          status: 'ONLINE • ACTIVE BEAM',
+          altitude: '550 km Low Earth Orbit (LEO)',
+          latency: '22 ms',
+          bandwidth: '1.4 Gbps',
+          specs: 'Ka-Band Steerable Beam + Optical ISL',
+          role: 'Low-latency orbital internet backbone & direct subscriber routing',
+          groundLinks: ['hub_manila', 'hub_tokyo'],
+          satLinks: ['sat_o3b'],
+          linkDescription: 'Downlink: Manila Gateway (PH) & Tokyo JPIX (JP) • Optical Laser Cross-Link: O3b mPOWER MEO'
+        },
+        {
+          id: 'sat_o3b',
+          name: 'O3b mPOWER MEO-3',
+          constellation: 'SES O3b mPOWER Multi-Orbit Network',
+          tag: 'MEO CARRIER TRUNK',
+          orbitRadius: 2.26,
+          inclination: 15.0,
+          orbitSpeed: 0.0034,
+          angle: 2.6,
+          nodeAngle: 1.2,
+          color: 0xA855F7,
+          status: 'ONLINE • GIGABIT TRUNK',
+          altitude: '8,062 km Medium Earth Orbit',
+          latency: '124 ms',
+          bandwidth: '10.0 Gbps',
+          specs: 'Steerable Multi-Spot Ka-Band Beams',
+          role: 'High-throughput enterprise backbone, telecom backhaul & cloud trunk',
+          groundLinks: ['hub_singapore', 'hub_dubai'],
+          satLinks: ['sat_starlink', 'sat_viasat'],
+          linkDescription: 'Downlink: Singapore Hub & Dubai UAE-IX • Space Feeder Link: Starlink v2 & ViaSat-3'
+        },
+        {
+          id: 'sat_iridium',
+          name: 'Iridium-NEXT #114',
+          constellation: 'Iridium-NEXT Polar Mesh Constellation',
+          tag: 'POLAR LEO MESH',
+          orbitRadius: 1.88,
+          inclination: 86.4,
+          orbitSpeed: 0.0072,
+          angle: 4.2,
+          nodeAngle: 2.1,
+          color: 0x10B981,
+          status: 'ONLINE • CROSS-LINK ACTIVE',
+          altitude: '780 km Polar Low Earth Orbit',
+          latency: '36 ms',
+          bandwidth: '128 Mbps',
+          specs: 'L-Band Access + Ka-Band Inter-Satellite Link',
+          role: 'True pole-to-pole autonomous inter-satellite routing for maritime, aviation & IoT',
+          groundLinks: ['hub_london', 'hub_joburg'],
+          satLinks: ['sat_gps'],
+          linkDescription: 'Downlink: London LINX & Johannesburg Hub • Space Cross-Link: GPS Space Vehicle'
+        },
+        {
+          id: 'sat_viasat',
+          name: 'ViaSat-3 Americas',
+          constellation: 'ViaSat Ultra-Capacity Fleet',
+          tag: 'GEO SUPER-CARRIER',
+          orbitRadius: 2.48,
+          inclination: 6.0,
+          orbitSpeed: 0.0016,
+          angle: 5.1,
+          nodeAngle: 0.8,
+          color: 0x38BDF8,
+          status: 'ONLINE • SYNCHRONIZED',
+          altitude: '35,786 km Geostationary Orbit (GEO)',
+          latency: '535 ms',
+          bandwidth: '1,000+ Gbps (1 Tbps)',
+          specs: 'High-Density Ka-Band Super-Transponder',
+          role: 'Terabit-scale continental teleport gateway & transatlantic maritime/aviation connectivity',
+          groundLinks: ['hub_sf', 'hub_nyc', 'hub_saopaulo'],
+          satLinks: ['sat_o3b'],
+          linkDescription: 'Downlink: Silicon Valley SVIX, New York NYIIX, São Paulo IX.br • Relay: O3b mPOWER'
+        },
+        {
+          id: 'sat_gps',
+          name: 'GPS III Space Vehicle SV-08',
+          constellation: 'Navstar GPS Global Positioning Constellation',
+          tag: 'MEO ATOMIC SYNC',
+          orbitRadius: 2.18,
+          inclination: 55.0,
+          orbitSpeed: 0.0042,
+          angle: 1.7,
+          nodeAngle: 3.4,
+          color: 0xF59E0B,
+          status: 'ONLINE • ATOMIC LOCKED',
+          altitude: '20,180 km Semi-Synchronous MEO',
+          latency: '68 ms',
+          bandwidth: 'Precision Ephemeris Sync',
+          specs: 'L1/L2/L5 Frequency Standard (±0.5 ns jitter)',
+          role: 'Global UTC nanosecond atomic clock synchronization for financial exchanges & teleports',
+          groundLinks: ['hub_tokyo', 'hub_sydney', 'hub_honolulu'],
+          satLinks: ['sat_iridium'],
+          linkDescription: 'Atomic Timing Sync Beams: Tokyo Mega IX, Sydney Hub, Honolulu Teleport'
+        }
+      ];
+
+      // Helper: Compute Satellite 3D Position in Inclined Keplerian Orbit
+      function computeSatellitePosition(sat) {
+        const inclRad = sat.inclination * (Math.PI / 180);
+        const nodeRad = sat.nodeAngle;
+        const x0 = sat.orbitRadius * Math.cos(sat.angle);
+        const z0 = sat.orbitRadius * Math.sin(sat.angle);
+        const y0 = 0;
+
+        // Rotate by inclination
+        const y1 = -z0 * Math.sin(inclRad);
+        const z1 = z0 * Math.cos(inclRad);
+
+        // Rotate around Y by ascending node
+        const cosN = Math.cos(nodeRad);
+        const sinN = Math.sin(nodeRad);
+        const rx = x0 * cosN + z1 * sinN;
+        const rz = -x0 * sinN + z1 * cosN;
+
+        return new THREE.Vector3(rx, y1, rz);
+      }
+
+      // Build Satellite Visual Models, Orbital Rings & Laser Links
+      const satelliteObjects = [];
+      const downlinkBeams = [];
+      const satMap = {};
+
+      SATELLITES.forEach(sat => {
+        const satGroup = new THREE.Group();
+        spaceGroup.add(satGroup);
+
+        // 1. Orbital Trajectory Path (Ring in 3D Space)
+        const orbitPoints = [];
+        const steps = 64;
+        for (let i = 0; i <= steps; i++) {
+          const tempSat = {
+            orbitRadius: sat.orbitRadius,
+            inclination: sat.inclination,
+            nodeAngle: sat.nodeAngle,
+            angle: (i / steps) * Math.PI * 2
+          };
+          orbitPoints.push(computeSatellitePosition(tempSat));
+        }
+        const orbitGeo = new THREE.BufferGeometry().setFromPoints(orbitPoints);
+        const orbitMat = new THREE.LineBasicMaterial({
+          color: sat.color,
+          transparent: true,
+          opacity: 0.22
+        });
+        const orbitLine = new THREE.Line(orbitGeo, orbitMat);
+        spaceGroup.add(orbitLine);
+
+        // 2. 3D Satellite Chassis Model
+        // Main Body Box
+        const bodyGeo = new THREE.BoxGeometry(0.09, 0.055, 0.055);
+        const bodyMat = new THREE.MeshBasicMaterial({ color: 0x1E293B });
+        const bodyMesh = new THREE.Mesh(bodyGeo, bodyMat);
+        satGroup.add(bodyMesh);
+
+        // Gold/Cyan Trim on Body
+        const trimGeo = new THREE.BoxGeometry(0.092, 0.02, 0.057);
+        const trimMat = new THREE.MeshBasicMaterial({ color: sat.color });
+        const trimMesh = new THREE.Mesh(trimGeo, trimMat);
+        satGroup.add(trimMesh);
+
+        // Left Solar Panel Array
+        const solarGeoL = new THREE.BoxGeometry(0.16, 0.045, 0.005);
+        const solarMat = new THREE.MeshBasicMaterial({ color: 0x00F2FE });
+        const solarMeshL = new THREE.Mesh(solarGeoL, solarMat);
+        solarMeshL.position.x = -0.13;
+        satGroup.add(solarMeshL);
+
+        // Right Solar Panel Array
+        const solarGeoR = new THREE.BoxGeometry(0.16, 0.045, 0.005);
+        const solarMeshR = new THREE.Mesh(solarGeoR, solarMat);
+        solarMeshR.position.x = 0.13;
+        satGroup.add(solarMeshR);
+
+        // Communication Dish Antenna (directed towards Earth)
+        const dishGeo = new THREE.CylinderGeometry(0.04, 0.01, 0.025, 12);
+        const dishMat = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
+        const dishMesh = new THREE.Mesh(dishGeo, dishMat);
+        dishMesh.rotation.x = Math.PI / 2;
+        dishMesh.position.z = 0.035;
+        satGroup.add(dishMesh);
+
+        // Navigation Beacon LED
+        const beaconGeo = new THREE.SphereGeometry(0.018, 8, 8);
+        const beaconMat = new THREE.MeshBasicMaterial({ color: sat.color });
+        const beaconMesh = new THREE.Mesh(beaconGeo, beaconMat);
+        beaconMesh.position.y = 0.032;
+        satGroup.add(beaconMesh);
+
+        // Invisible Raycast Hit Sphere (comfortable hit target)
+        const hitGeo = new THREE.SphereGeometry(0.24, 12, 12);
+        const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+        const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+        hitMesh.userData = {
+          type: 'satellite',
+          data: sat,
+          group: satGroup,
+          dishMat: dishMat,
+          beaconMat: beaconMat,
+          orbitMat: orbitMat
+        };
+        satGroup.add(hitMesh);
+        interactiveObjects.push(hitMesh);
+
+        sat.group = satGroup;
+        sat.dishMat = dishMat;
+        sat.beaconMat = beaconMat;
+        sat.orbitMat = orbitMat;
+        satMap[sat.id] = sat;
+        satelliteObjects.push(sat);
+      });
+
+      // 8. Dynamic Downlink Laser Beams (Satellite <-> Earth Ground Stations)
+      SATELLITES.forEach(sat => {
+        sat.groundLinks.forEach(hubId => {
+          const hub = hubMap[hubId];
+          if (!hub) return;
+
+          const beamGeo = new THREE.BufferGeometry();
+          beamGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(6), 3));
+          const beamMat = new THREE.LineBasicMaterial({
+            color: sat.color,
+            transparent: true,
+            opacity: 0.38
+          });
+          const beamLine = new THREE.Line(beamGeo, beamMat);
+          spaceGroup.add(beamLine);
+
+          // Moving Laser Pulse along Downlink
+          const pulseGeo = new THREE.SphereGeometry(0.02, 6, 6);
+          const pulseMat = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
+          const pulseMesh = new THREE.Mesh(pulseGeo, pulseMat);
+          spaceGroup.add(pulseMesh);
+
+          // Raycast Hit cylinder/tube around downlink beam
+          const hitGeo = new THREE.CylinderGeometry(0.05, 0.05, 1, 6);
+          const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+          const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+          hitMesh.userData = {
+            type: 'downlink',
+            sat: sat,
+            hub: hub,
+            beamMat: beamMat
+          };
+          spaceGroup.add(hitMesh);
+          interactiveObjects.push(hitMesh);
+
+          downlinkBeams.push({
+            sat: sat,
+            hub: hub,
+            line: beamLine,
+            beamMat: beamMat,
+            pulse: pulseMesh,
+            pulseProgress: Math.random(),
+            pulseSpeed: 0.008 + Math.random() * 0.005,
+            hitMesh: hitMesh
+          });
+        });
+      });
+
+      // 9. Inter-Satellite Laser Links (ISL Mesh in Space)
+      const interSatLinks = [
+        { from: 'sat_starlink', to: 'sat_o3b', name: 'Optical Laser Cross-Link (ISL 100 Gbps)' },
+        { from: 'sat_iridium', to: 'sat_gps', name: 'Autonomous Space Relay Mesh (Ka-Band ISL)' }
+      ];
+      const spaceLaserBeams = [];
+      interSatLinks.forEach(link => {
+        const s1 = satMap[link.from];
+        const s2 = satMap[link.to];
+        if (!s1 || !s2) return;
+
+        const lineGeo = new THREE.BufferGeometry();
+        lineGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(6), 3));
+        const lineMat = new THREE.LineBasicMaterial({
+          color: 0x00F2FE,
+          transparent: true,
+          opacity: 0.45
+        });
+        const lineMesh = new THREE.Line(lineGeo, lineMat);
+        spaceGroup.add(lineMesh);
+
+        const pulseGeo = new THREE.SphereGeometry(0.022, 6, 6);
+        const pulseMat = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
+        const pulseMesh = new THREE.Mesh(pulseGeo, pulseMat);
+        spaceGroup.add(pulseMesh);
+
+        spaceLaserBeams.push({
+          s1, s2,
+          line: lineMesh,
+          pulse: pulseMesh,
+          progress: Math.random(),
+          speed: 0.009
+        });
+      });
+
+      // 10. Ambient & Accent Lighting
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
       scene.add(ambientLight);
-      const pointLight = new THREE.PointLight(0x00F2FE, 1.2, 50);
-      pointLight.position.set(10, 10, 10);
+      const pointLight = new THREE.PointLight(0x00F2FE, 1.4, 50);
+      pointLight.position.set(8, 8, 8);
       scene.add(pointLight);
 
-      // Interactive mouse parallax
+      // 11. Interactive Raycasting & Hover HUD Mechanics
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2(-999, -999);
       let mouseX = 0;
       let mouseY = 0;
-      window.addEventListener('pointermove', (e) => {
-        mouseX = (e.clientX / window.innerWidth) * 2 - 1;
-        mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+      let hoveredItem = null;
+      let isLocked = false;
+      let lastClientX = 0;
+      let lastClientY = 0;
+
+      function updateTooltipPosition(clientX, clientY) {
+        if (!hudTooltip) return;
+        const pad = 20;
+        const tipW = hudTooltip.offsetWidth || 300;
+        const tipH = hudTooltip.offsetHeight || 220;
+        let left = clientX + pad;
+        let top = clientY + pad;
+
+        if (left + tipW > window.innerWidth - 12) {
+          left = clientX - tipW - pad;
+        }
+        if (top + tipH > window.innerHeight - 12) {
+          top = clientY - tipH - pad;
+        }
+        hudTooltip.style.left = Math.max(12, left) + 'px';
+        hudTooltip.style.top = Math.max(12, top) + 'px';
+      }
+
+      function showTelemetry(item) {
+        if (!hudTooltip) return;
+        hudTooltip.style.display = 'block';
+
+        if (item.type === 'satellite') {
+          const sat = item.data;
+          hudIcon.textContent = '🛰️';
+          hudTypeTag.textContent = sat.tag;
+          hudTypeTag.className = 'text-[9px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-[#00F2FE]/20 text-[#00F2FE] border border-[#00F2FE]/30';
+          hudStatus.textContent = sat.status;
+          hudStatus.className = 'text-[9px] text-emerald-400 font-bold uppercase tracking-wider';
+          hudTitle.textContent = sat.name;
+          hudSubtitle.textContent = sat.altitude + ' • ' + sat.constellation;
+          hudConnectedTo.textContent = sat.linkDescription;
+          hudLatency.textContent = sat.latency;
+          hudBandwidth.textContent = sat.bandwidth;
+          hudSpecs.textContent = sat.specs;
+        } else if (item.type === 'hub') {
+          const hub = item.data;
+          hudIcon.textContent = '🌐';
+          hudTypeTag.textContent = 'GLOBAL IXP HUB';
+          hudTypeTag.className = 'text-[9px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+          hudStatus.textContent = hub.status;
+          hudStatus.className = 'text-[9px] text-emerald-400 font-bold uppercase tracking-wider';
+          hudTitle.textContent = hub.name;
+          hudSubtitle.textContent = hub.city + ' • ' + hub.role;
+          hudConnectedTo.textContent = 'Interconnects: ' + hub.links.join(' • ') + ' | Landing: ' + hub.cables;
+          hudLatency.textContent = hub.latency;
+          hudBandwidth.textContent = hub.throughput;
+          hudSpecs.textContent = hub.asn;
+        } else if (item.type === 'cable') {
+          const c = item.data;
+          hudIcon.textContent = '⚡';
+          hudTypeTag.textContent = 'SUBSEA FIBER TRUNK';
+          hudTypeTag.className = 'text-[9px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30';
+          hudStatus.textContent = 'ONLINE • 100% OPERATIONAL';
+          hudStatus.className = 'text-[9px] text-emerald-400 font-bold uppercase tracking-wider';
+          hudTitle.textContent = c.name;
+          hudSubtitle.textContent = c.desc;
+          hudConnectedTo.textContent = 'Direct Route: ' + (hubMap[c.from]?.city || c.from) + ' ⟷ ' + (hubMap[c.to]?.city || c.to);
+          hudLatency.textContent = c.ping;
+          hudBandwidth.textContent = c.bw;
+          hudSpecs.textContent = 'DWDM Optical Submarine Fiber (BGP Anycast)';
+        } else if (item.type === 'downlink') {
+          const sat = item.sat;
+          const hub = item.hub;
+          hudIcon.textContent = '📡';
+          hudTypeTag.textContent = 'SAT-GROUND DOWNLINK';
+          hudTypeTag.className = 'text-[9px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30';
+          hudStatus.textContent = 'TRACKING • LOCKED';
+          hudStatus.className = 'text-[9px] text-emerald-400 font-bold uppercase tracking-wider';
+          hudTitle.textContent = sat.name + ' ⟷ ' + hub.name;
+          hudSubtitle.textContent = 'Orbital Laser / Ka-Band Ground Station Feeder Beam';
+          hudConnectedTo.textContent = 'Direct High-Speed Feeder Link to ' + hub.city;
+          hudLatency.textContent = sat.latency;
+          hudBandwidth.textContent = sat.bandwidth;
+          hudSpecs.textContent = 'Autonomous Beam Steering & Frequency Tracking';
+        }
+
+        if (hudPinHint) {
+          hudPinHint.textContent = isLocked ? 'LOCKED • Click to release' : 'Click to lock inspection';
+        }
+
+        hudTooltip.classList.remove('opacity-0', 'scale-95');
+        hudTooltip.classList.add('opacity-100', 'scale-100');
+      }
+
+      function hideTelemetry() {
+        if (!hudTooltip || isLocked) return;
+        hudTooltip.classList.remove('opacity-100', 'scale-100');
+        hudTooltip.classList.add('opacity-0', 'scale-95');
+      }
+
+      // Pointer Move Handler on Hero Section
+      heroSection.addEventListener('pointermove', (e) => {
+        lastClientX = e.clientX;
+        lastClientY = e.clientY;
+
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+        mouseX = mouse.x;
+        mouseY = mouse.y;
+
+        // If hovering over interactive buttons/links, ignore 3D raycast so clicks work effortlessly
+        if (e.target.closest('a, button, input')) {
+          if (!isLocked) {
+            hideTelemetry();
+            resetHighlights();
+            document.body.style.cursor = 'default';
+          }
+          return;
+        }
+
+        if (isLocked) {
+          updateTooltipPosition(e.clientX, e.clientY);
+          return;
+        }
+
+        checkRaycast(e.clientX, e.clientY);
       });
 
-      const rotationSpeed = 0.004;
+      heroSection.addEventListener('pointerleave', () => {
+        if (!isLocked) {
+          hideTelemetry();
+          resetHighlights();
+          document.body.style.cursor = 'default';
+        }
+      });
+
+      // Click to Lock / Pin Telemetry
+      heroSection.addEventListener('click', (e) => {
+        if (e.target.closest('a, button, input')) return;
+
+        if (hoveredItem) {
+          isLocked = !isLocked;
+          showTelemetry(hoveredItem);
+        } else if (isLocked) {
+          isLocked = false;
+          hideTelemetry();
+          resetHighlights();
+        }
+      });
+
+      function resetHighlights() {
+        hoveredItem = null;
+        // Restore all satellites
+        satelliteObjects.forEach(s => {
+          s.group.scale.set(1, 1, 1);
+          s.dishMat.color.setHex(0xFFFFFF);
+          s.orbitMat.opacity = 0.22;
+        });
+        // Restore ground hubs
+        GROUND_HUBS.forEach(h => {
+          h.beaconRing.scale.set(1, 1, 1);
+          h.coreMat.color.setHex(h.color);
+        });
+        // Restore cables
+        cableList.forEach(c => {
+          c.lineMat.color.setHex(0x00E5FF);
+          c.lineMat.opacity = 0.48;
+        });
+        // Restore downlinks
+        downlinkBeams.forEach(d => {
+          d.beamMat.opacity = 0.38;
+        });
+      }
+
+      function checkRaycast(clientX, clientY) {
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(interactiveObjects, false);
+
+        if (intersects.length > 0) {
+          const hit = intersects[0].object;
+          const uData = hit.userData;
+          hoveredItem = uData;
+          document.body.style.cursor = 'pointer';
+
+          resetHighlights();
+
+          // Apply Hover Visual Highlights
+          if (uData.type === 'satellite') {
+            const sat = uData.data;
+            uData.group.scale.set(1.25, 1.25, 1.25);
+            sat.dishMat.color.setHex(0x00FFFF);
+            sat.orbitMat.opacity = 0.85;
+            // Brighten its downlink beams
+            downlinkBeams.forEach(d => {
+              if (d.sat === sat) {
+                d.beamMat.opacity = 1.0;
+                d.hub.beaconRing.scale.set(1.6, 1.6, 1.6);
+              }
+            });
+          } else if (uData.type === 'hub') {
+            const hub = uData.data;
+            hub.beaconRing.scale.set(1.8, 1.8, 1.8);
+            hub.coreMat.color.setHex(0x00FFFF);
+            // Highlight connected cables
+            cableList.forEach(c => {
+              if (c.h1 === hub || c.h2 === hub) {
+                c.lineMat.color.setHex(0x00FFFF);
+                c.lineMat.opacity = 1.0;
+              }
+            });
+            // Highlight connected satellite downlinks
+            downlinkBeams.forEach(d => {
+              if (d.hub === hub) {
+                d.beamMat.opacity = 1.0;
+                d.sat.group.scale.set(1.2, 1.2, 1.2);
+              }
+            });
+          } else if (uData.type === 'cable') {
+            uData.lineMat.color.setHex(0x00FFFF);
+            uData.lineMat.opacity = 1.0;
+            if (uData.fromHub) uData.fromHub.beaconRing.scale.set(1.5, 1.5, 1.5);
+            if (uData.toHub) uData.toHub.beaconRing.scale.set(1.5, 1.5, 1.5);
+          } else if (uData.type === 'downlink') {
+            uData.beamMat.opacity = 1.0;
+            uData.sat.group.scale.set(1.2, 1.2, 1.2);
+            uData.hub.beaconRing.scale.set(1.6, 1.6, 1.6);
+          }
+
+          updateTooltipPosition(clientX, clientY);
+          showTelemetry(uData);
+        } else {
+          resetHighlights();
+          hideTelemetry();
+          document.body.style.cursor = 'default';
+        }
+      }
+
+      // 12. Main 60FPS Render & Physics Loop
+      const earthRotationSpeed = 0.0022;
+      let time = 0;
 
       function renderGlobe() {
         requestAnimationFrame(renderGlobe);
-        globeGroup.rotation.y += rotationSpeed;
-        globeGroup.rotation.x += rotationSpeed * 0.3;
-        globeGroup.rotation.z += rotationSpeed * 0.1;
+        time += 0.016;
 
-        globeGroup.position.x += (mouseX * 0.2 - globeGroup.position.x) * 0.04;
-        globeGroup.position.y += (mouseY * 0.15 - globeGroup.position.y) * 0.04;
+        // A. Rotate Globe with Ground Stations & Subsea Cables
+        globeGroup.rotation.y += earthRotationSpeed;
+        globeGroup.rotation.x = 0.08 * Math.sin(time * 0.2);
+
+        // B. Mouse Parallax (smooth lag)
+        globeGroup.position.x += (mouseX * 0.18 - globeGroup.position.x) * 0.04;
+        globeGroup.position.y += (mouseY * 0.12 - globeGroup.position.y) * 0.04;
+        spaceGroup.position.copy(globeGroup.position);
+
+        // C. Pulse Beacon Rings on Ground Stations
+        beaconRings.forEach((b, idx) => {
+          const s = 1.0 + 0.35 * Math.sin(time * b.speed + idx);
+          if (!hoveredItem || hoveredItem.data !== b.mesh.parent.userData?.data) {
+            b.mesh.scale.set(s, s, s);
+          }
+          b.mesh.material.opacity = 0.45 + 0.4 * Math.cos(time * b.speed + idx);
+        });
+
+        // D. Advance Traveling Light Packets Along Subsea Cables
+        cablePackets.forEach(p => {
+          p.progress = (p.progress + p.speed) % 1.0;
+          const pos = p.curve.getPoint(p.progress);
+          p.mesh.position.copy(pos);
+        });
+
+        // E. Orbit Satellites Around the Globe
+        satelliteObjects.forEach(sat => {
+          sat.angle += sat.orbitSpeed;
+          const satPos = computeSatellitePosition(sat);
+          sat.group.position.copy(satPos);
+          // Keep satellite antenna pointed towards Earth center
+          sat.group.lookAt(0, 0, 0);
+
+          // Pulse Navigation Beacon LED
+          sat.beaconMat.color.setHex(Math.sin(time * 6 + sat.angle) > 0 ? sat.color : 0xFFFFFF);
+        });
+
+        // F. Update Satellite Ground Downlink Beams in Real Time
+        downlinkBeams.forEach(d => {
+          const satWorldPos = d.sat.group.position;
+          // Get rotating ground hub's current world coordinate
+          const hubWorldPos = new THREE.Vector3();
+          d.hub.group.getWorldPosition(hubWorldPos);
+
+          // Update beam line endpoints
+          const posAttr = d.line.geometry.attributes.position;
+          posAttr.setXYZ(0, satWorldPos.x, satWorldPos.y, satWorldPos.z);
+          posAttr.setXYZ(1, hubWorldPos.x, hubWorldPos.y, hubWorldPos.z);
+          posAttr.needsUpdate = true;
+
+          // Update traveling laser photon along downlink
+          d.pulseProgress = (d.pulseProgress + d.pulseSpeed) % 1.0;
+          d.pulse.position.lerpVectors(satWorldPos, hubWorldPos, d.pulseProgress);
+
+          // Update hit cylinder position & orientation
+          if (d.hitMesh) {
+            d.hitMesh.position.lerpVectors(satWorldPos, hubWorldPos, 0.5);
+            const dist = satWorldPos.distanceTo(hubWorldPos);
+            d.hitMesh.scale.set(1, dist, 1);
+            d.hitMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), hubWorldPos.clone().sub(satWorldPos).normalize());
+          }
+        });
+
+        // G. Update Inter-Satellite Laser Cross-Links (ISLs)
+        spaceLaserBeams.forEach(b => {
+          const p1 = b.s1.group.position;
+          const p2 = b.s2.group.position;
+          const posAttr = b.line.geometry.attributes.position;
+          posAttr.setXYZ(0, p1.x, p1.y, p1.z);
+          posAttr.setXYZ(1, p2.x, p2.y, p2.z);
+          posAttr.needsUpdate = true;
+
+          b.progress = (b.progress + b.speed) % 1.0;
+          b.pulse.position.lerpVectors(p1, p2, b.progress);
+        });
 
         renderer.render(scene, camera);
       }
@@ -3001,6 +4356,8 @@ ORDER BY peak_mbps DESC LIMIT 5;</code></pre>
       });
     }
   </script>
+  <!-- Technical Skills Examples & Interactive Demonstration Logic -->
+  <script src="assets/skill-examples.js"></script>
 </body>
 </html>
 

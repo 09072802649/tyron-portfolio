@@ -1,0 +1,251 @@
+DATAMEX COLLEGE OF SAINT ADELINE - PARAÑAQUE
+8167 DR. A. SANTOS AVENUE, SAN DIONISIO, PARAÑAQUE CITY
+Bachelor of Science in Information Technology
+Object Oriented Programming and Discrete Structure
+Arduino: Soil Moisture Sensor for Plants
+Modified w/ Speaker
+Submitted By: 
+Marcial Lawrence Jr V. Caronan
+Tyron John L. Dela Cruz
+Shan Benedict Rodriguez
+Rowena Clores
+Justiene Edriel Padual
+Nathaniel Ilago
+Edsel Villanueva
+Instructor Name:
+Mr. Randy Villanueva
+Date of Submission: November 27,2024
+ 
+1. Project Overview 
+1.1 Project Title 
+Arduino: Soil Moisture Sensor for Plants Modified w/ Speaker
+1.2 Project Description 
+As technology rises over the 21st century, many machines were created to be useful for human daily lives and making life more easier. This project demonstrates a simple soil moisture monitoring system that uses a soil moisture sensor to measure moisture levels in soil and provides feedback via LEDs and a speaker. The system will help gardeners and farmers monitor soil conditions and ensure their plants receive enough water, especially during dry season.
+1.3 Objectives  
+The project aims to detect soil moisture levels and provide real-time alerts through visual and audible signals when the soil becomes too dry, enabling timely watering of plants.
+1.4 Tools and Technologies Used 
+Hardware: Arduino Uno Board, Breadboard, Soil Moisture sensors, LEDs, Speaker, Resistor, Jumper wires, HM-sensor series, Power Source 
+Software: Arduino IDE 
+Programming Language: C++
+ 
+2. Project Details 
+2.1 Components List 
+1. Arduino Uno Board (R3)
+Description: The Arduino Uno is the microcontroller board that serves as the central controller for the project. It reads input from sensors (like the soil moisture sensor), processes the data, and controls output devices (such as LEDs and the speaker). The Arduino Uno R3 features 14 digital input/output pins, 6 analog inputs, a USB connection for programming, and power pins.
+Role in the Project: The Arduino Uno manages all the components, running the program that processes the moisture readings and controls the LEDs and speaker.
+2. Soil Moisture Sensor
+Description: This sensor is used to detect the moisture level in the soil. It measures the soil's resistance to electrical current: the more moisture in the soil, the lower the resistance. The sensor outputs an analog signal that the Arduino can read to determine soil moisture.
+Role in the Project: It measures the moisture level of the soil and sends data to the Arduino for processing, allowing the system to determine when the soil is dry or wet.
+3. HM-Sensor Series
+Description: HM-series sensors are typically used for detecting specific conditions (such as moisture or temperature). In this case, it's used for ensuring the correct range of data from the moisture sensor.
+Role in the Project: This sensor could be used in conjunction with the soil moisture sensor to improve the accuracy or provide additional functionality in detecting environmental conditions.
+4. Breadboard
+Description: A breadboard is used for prototyping circuits without soldering. It allows you to make temporary connections between components using jumper wires.
+Role in the Project: The breadboard holds the circuit together, allowing the sensors, LEDs, and speaker to be easily connected to the Arduino Uno.
+5. LEDs (Green and Red)
+Description: Light Emitting Diodes (LEDs) are used to visually indicate the status of the system. The green LED shows that the soil moisture is adequate, and the red LED indicates that the soil is too dry.
+Role in the Project: The LEDs are the primary visual indicators that alert the user to the moisture level in the soil.
+6. Resistor (10kΩ)
+Description: Resistors are used to limit the current flow to the components, preventing damage to sensitive parts such as the LEDs.
+Role in the Project: The resistors are connected to the LEDs to protect them and ensure the proper operation of the circuit.
+7. USB 2.0 Cable Type A/B
+Description: A USB cable is used to connect the Arduino to a computer or power source. It allows for programming the Arduino and powering the system.
+Role in the Project: This cable is used for both powering the Arduino board and uploading the program to the board from the computer.
+8. Speaker
+Description: The speaker produces sound as an audible indicator for the user. The tone function is used to generate different frequencies that indicate the moisture status.
+Role in the Project: The speaker emits a sound when the soil is too dry (red LED on), signaling the need for watering. It provides an audible alert in addition to the visual cue from the LEDs.
+9. Jumper Wires
+Description: Jumper wires are used for making connections between the components on the breadboard and the Arduino board.
+Role in the Project: These wires facilitate the electrical connections between the sensors, LEDs, speaker, and the Arduino.
+10. Power Source
+Description: The power source provides the necessary voltage for the Arduino and connected components to function. This can be a USB connection to a computer, a battery pack, or an adapter.
+Role in the Project: The power source is essential for running the entire system, ensuring that the Arduino and connected components receive the required power.
+2.2 Circuit Diagram 
+The circuit connects the soil moisture sensor to the Arduino analog pin, LEDs to digital pins, and the speaker to a PWM-enabled pin for audio output.  
+1. Sensor: Connect the VCC and GND of the soil moisture sensor to the 5V and GND pins of the Arduino, and the signal pin to an analog input pin.  
+2. Red LED: Connect to a digital pin with a 10kΩ resistor.  
+3. Green LED: Connect to another digital pin with a 10kΩ resistor.  
+4. Speaker: Connect the positive terminal of the speaker to a PWM-enabled digital pin and the negative terminal to GND.  
+2.3 Code Explanation 
+Code
+int greenLight = 1;      // Pin for Green LED (Above 30% moisture level)
+int redLight = 3;        // Pin for Red LED (Below 10% moisture level)
+int speakerPin = 5;      // Pin for speaker (Replaces buzzer)
+int maximumMoistureLevel; // Maximum moisture level (calibrated value)
+int currentMoistureLevel; // Current moisture level (reading from sensor)
+void moistureDetection() {
+  float moistureRatio = (float)currentMoistureLevel / (float)maximumMoistureLevel;
+  // Moisture level less than 10%: &quot;I'm thirsty&quot; sound and red light
+  if (moistureRatio &lt;= 0.1) {
+    digitalWrite(greenLight, LOW);  // Turn off green light
+    digitalWrite(redLight, HIGH);   // Turn on red light
+    tone(speakerPin, 1000, 500);    // Sound for &quot;I'm thirsty&quot;
+    delay(2000);                    // Wait for 2 seconds before proceeding
+  } 
+  // Moisture level between 10% and 30%: Red light (no sound)
+  else if (moistureRatio &lt;= 0.3 &amp;&amp; moistureRatio &gt; 0.1) {
+    digitalWrite(greenLight, LOW);  // Turn off green light
+    digitalWrite(redLight, HIGH);   // Keep red light on
+    noTone(speakerPin);             // No sound
+  }
+  // Moisture level above 30%: &quot;I'm full&quot; sound and green light
+  else {
+    digitalWrite(greenLight, HIGH); // Turn on green light
+    digitalWrite(redLight, LOW);    // Turn off red light
+    tone(speakerPin, 1500, 500);    // Sound for &quot;I'm full&quot;
+  }
+}
+void setup() {
+  // Initialize output pins for LEDs and speaker
+  pinMode(greenLight, OUTPUT);     // Pin for Green LED
+  pinMode(redLight, OUTPUT);       // Pin for Red LED
+  pinMode(speakerPin, OUTPUT);     // Pin for Speaker
+  // Initialize the soil moisture sensor pin (A0)
+  pinMode(A0, INPUT);
+  // Initialize moisture level (calibrated to maximum level)
+  maximumMoistureLevel = analogRead(A0);
+  // Initial sound to indicate that the program has started
+  tone(speakerPin, 5000, 500);  // High pitch for startup sound
+  delay(200);                   // Small delay to separate the sounds
+  tone(speakerPin, 6000, 500);  // Another indication sound
+  delay(600);                   // Delay to allow the sound to finish
+}
+void loop() {
+  // Read the current moisture level from the sensor
+  currentMoistureLevel = analogRead(A0);
+  // Call moistureDetection to determine what light and sound to play based on moisture level
+  moistureDetection();
+  // Short delay to prevent overloading the microcontroller
+  delay(100);
+  // Print the current moisture level to the Serial Monitor for debugging
+  Serial.println(currentMoistureLevel);
+}
+Programming Language 
+The programming language used for this project is C++, specifically the version tailored for Arduino, often referred to as the Arduino Programming Language. It is a simplified subset of C++ designed for ease of use on embedded systems like Arduino boards. 
+Arduino uses C++ because it is well-suited for low-level hardware interaction while also providing a structured and efficient programming environment. It allows control of hardware components like sensors, LEDs, and speakers directly using the Arduino's I/O pins.
+Key Features of the Arduino Programming Language
+1. Hardware Interaction:  
+   - Provides direct access to the Arduino's pins for reading sensor data and controlling outputs (e.g., LEDs and speakers).  
+   - Functions like `digitalWrite()`, `analogRead()`, and `tone()` abstract the complexities of interacting with hardware.  
+2. Simplified Syntax:  
+   - Beginners can quickly learn the language due to its streamlined syntax and vast libraries.  
+   - For example, setting up a pin as output is as simple as calling `pinMode(pin, OUTPUT);`.  
+3. Predefined Functions:  
+   - `setup()`: Runs once at the start to initialize the hardware and configurations.  
+   - `loop()`: Executes repeatedly to handle the program’s logic continuously.  
+4. Extensive Library Support:  
+   - Arduino provides libraries for interacting with specific components, like sensors and displays, making it easier to implement complex functionalities.  
+5. Compatibility with C++ Features:  
+   - Allows the use of variables, loops, functions, and object-oriented programming features like classes and objects.  
+How It Works in This Project
+1. Reading Analog Data:  
+   The function `analogRead(sensorPin)` reads the analog voltage from the soil moisture sensor, returning a value between 0 (dry) and 1023 (wet).  
+2. Controlling Digital Outputs:  
+   Functions like `digitalWrite(redLEDPin, HIGH)` are used to turn LEDs on and off, signaling soil moisture conditions.  
+3. Generating Sound with a Speaker:  
+   The `tone()` function sends a PWM signal to the speaker, generating a specific frequency sound.  
+4. Decision Making:  
+   The `if-else` structure in the code compares the sensor's readings to a threshold and decides whether to light up the red LED, green LED, or play a tone.  
+Benefits of Using Arduino's C++
+Beginner-Friendly: Designed for hobbyists and students to get started with programming and electronics.  
+Cross-Platform: Works on Windows, macOS, and Linux through the Arduino IDE.  
+Scalability: The same language can be used for more complex projects, including IoT, robotics, and automation.  
+Here’s how the hardware interacts with the software:
+Sensor Data Acquisition:
+The soil moisture sensor sends an analog signal to the Arduino (via pin A0). This value ranges from 0 to 1023, depending on the moisture level.
+Processing Data in Software:
+The Arduino reads the sensor data using the analogRead() function.
+The program compares the moisture value against a threshold (moistureThreshold).
+Output Control:
+If the moisture value is below the threshold:
+The red LED (connected to D1) turns on.
+The speaker (connected to D5) plays a tone using the tone() function.
+If the moisture value is above the threshold:
+The green LED (connected to D3) turns on.
+The speaker remains silent using the noTone() function.
+The hardware-software interaction ensures real-time feedback for the user.
+2.4 Working Principle 
+The soil moisture sensor measures the resistance of soil to determine its moisture content.
+The Arduino reads the analog signal from the sensor, converts it into a moisture level value, and compares it against a predefined threshold.
+Based on the moisture level:
+If the soil is dry, the red LED lights up, and the speaker emits an alert sound.
+If the soil is adequately moist, the green LED lights up, and the speaker remains silent.
+3. Features and Functionality 
+3.1 Key Features 
+Real-time soil moisture monitoring.
+Visual feedback through LEDs.
+Audible alerts through a speaker.
+Simple and easy-to-build system with affordable components.
+Modular design allows future enhancements
+3.2 User Interaction 
+Setup: Place the soil moisture sensor in the soil near the plant you want to monitor.
+Power Up: Connect the Arduino to a power source (e.g., USB or adapter).
+Monitoring:
+When the soil is dry: A red LED lights up, and the speaker plays a tone.
+When the soil is moist: A green LED lights up, and the speaker remains silent.
+Action: Water the plant when the alert is triggered, and the red LED is on.
+4. Testing and Results 
+4.1 Testing Process 
+Sensor Calibration:
+Measure moisture levels with the sensor in dry and wet soil.
+Note the sensor values for both conditions and set the moisture threshold accordingly.
+Functional Testing:
+Test the LEDs to ensure correct output for both dry and moist conditions.
+Verify that the speaker produces sound only when the soil is dry.
+Integration Testing:
+Connect all components and test the system as a whole.
+Simulate various moisture levels to confirm consistent behavior.
+4.2 Test Cases and Results 
+TEST CASE
+INPUT (code)
+EXPECT OUTCOME
+ACTUAL OUTCOME
+PASS/FAIL
+Test 1. Soil Moisture Sensor Detection in dry soil
+10% moisture
+dry soil (red light) with sound
+dry soil (red light) with sound
+pass
+Test 2. Soil Moisture Sensor Detection in wet soil
+30% above moisture
+wet soil (green light) no sound
+wet soil (green light) no sound
+pass
+Test 3. Soil Moisture Sensor Detection in dry soil
+30% above moisture
+dry soil (red light) with sound
+dry soil (red light) with sound
+pass
+Test 4. Soil Moisture Sensor Detection in wet soil
+10% moisture
+wet soil (green light) no sound
+wet soil (green light) no sound
+pass
+5. Challenges and Solutions 
+1. Sensor Calibration: The moisture threshold may vary depending on the soil type. Adjust the `moistureThreshold` variable based on sensor readings.  
+2. Noise in Speaker: If the speaker sound is inconsistent, add a small capacitor across the speaker terminals to stabilize the current.  
+6. Conclusion and Future Scope 
+6.1 Conclusion 
+This simple soil moisture monitoring system effectively alerts users to dry soil conditions through LEDs and a speaker, making it an invaluable tool for plant care. With its low cost, ease of use, and potential for further enhancements, this project serves as a stepping stone for integrating smart agriculture solutions into daily life.
+6.2 Future Scope 
+Future Improvements
+Replace the LEDs with a small display to show moisture percentage.  
+Add Wi-Fi or Bluetooth to log data remotely.   
+Power the setup using renewable energy, such as solar panels.  
+Adding Sms Feature 
+Sounds modified to human voice.
+Voice command for nother system or hardware for watering the plant
+7. References 
+Arduino Gets Started
+https://arduinogetstarted.com/tutorials/arduino-soil-moisture-sensor?utm_source=chatgpt.com
+Arduino Point
+https://arduinopoint.com/soil-moisture-sensor-arduino-project/?utm_source=chatgpt.com
+Circuit Digest
+https://circuitdigest.com/microcontroller-projects/interfacing-soil-moisture-sensor-with-arduino-uno?utm_source=chatgpt.com
+GeeksforGeeks
+https://www.geeksforgeeks.org/soil-moisture-measurement-using-arduino-and-soil-moisture-sensor/?utm_source=chatgpt.com
+Project Hub
+https://projecthub.arduino.cc/Aswinth/soil-moisture-sensor-with-arduino-91c818?utm_source=chatgpt.com
+YouTube 
+https://youtu.be/UN9XPWHamHw?si=KMQB_WMngXkchjRm
+https://youtu.be/aaqaAXlZbuc?si=Z6G8yGjSP6zRZ-XV

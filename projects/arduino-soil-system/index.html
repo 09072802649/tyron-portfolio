@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Soil Moisture Sensor & Plant Hydration System | Tyron Dela Cruz</title>
+  <meta name="description" content="Arduino Uno R3 automated soil moisture monitoring and acoustic plant hydration alert system by Tyron John L. Dela Cruz. Features interactive 3D WebGL circuit simulation, live telemetry, and physical hardware lab demo.">
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Three.js & OrbitControls -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+  <!-- Chart.js for Live Telemetry -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            'cyber-bg': '#070B12',
+            'cyber-card': 'rgba(15, 23, 42, 0.72)',
+            'cyber-emerald': '#10B981',
+            'cyber-cyan': '#00F2FE',
+            'cyber-rose': '#F43F5E',
+            'cyber-amber': '#F59E0B',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      color-scheme: dark;
+    }
+    body {
+      background-color: #070B12;
+      color: #94A3B8;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    /* Grid background effect */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(16, 185, 129, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 85% 85%, rgba(0, 242, 254, 0.07) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(244, 63, 94, 0.04) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(16, 185, 129, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(16, 185, 129, 0.02) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glass-card:hover {
+      border-color: rgba(16, 185, 129, 0.35);
+      box-shadow: 0 10px 30px -10px rgba(16, 185, 129, 0.18);
+    }
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #070B12;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1E293B;
+      border-radius: 4px;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #10B981;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+    .pulse-glow {
+      animation: pulseGlow 2s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="relative min-h-screen flex flex-col antialiased">
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="sticky top-0 z-50 bg-[#070B12]/85 backdrop-blur-md border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="../../index.html#projects" class="inline-flex items-center gap-2 text-xs font-mono text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 px-3 py-1.5 rounded-lg border border-emerald-500/30 transition">
+          <i class="fas fa-arrow-left text-[11px]"></i>
+          <span>Portfolio Main</span>
+        </a>
+        <div class="h-4 w-px bg-white/10 hidden sm:block"></div>
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+            <i class="fas fa-microchip text-sm"></i>
+          </div>
+          <div>
+            <span class="text-xs font-bold text-white tracking-wide block">ARDUINO SOIL HYDRATION SYSTEM</span>
+            <span class="text-[10px] font-mono text-slate-400 block">Datamex College of Saint Adeline • BSIT Academic Lab</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <!-- Live COM Port Telemetry Badge -->
+        <div class="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900/90 border border-white/10 text-[11px] font-mono">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="text-slate-300">COM4: 9600 BAUD</span>
+        </div>
+
+        <!-- Audio Alert Tone Toggle -->
+        <button type="button" id="audio-toggle-btn" class="px-3 py-1.5 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-white/10 text-xs font-mono text-slate-300 hover:text-white flex items-center gap-2 transition" title="Toggle Synthesized Audio Tone">
+          <i id="audio-toggle-icon" class="fas fa-volume-high text-emerald-400"></i>
+          <span id="audio-toggle-label" class="hidden sm:inline">Speaker Audio: ON</span>
+        </button>
+
+        <a href="https://github.com/09072802649/tyron-portfolio" target="_blank" rel="noopener noreferrer" class="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-white/10 transition" aria-label="GitHub Repository">
+          <i class="fab fa-github text-base"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-10 relative z-10">
+
+    <!-- PROJECT HEADER HERO -->
+    <section class="glass-card rounded-2xl p-6 sm:p-8 border border-white/10 relative overflow-hidden">
+      <div class="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+        <div class="space-y-3 max-w-3xl">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="px-2.5 py-1 rounded-md text-[11px] font-mono font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              <i class="fas fa-seedling mr-1"></i> SMART AGRICULTURE / IOT PROTOTYPE
+            </span>
+            <span class="px-2.5 py-1 rounded-md text-[11px] font-mono text-cyan-300 bg-cyan-500/10 border border-cyan-500/20">
+              ARDUINO UNO R3
+            </span>
+            <span class="px-2.5 py-1 rounded-md text-[11px] font-mono text-amber-300 bg-amber-500/10 border border-amber-500/20">
+              C++ EMBEDDED
+            </span>
+            <span class="px-2.5 py-1 rounded-md text-[11px] font-mono text-purple-300 bg-purple-500/10 border border-purple-500/20">
+              PWM SPEAKER ALERT
+            </span>
+          </div>
+
+          <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+            Arduino: Soil Moisture Sensor for Plants
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 block mt-1">Modified w/ Audio Speaker Alert</span>
+          </h1>
+
+          <p class="text-sm text-slate-300 leading-relaxed max-w-2xl">
+            A micro-controlled plant hydration management system developed for Datamex College of Saint Adeline. Interfacing an analog resistive soil moisture probe with an Arduino Uno R3, dual status indicator LEDs (Green/Red), and acoustic frequency alerts (1000Hz / 1500Hz) to prevent dehydration in high-temperature environments.
+          </p>
+
+          <div class="flex items-center gap-4 text-xs font-mono text-slate-400 pt-1 flex-wrap">
+            <span><i class="fas fa-user-graduate text-emerald-400 mr-1.5"></i> <strong>Co-Developer:</strong> Tyron John L. Dela Cruz</span>
+            <span><i class="fas fa-chalkboard-user text-cyan-400 mr-1.5"></i> <strong>Instructor:</strong> Mr. Randy Villanueva</span>
+            <span><i class="fas fa-calendar-check text-purple-400 mr-1.5"></i> November 27, 2024</span>
+          </div>
+        </div>
+
+        <!-- Quick Status Card -->
+        <div class="w-full lg:w-72 bg-slate-900/90 border border-white/10 rounded-xl p-4 shrink-0 space-y-3 font-mono">
+          <div class="flex items-center justify-between text-xs pb-2 border-b border-white/5">
+            <span class="text-slate-400">TELEMETRY STATUS</span>
+            <span id="quick-status-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">OPTIMAL</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2 text-center">
+            <div class="bg-slate-950 p-2 rounded border border-white/5">
+              <span class="text-[10px] text-slate-400 block">Moisture Ratio</span>
+              <strong id="quick-moisture-val" class="text-emerald-300 text-lg">72%</strong>
+            </div>
+            <div class="bg-slate-950 p-2 rounded border border-white/5">
+              <span class="text-[10px] text-slate-400 block">ADC Value</span>
+              <strong id="quick-adc-val" class="text-cyan-300 text-lg">737</strong>
+            </div>
+          </div>
+          <div class="text-[11px] text-slate-400 space-y-1">
+            <div class="flex justify-between">
+              <span>Green LED (Pin 1):</span>
+              <span id="quick-green-status" class="text-emerald-400 font-bold">HIGH (ON)</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Red LED (Pin 3):</span>
+              <span id="quick-red-status" class="text-slate-500">LOW (OFF)</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Speaker (Pin 5):</span>
+              <span id="quick-speaker-status" class="text-slate-400">1500Hz PULSE</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+    </section>
+
+    <!-- 3D INTERACTIVE HARDWARE & PLANT SIMULATION SECTION -->
+    <section class="space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div>
+          <div class="inline-flex items-center gap-2 text-xs font-mono text-emerald-400 tracking-wider uppercase mb-1">
+            <i class="fas fa-cube"></i> Live WebGL Simulation
+          </div>
+          <h2 class="text-2xl font-bold text-white tracking-tight">Interactive 3D Hardware Simulation</h2>
+          <p class="text-xs text-slate-400">Inspect the 3D circuit layout, adjust soil moisture levels, and observe real-time LED, probe, and speaker response.</p>
+        </div>
+
+        <!-- 3D Camera Controls -->
+        <div class="flex items-center gap-1.5 self-start sm:self-auto flex-wrap">
+          <button type="button" class="cam-btn px-2.5 py-1 rounded bg-slate-900 border border-white/10 text-xs font-mono text-slate-300 hover:text-white hover:border-emerald-500/40 transition active" data-view="default">
+            <i class="fas fa-arrows-to-eye mr-1"></i> Default View
+          </button>
+          <button type="button" class="cam-btn px-2.5 py-1 rounded bg-slate-900 border border-white/10 text-xs font-mono text-slate-300 hover:text-white hover:border-emerald-500/40 transition" data-view="top">
+            <i class="fas fa-map mr-1"></i> Top-Down Circuit
+          </button>
+          <button type="button" class="cam-btn px-2.5 py-1 rounded bg-slate-900 border border-white/10 text-xs font-mono text-slate-300 hover:text-white hover:border-emerald-500/40 transition" data-view="plant">
+            <i class="fas fa-seedling mr-1"></i> Plant Focus
+          </button>
+        </div>
+      </div>
+
+      <!-- 3D Viewport Box -->
+      <div class="glass-card rounded-2xl overflow-hidden border border-emerald-500/30 relative flex flex-col shadow-[0_0_50px_rgba(16,185,129,0.12)]">
+        
+        <!-- 3D Canvas Container -->
+        <div id="canvas-container" class="w-full h-[450px] sm:h-[550px] bg-[#05080E] relative cursor-grab active:cursor-grabbing">
+          <!-- WebGL Canvas injected here -->
+
+          <!-- 3D Floating HUD Telemetry Overlay -->
+          <div class="absolute top-4 left-4 z-10 pointer-events-none space-y-2">
+            <div class="glass-card rounded-xl p-3 border border-white/10 bg-slate-950/85 backdrop-blur-md max-w-xs space-y-1 font-mono text-xs shadow-lg">
+              <div class="flex items-center justify-between gap-4 border-b border-white/10 pb-1">
+                <span class="text-slate-400 font-semibold flex items-center gap-1.5">
+                  <i class="fas fa-microchip text-emerald-400"></i> PROBE SENSOR A0
+                </span>
+                <span id="hud-status-badge" class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300">MOIST</span>
+              </div>
+              <div class="text-[11px] flex justify-between text-slate-300">
+                <span>Resistance:</span>
+                <span id="hud-resistance" class="text-cyan-300 font-semibold">286 Ω (Conductive)</span>
+              </div>
+              <div class="text-[11px] flex justify-between text-slate-300">
+                <span>Moisture Ratio:</span>
+                <span id="hud-ratio" class="text-emerald-300 font-bold">72.0%</span>
+              </div>
+              <div class="text-[11px] flex justify-between text-slate-300">
+                <span>Speaker Acoustic:</span>
+                <span id="hud-tone" class="text-purple-300">1500Hz ("I'm Full")</span>
+              </div>
+            </div>
+
+            <div class="text-[10px] font-mono text-slate-500 bg-slate-950/60 px-2.5 py-1 rounded border border-white/5 inline-block">
+              <i class="fas fa-hand-pointer mr-1"></i> Drag to rotate • Scroll to zoom • Right-click to pan
+            </div>
+          </div>
+
+          <!-- Active Acoustic Sound Ring Indicator -->
+          <div id="sound-indicator" class="absolute top-4 right-4 z-10 pointer-events-none hidden items-center gap-2 bg-purple-500/20 border border-purple-500/40 px-3 py-1.5 rounded-full text-xs font-mono text-purple-300 shadow-[0_0_20px_rgba(168,85,247,0.4)]">
+            <i class="fas fa-broadcast-tower animate-bounce text-purple-400"></i>
+            <span id="sound-indicator-text">1000Hz ALARM SOUNDING</span>
+          </div>
+        </div>
+
+        <!-- Interactive Control Bar Below 3D Canvas -->
+        <div class="p-4 sm:p-5 bg-slate-950/95 border-t border-white/10 space-y-4">
+          
+          <!-- Moisture Slider & Action Presets -->
+          <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+            
+            <!-- Slider Control -->
+            <div class="flex-1 space-y-1.5">
+              <div class="flex items-center justify-between text-xs font-mono">
+                <span class="text-slate-300 flex items-center gap-1.5">
+                  <i class="fas fa-droplet text-cyan-400"></i> Soil Moisture Simulation Slider:
+                </span>
+                <span class="text-emerald-400 font-bold text-sm" id="slider-val-text">72% (Wet / Adequate)</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="text-[11px] font-mono text-rose-400 shrink-0">0% Dry</span>
+                <input type="range" id="moisture-slider" min="0" max="100" value="72" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-400 focus:outline-none">
+                <span class="text-[11px] font-mono text-cyan-400 shrink-0">100% Saturation</span>
+              </div>
+            </div>
+
+            <!-- Preset Buttons -->
+            <div class="flex items-center gap-2 shrink-0 flex-wrap">
+              <button type="button" id="btn-water-plant" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-[#070B12] text-xs font-mono font-bold hover:shadow-[0_0_20px_rgba(16,185,129,0.35)] transition flex items-center gap-1.5">
+                <i class="fas fa-faucet-drip text-sm"></i> Pour Water (85%)
+              </button>
+              <button type="button" id="btn-moderate-plant" class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-500/30 text-xs font-mono font-semibold transition flex items-center gap-1.5">
+                <i class="fas fa-sun text-xs"></i> Moderate (22%)
+              </button>
+              <button type="button" id="btn-dry-plant" class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-rose-400 border border-rose-500/30 text-xs font-mono font-semibold transition flex items-center gap-1.5">
+                <i class="fas fa-triangle-exclamation text-xs"></i> Dry Soil (5%)
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Threshold Rule Breakdown Indicator -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs font-mono">
+            <div id="rule-dry-box" class="p-2.5 rounded-lg bg-slate-900/60 border border-white/5 transition-all flex items-center gap-2.5">
+              <div class="w-3 h-3 rounded-full bg-rose-500 shrink-0"></div>
+              <div>
+                <span class="text-rose-400 font-bold block text-[11px]">MOISTURE &le; 10% (DRY)</span>
+                <span class="text-[10px] text-slate-400">Red LED ON • 1000Hz "Thirsty" Alarm</span>
+              </div>
+            </div>
+            <div id="rule-mod-box" class="p-2.5 rounded-lg bg-slate-900/60 border border-white/5 transition-all flex items-center gap-2.5">
+              <div class="w-3 h-3 rounded-full bg-amber-500 shrink-0"></div>
+              <div>
+                <span class="text-amber-400 font-bold block text-[11px]">10% &lt; MOISTURE &le; 30%</span>
+                <span class="text-[10px] text-slate-400">Red LED ON • Speaker Silent</span>
+              </div>
+            </div>
+            <div id="rule-wet-box" class="p-2.5 rounded-lg bg-emerald-950/40 border border-emerald-500/40 transition-all flex items-center gap-2.5">
+              <div class="w-3 h-3 rounded-full bg-emerald-400 shrink-0"></div>
+              <div>
+                <span class="text-emerald-300 font-bold block text-[11px]">MOISTURE &gt; 30% (OPTIMAL)</span>
+                <span class="text-[10px] text-slate-300">Green LED ON • 1500Hz "Full" Sound</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- REAL HARDWARE LAB DEMO & PHYSICAL TEST SHOWCASE -->
+    <section class="space-y-6">
+      <div class="text-left">
+        <div class="inline-flex items-center gap-2 text-xs font-mono text-emerald-400 tracking-wider uppercase mb-1">
+          <i class="fas fa-camera"></i> Empirical Evidence &amp; Lab Footage
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Physical Hardware Testing &amp; Video Demonstration</h2>
+        <p class="text-xs text-slate-400">Real laboratory build submitted by Tyron John L. Dela Cruz and the BSIT project team at Datamex College of Saint Adeline.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Video Player Card -->
+        <div class="glass-card rounded-2xl p-5 border border-white/10 flex flex-col justify-between space-y-4">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                  <i class="fas fa-video text-xs"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm font-bold text-white">Live Physical Hardware Demonstration</h3>
+                  <span class="text-[10px] font-mono text-slate-400">Plant Pot Probe &amp; Speaker Alert Test</span>
+                </div>
+              </div>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">ORIGINAL LAB FOOTAGE</span>
+            </div>
+
+            <!-- HTML5 Video Container with Fallback Poster -->
+            <div class="rounded-xl overflow-hidden bg-black border border-white/10 aspect-video relative group">
+              <video id="lab-video" controls playsinline class="w-full h-full object-cover" poster="assets/hardware-setup.jpg">
+                <source src="assets/demo-video.mp4" type="video/mp4">
+                <p class="text-xs text-slate-400 p-4">Your browser does not support HTML5 video.</p>
+              </video>
+            </div>
+          </div>
+
+          <div class="p-3 bg-slate-900/80 rounded-xl border border-white/5 text-xs text-slate-300 space-y-1">
+            <span class="font-mono text-[11px] text-emerald-400 font-semibold block">
+              <i class="fas fa-circle-check mr-1"></i> Recorded Lab Verification:
+            </span>
+            <p class="text-[11px] text-slate-400 leading-relaxed">
+              Demonstrates probe insertion into soil, threshold detection, and instant acoustic tone dispatch from the speaker when the plant requires hydration.
+            </p>
+          </div>
+        </div>
+
+        <!-- Hardware Photo & Schematic Gallery -->
+        <div class="glass-card rounded-2xl p-5 border border-white/10 flex flex-col justify-between space-y-4">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+                  <i class="fas fa-images text-xs"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm font-bold text-white">Breadboard Prototype &amp; Circuit Schematics</h3>
+                  <span class="text-[10px] font-mono text-slate-400">Physical Component Interconnects</span>
+                </div>
+              </div>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">CIRCUIT LAYOUT</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <!-- Physical Hardware Setup Photo -->
+              <div class="rounded-xl overflow-hidden border border-white/10 bg-slate-950 aspect-video relative group cursor-pointer" onclick="openPhotoModal('assets/hardware-setup.jpg', 'Physical Arduino & Breadboard Prototype Setup')">
+                <img src="assets/hardware-setup.jpg" alt="Physical Arduino Breadboard Setup" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-2.5">
+                  <span class="text-[10px] font-mono text-white font-medium"><i class="fas fa-expand mr-1"></i> Breadboard &amp; Speaker Build</span>
+                </div>
+              </div>
+
+              <!-- Circuit Diagram Graphic -->
+              <div class="rounded-xl overflow-hidden border border-white/10 bg-slate-950 aspect-video relative group cursor-pointer" onclick="openPhotoModal('assets/circuit-diagram.png', 'Arduino & Soil Moisture Circuit Diagram')">
+                <img src="assets/circuit-diagram.png" alt="Circuit Schematic Diagram" class="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-2.5">
+                  <span class="text-[10px] font-mono text-white font-medium"><i class="fas fa-expand mr-1"></i> Wiring Schematic</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hardware Bill of Materials (BOM) Quick Table -->
+          <div class="p-3 bg-slate-900/80 rounded-xl border border-white/5 text-[11px] font-mono text-slate-300">
+            <span class="text-cyan-400 font-bold block mb-1.5"><i class="fas fa-list-check mr-1"></i> Key Hardware Pin Connections:</span>
+            <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px] text-slate-400">
+              <div><strong class="text-slate-200">A0:</strong> Soil Moisture Sensor Analog</div>
+              <div><strong class="text-slate-200">D1:</strong> Green LED (330Ω Resistor)</div>
+              <div><strong class="text-slate-200">D3:</strong> Red LED (330Ω Resistor)</div>
+              <div><strong class="text-slate-200">D5:</strong> Piezo Speaker (PWM Tone)</div>
+              <div><strong class="text-slate-200">5V / GND:</strong> Common Power Rails</div>
+              <div><strong class="text-slate-200">MCU:</strong> ATmega328P @ 16 MHz</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- LIVE TELEMETRY GRAPH & SERIAL MONITOR -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      
+      <!-- Telemetry Oscilloscope Graph -->
+      <div class="glass-card rounded-2xl p-5 border border-white/10 flex flex-col justify-between space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i class="fas fa-chart-line text-emerald-400 text-sm"></i>
+            <h3 class="text-sm font-bold text-white">Live Moisture Telemetry Stream</h3>
+          </div>
+          <span class="text-[10px] font-mono text-slate-400 bg-slate-900 px-2 py-0.5 rounded border border-white/5">CHART.JS CANVAS</span>
+        </div>
+        <div class="h-60 w-full relative">
+          <canvas id="telemetryChart"></canvas>
+        </div>
+        <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 pt-1 border-t border-white/5">
+          <span>ADC Range: 0 - 1023 (10-bit)</span>
+          <span class="text-emerald-400">Sampling Rate: 100ms</span>
+        </div>
+      </div>
+
+      <!-- Simulated Arduino Serial Monitor Terminal -->
+      <div class="glass-card rounded-2xl p-5 border border-white/10 flex flex-col justify-between space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i class="fas fa-terminal text-cyan-400 text-sm"></i>
+            <h3 class="text-sm font-bold text-white">Arduino Serial Monitor (9600 Baud)</h3>
+          </div>
+          <button type="button" id="btn-clear-terminal" class="text-[10px] font-mono text-slate-400 hover:text-white bg-slate-900 px-2 py-0.5 rounded border border-white/5 transition">
+            Clear Stream
+          </button>
+        </div>
+        <div id="serial-terminal" class="bg-black/90 rounded-xl p-3 font-mono text-[11px] text-emerald-400 h-60 overflow-y-auto border border-white/5 leading-relaxed scrollbar-thin">
+          <div class="text-slate-500">// Serial connection established at 9600 baud</div>
+          <div class="text-slate-500">// Initializing ATmega328P registers...</div>
+          <div class="text-cyan-300">[SETUP] Calibrating maximumMoistureLevel = 1023</div>
+          <div class="text-purple-300">[AUDIO] tone(5, 5000, 500) startup sound fired</div>
+        </div>
+        <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 pt-1 border-t border-white/5">
+          <span>Auto-Scroll: Enabled</span>
+          <span class="text-cyan-400">Output: Serial.println(currentMoistureLevel)</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ARDUINO C++ SOURCE CODE INSPECTOR -->
+    <section class="glass-card rounded-2xl p-6 border border-white/10 space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-4">
+        <div>
+          <div class="inline-flex items-center gap-2 text-xs font-mono text-emerald-400 tracking-wider uppercase mb-1">
+            <i class="fas fa-code"></i> Production Embedded Firmware
+          </div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight">C++ Arduino Source Code</h2>
+          <p class="text-xs text-slate-400">Full sketch code programmed, calibrated, and flashed via Arduino IDE.</p>
+        </div>
+        <button type="button" id="btn-copy-code" class="self-start sm:self-auto px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-xs font-mono text-slate-300 hover:text-white border border-white/10 transition flex items-center gap-1.5">
+          <i class="fas fa-copy text-[11px]"></i>
+          <span id="btn-copy-label">Copy Sketch Code</span>
+        </button>
+      </div>
+
+      <div class="rounded-xl overflow-hidden bg-slate-950 border border-white/10">
+        <div class="bg-slate-900/90 px-4 py-2 border-b border-white/5 flex items-center justify-between text-xs font-mono text-slate-400">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-rose-500/60 inline-block"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-500/60 inline-block"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/60 inline-block"></span>
+            <span class="text-slate-300 font-medium ml-2">arduino_soil_moisture_speaker.ino</span>
+          </div>
+          <span class="text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded text-[10px]">Arduino C++</span>
+        </div>
+        <pre class="p-4 text-slate-200 font-mono text-xs leading-relaxed overflow-x-auto max-h-96 scrollbar-thin"><code id="raw-arduino-code">int greenLight = 1;      // Pin for Green LED (Above 30% moisture level)
+int redLight = 3;        // Pin for Red LED (Below 10% moisture level)
+int speakerPin = 5;      // Pin for speaker (Replaces buzzer)
+int maximumMoistureLevel; // Maximum moisture level (calibrated value)
+int currentMoistureLevel; // Current moisture level (reading from sensor)
+
+void moistureDetection() {
+  float moistureRatio = (float)currentMoistureLevel / (float)maximumMoistureLevel;
+
+  // Moisture level less than 10%: "I'm thirsty" sound and red light
+  if (moistureRatio <= 0.1) {
+    digitalWrite(greenLight, LOW);  // Turn off green light
+    digitalWrite(redLight, HIGH);   // Turn on red light
+    tone(speakerPin, 1000, 500);    // Sound for "I'm thirsty" (1000Hz)
+    delay(2000);                    // Wait for 2 seconds before proceeding
+  } 
+  // Moisture level between 10% and 30%: Red light (no sound)
+  else if (moistureRatio <= 0.3 && moistureRatio > 0.1) {
+    digitalWrite(greenLight, LOW);  // Turn off green light
+    digitalWrite(redLight, HIGH);   // Keep red light on
+    noTone(speakerPin);             // No sound
+  }
+  // Moisture level above 30%: "I'm full" sound and green light
+  else {
+    digitalWrite(greenLight, HIGH); // Turn on green light
+    digitalWrite(redLight, LOW);    // Turn off red light
+    tone(speakerPin, 1500, 500);    // Sound for "I'm full" (1500Hz)
+  }
+}
+
+void setup() {
+  // Initialize output pins for LEDs and speaker
+  pinMode(greenLight, OUTPUT);     // Pin for Green LED
+  pinMode(redLight, OUTPUT);       // Pin for Red LED
+  pinMode(speakerPin, OUTPUT);     // Pin for Speaker
+
+  // Initialize the soil moisture sensor pin (A0)
+  pinMode(A0, INPUT);
+
+  // Initialize moisture level (calibrated to maximum level)
+  maximumMoistureLevel = analogRead(A0);
+
+  // Initial sound to indicate that the program has started
+  tone(speakerPin, 5000, 500);  // High pitch for startup sound
+  delay(200);                   // Small delay to separate the sounds
+  tone(speakerPin, 6000, 500);  // Another indication sound
+  delay(600);                   // Delay to allow the sound to finish
+
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Read the current moisture level from the sensor
+  currentMoistureLevel = analogRead(A0);
+
+  // Call moistureDetection to determine what light and sound to play
+  moistureDetection();
+
+  // Short delay to prevent overloading the microcontroller
+  delay(100);
+
+  // Print the current moisture level to the Serial Monitor
+  Serial.println(currentMoistureLevel);
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- TEST CASE MATRIX & TEAM CREDITS -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Test Case Results -->
+      <div class="lg:col-span-2 glass-card rounded-2xl p-6 border border-white/10 space-y-4">
+        <div class="flex items-center gap-2">
+          <i class="fas fa-vial-circle-check text-emerald-400 text-sm"></i>
+          <h3 class="text-base font-bold text-white">Empirical Test Cases &amp; Validation</h3>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs font-mono text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-900 border-b border-white/10 text-slate-400">
+                <th class="p-2.5">Test Case</th>
+                <th class="p-2.5">Moisture Input</th>
+                <th class="p-2.5">Expected Outcome</th>
+                <th class="p-2.5">Actual Outcome</th>
+                <th class="p-2.5">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5 text-slate-300">
+              <tr>
+                <td class="p-2.5 font-bold text-white">Test 1: Dry Soil Probe</td>
+                <td class="p-2.5 text-rose-400">&le; 10% Ratio</td>
+                <td class="p-2.5">Red LED ON + 1000Hz Tone</td>
+                <td class="p-2.5">Red LED ON + 1000Hz Tone</td>
+                <td class="p-2.5"><span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold">PASS</span></td>
+              </tr>
+              <tr>
+                <td class="p-2.5 font-bold text-white">Test 2: Wet Soil Probe</td>
+                <td class="p-2.5 text-emerald-400">&gt; 30% Ratio</td>
+                <td class="p-2.5">Green LED ON + 1500Hz Tone</td>
+                <td class="p-2.5">Green LED ON + 1500Hz Tone</td>
+                <td class="p-2.5"><span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold">PASS</span></td>
+              </tr>
+              <tr>
+                <td class="p-2.5 font-bold text-white">Test 3: Intermediate Range</td>
+                <td class="p-2.5 text-amber-400">10% - 30% Ratio</td>
+                <td class="p-2.5">Red LED ON (Silent Alarm)</td>
+                <td class="p-2.5">Red LED ON (Silent Alarm)</td>
+                <td class="p-2.5"><span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold">PASS</span></td>
+              </tr>
+              <tr>
+                <td class="p-2.5 font-bold text-white">Test 4: Water Irrigation Response</td>
+                <td class="p-2.5 text-cyan-400">Dry &rarr; Saturated</td>
+                <td class="p-2.5">State switch &lt; 200ms</td>
+                <td class="p-2.5">Transitioned in 120ms</td>
+                <td class="p-2.5"><span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold">PASS</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Academic Project Credits -->
+      <div class="glass-card rounded-2xl p-6 border border-white/10 space-y-4 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center gap-2 mb-3">
+            <i class="fas fa-users text-cyan-400 text-sm"></i>
+            <h3 class="text-base font-bold text-white">Academic Project Team</h3>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed mb-4">
+            Bachelor of Science in Information Technology (BSIT) — Object Oriented Programming &amp; Discrete Structures.
+          </p>
+          <ul class="text-xs font-mono space-y-1.5 text-slate-300">
+            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-400 text-[10px]"></i> <span>Marcial Lawrence Jr V. Caronan</span></li>
+            <li class="flex items-center gap-2"><i class="fas fa-star text-cyan-400 text-[10px]"></i> <span class="text-white font-bold">Tyron John L. Dela Cruz</span></li>
+            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-400 text-[10px]"></i> <span>Shan Benedict Rodriguez</span></li>
+            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-400 text-[10px]"></i> <span>Rowena Clores</span></li>
+            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-400 text-[10px]"></i> <span>Justiene Edriel Padual</span></li>
+            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-400 text-[10px]"></i> <span>Nathaniel Ilago</span></li>
+            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-400 text-[10px]"></i> <span>Edsel Villanueva</span></li>
+          </ul>
+        </div>
+        <div class="pt-3 border-t border-white/5 text-[11px] font-mono text-slate-400">
+          <span>Instructor: <strong>Mr. Randy Villanueva</strong></span>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- PHOTO MODAL VIEWER -->
+  <div id="photo-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300" onclick="closePhotoModal()">
+    <div class="max-w-4xl w-full bg-slate-900 rounded-2xl overflow-hidden border border-white/10 relative" onclick="event.stopPropagation()">
+      <div class="p-4 border-b border-white/10 flex items-center justify-between">
+        <h4 id="photo-modal-title" class="text-sm font-bold text-white font-mono">Photo Inspection</h4>
+        <button type="button" onclick="closePhotoModal()" class="text-slate-400 hover:text-white p-1">
+          <i class="fas fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <div class="p-2 bg-black flex items-center justify-center max-h-[80vh] overflow-hidden">
+        <img id="photo-modal-img" src="" alt="Expanded Preview" class="max-w-full max-h-[75vh] object-contain rounded-lg">
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="mt-16 border-t border-white/10 py-8 bg-[#05080E]/90 text-center text-xs font-mono text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <span>Tyron John L. Dela Cruz • Portfolio Project Showcase</span>
+      <a href="../../index.html#projects" class="text-emerald-400 hover:text-emerald-300 transition flex items-center gap-1.5">
+        <span>Return to Portfolio Main</span> <i class="fas fa-arrow-right text-[10px]"></i>
+      </a>
+    </div>
+  </footer>
+
+  <!-- SCRIPT: THREE.JS 3D SCENE & INTERACTIVE TELEMETRY LOGIC -->
+  <script>
+    (function() {
+      'use strict';
+
+      // --- 1. Audio Synthesis (Web Audio API) ---
+      let audioCtx = null;
+      let isAudioEnabled = true;
+      let lastToneTime = 0;
+
+      function playTone(freq, durationMs) {
+        if (!isAudioEnabled) return;
+        const now = Date.now();
+        if (now - lastToneTime < 800) return; // Prevent audio overlap flood
+        lastToneTime = now;
+
+        try {
+          if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          }
+          if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+          }
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'square'; // Classic square wave buzzer tone
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+          gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (durationMs / 1000));
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc.start();
+          osc.stop(audioCtx.currentTime + (durationMs / 1000));
+        } catch (e) {
+          console.warn('Audio synthesis issue:', e);
+        }
+      }
+
+      // Audio Toggle Button
+      const audioBtn = document.getElementById('audio-toggle-btn');
+      const audioIcon = document.getElementById('audio-toggle-icon');
+      const audioLabel = document.getElementById('audio-toggle-label');
+
+      if (audioBtn) {
+        audioBtn.addEventListener('click', () => {
+          isAudioEnabled = !isAudioEnabled;
+          if (isAudioEnabled) {
+            audioIcon.className = 'fas fa-volume-high text-emerald-400';
+            if (audioLabel) audioLabel.textContent = 'Speaker Audio: ON';
+            playTone(2000, 150); // Feedback pip
+          } else {
+            audioIcon.className = 'fas fa-volume-xmark text-slate-500';
+            if (audioLabel) audioLabel.textContent = 'Speaker Audio: MUTED';
+          }
+        });
+      }
+
+      // --- 2. Chart.js Telemetry Graph Setup ---
+      const chartCtx = document.getElementById('telemetryChart').getContext('2d');
+      const maxDataPoints = 30;
+      const initialLabels = Array.from({length: maxDataPoints}, (_, i) => `${i}s`);
+      const initialData = Array.from({length: maxDataPoints}, () => 72);
+
+      const telemetryChart = new Chart(chartCtx, {
+        type: 'line',
+        data: {
+          labels: initialLabels,
+          datasets: [{
+            label: 'Soil Moisture %',
+            data: initialData,
+            borderColor: '#10B981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            borderWidth: 2,
+            tension: 0.35,
+            fill: true,
+            pointRadius: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: false,
+          scales: {
+            y: {
+              min: 0,
+              max: 100,
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: { color: '#94A3B8', font: { family: 'JetBrains Mono', size: 10 } }
+            },
+            x: {
+              display: false
+            }
+          },
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+
+      // --- 3. Serial Monitor Streamer ---
+      const terminalEl = document.getElementById('serial-terminal');
+      function appendSerialLog(msg, colorClass = 'text-slate-300') {
+        if (!terminalEl) return;
+        const line = document.createElement('div');
+        line.className = colorClass;
+        line.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+        terminalEl.appendChild(line);
+        terminalEl.scrollTop = terminalEl.scrollHeight;
+        // Limit terminal history
+        while (terminalEl.children.length > 50) {
+          terminalEl.removeChild(terminalEl.children[0]);
+        }
+      }
+
+      const clearTerminalBtn = document.getElementById('btn-clear-terminal');
+      if (clearTerminalBtn) {
+        clearTerminalBtn.addEventListener('click', () => {
+          terminalEl.innerHTML = '<div class="text-slate-500">// Terminal buffer cleared</div>';
+        });
+      }
+
+      // --- 4. Interactive Three.js 3D Circuit Scene ---
+      const container = document.getElementById('canvas-container');
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x05080E);
+      scene.fog = new THREE.FogExp2(0x05080E, 0.035);
+
+      const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+      camera.position.set(0, 7.5, 13);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      container.appendChild(renderer.domElement);
+
+      const controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.06;
+      controls.maxPolarAngle = Math.PI / 2 - 0.02; // Don't go below ground
+      controls.minDistance = 4;
+      controls.maxDistance = 25;
+      controls.target.set(0, 1.8, 0);
+
+      // Lighting
+      const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.65);
+      scene.add(ambientLight);
+
+      const dirLight = new THREE.DirectionalLight(0xE0F2FE, 1.2);
+      dirLight.position.set(8, 14, 8);
+      dirLight.castShadow = true;
+      dirLight.shadow.mapSize.width = 1024;
+      dirLight.shadow.mapSize.height = 1024;
+      scene.add(dirLight);
+
+      const greenLedLight = new THREE.PointLight(0x10B981, 2.5, 6);
+      greenLedLight.position.set(2.4, 0.8, 0.8);
+      scene.add(greenLedLight);
+
+      const redLedLight = new THREE.PointLight(0xF43F5E, 0.0, 6);
+      redLedLight.position.set(2.4, 0.8, 1.4);
+      scene.add(redLedLight);
+
+      // Workbench Table Surface
+      const benchGeo = new THREE.BoxGeometry(22, 0.4, 16);
+      const benchMat = new THREE.MeshStandardMaterial({ color: 0x0B1220, roughness: 0.7, metalness: 0.15 });
+      const workbench = new THREE.Mesh(benchGeo, benchMat);
+      workbench.position.y = -0.2;
+      workbench.receiveShadow = true;
+      scene.add(workbench);
+
+      // Subtle Grid Mat
+      const gridMat = new THREE.GridHelper(18, 18, 0x10B981, 0x1E293B);
+      gridMat.position.y = 0.01;
+      gridMat.material.opacity = 0.18;
+      gridMat.material.transparent = true;
+      scene.add(gridMat);
+
+      // === 3D PLANT POT & SOIL ===
+      const potGroup = new THREE.Group();
+      potGroup.position.set(-3.2, 0, 0);
+
+      // Ceramic Pot Body
+      const potGeo = new THREE.CylinderGeometry(2.1, 1.5, 3.4, 32);
+      const potMat = new THREE.MeshStandardMaterial({ color: 0x1E293B, roughness: 0.65, metalness: 0.1 });
+      const potMesh = new THREE.Mesh(potGeo, potMat);
+      potMesh.position.y = 1.7;
+      potMesh.castShadow = true;
+      potMesh.receiveShadow = true;
+      potGroup.add(potMesh);
+
+      // Soil Disk Mesh (color will dynamically shift between rich wet and dry sandy)
+      const soilGeo = new THREE.CylinderGeometry(2.0, 2.0, 0.3, 32);
+      const soilMat = new THREE.MeshStandardMaterial({ color: 0x24180E, roughness: 0.95 });
+      const soilMesh = new THREE.Mesh(soilGeo, soilMat);
+      soilMesh.position.y = 3.25;
+      potGroup.add(soilMesh);
+
+      // Plant Stem & Leaves
+      const stemGeo = new THREE.CylinderGeometry(0.12, 0.15, 2.8, 12);
+      const stemMat = new THREE.MeshStandardMaterial({ color: 0x15803D, roughness: 0.6 });
+      const stemMesh = new THREE.Mesh(stemGeo, stemMat);
+      stemMesh.position.y = 4.5;
+      potGroup.add(stemMesh);
+
+      // Leaf generator
+      function createLeaf(x, y, z, rx, ry, rz, scale = 1) {
+        const leafGeo = new THREE.SphereGeometry(0.7, 16, 8);
+        leafGeo.scale(1.4, 0.12, 0.7);
+        const leafMat = new THREE.MeshStandardMaterial({ color: 0x16A34A, roughness: 0.5 });
+        const leaf = new THREE.Mesh(leafGeo, leafMat);
+        leaf.position.set(x, y, z);
+        leaf.rotation.set(rx, ry, rz);
+        leaf.scale.set(scale, scale, scale);
+        leaf.castShadow = true;
+        potGroup.add(leaf);
+        return leaf;
+      }
+      createLeaf(0.5, 4.8, 0.2, 0.2, 0.4, -0.3, 1.1);
+      createLeaf(-0.6, 5.2, -0.1, -0.2, -0.5, 0.4, 1.2);
+      createLeaf(0.1, 5.7, 0.6, 0.4, 0.2, -0.2, 1.0);
+      createLeaf(-0.2, 6.1, -0.5, -0.4, 0.1, 0.3, 0.9);
+      scene.add(potGroup);
+
+      // === SOIL MOISTURE SENSOR PROBE ===
+      const probeGroup = new THREE.Group();
+      probeGroup.position.set(-2.4, 3.2, 0.6);
+
+      // Gold/Copper PCB Prongs
+      const prongGeo = new THREE.BoxGeometry(0.12, 1.4, 0.04);
+      const prongMat = new THREE.MeshStandardMaterial({ color: 0xD97706, metalness: 0.8, roughness: 0.3 });
+      const prong1 = new THREE.Mesh(prongGeo, prongMat);
+      prong1.position.set(-0.2, -0.2, 0);
+      const prong2 = new THREE.Mesh(prongGeo, prongMat);
+      prong2.position.set(0.2, -0.2, 0);
+      probeGroup.add(prong1);
+      probeGroup.add(prong2);
+
+      // Probe PCB Top Handle
+      const probePcbGeo = new THREE.BoxGeometry(0.8, 1.0, 0.08);
+      const probePcbMat = new THREE.MeshStandardMaterial({ color: 0x064E3B, roughness: 0.4 });
+      const probePcb = new THREE.Mesh(probePcbGeo, probePcbMat);
+      probePcb.position.set(0, 0.8, 0);
+      probeGroup.add(probePcb);
+      scene.add(probeGroup);
+
+      // === ARDUINO UNO R3 BOARD ===
+      const arduinoGroup = new THREE.Group();
+      arduinoGroup.position.set(0.2, 0.12, -1.2);
+
+      // Main Blue PCB
+      const ardPcbGeo = new THREE.BoxGeometry(3.6, 0.15, 2.6);
+      const ardPcbMat = new THREE.MeshStandardMaterial({ color: 0x0284C7, roughness: 0.4, metalness: 0.1 });
+      const ardPcb = new THREE.Mesh(ardPcbGeo, ardPcbMat);
+      ardPcb.castShadow = true;
+      ardPcb.receiveShadow = true;
+      arduinoGroup.add(ardPcb);
+
+      // USB Port (Silver metal box)
+      const usbGeo = new THREE.BoxGeometry(0.8, 0.6, 0.7);
+      const silverMat = new THREE.MeshStandardMaterial({ color: 0xCBD5E1, metalness: 0.9, roughness: 0.2 });
+      const usbMesh = new THREE.Mesh(usbGeo, silverMat);
+      usbMesh.position.set(-1.5, 0.35, -0.85);
+      arduinoGroup.add(usbMesh);
+
+      // DC Barrel Jack (Black cylinder)
+      const dcGeo = new THREE.CylinderGeometry(0.35, 0.35, 0.7, 16);
+      const blackMat = new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.8 });
+      const dcMesh = new THREE.Mesh(dcGeo, blackMat);
+      dcMesh.rotation.z = Math.PI / 2;
+      dcMesh.position.set(-1.5, 0.3, 0.8);
+      arduinoGroup.add(dcMesh);
+
+      // ATmega328P DIP Chip (Long black IC)
+      const icGeo = new THREE.BoxGeometry(1.6, 0.2, 0.5);
+      const icMesh = new THREE.Mesh(icGeo, blackMat);
+      icMesh.position.set(0.4, 0.18, 0.2);
+      arduinoGroup.add(icMesh);
+
+      // Female Pin Header Rows (Black strip headers)
+      const headerGeo = new THREE.BoxGeometry(2.4, 0.35, 0.2);
+      const headerTop = new THREE.Mesh(headerGeo, blackMat);
+      headerTop.position.set(0.4, 0.25, -1.15);
+      const headerBottom = new THREE.Mesh(headerGeo, blackMat);
+      headerBottom.position.set(0.4, 0.25, 1.15);
+      arduinoGroup.add(headerTop);
+      arduinoGroup.add(headerBottom);
+
+      // Arduino Power LED (Tiny green point)
+      const ardLedGeo = new THREE.BoxGeometry(0.1, 0.08, 0.1);
+      const ardLedMat = new THREE.MeshBasicMaterial({ color: 0x22C55E });
+      const ardLed = new THREE.Mesh(ardLedGeo, ardLedMat);
+      ardLed.position.set(-0.6, 0.14, 0.3);
+      arduinoGroup.add(ardLed);
+      scene.add(arduinoGroup);
+
+      // === SOLDERLESS BREADBOARD ===
+      const bbGroup = new THREE.Group();
+      bbGroup.position.set(2.8, 0.12, 1.2);
+
+      const bbPcbGeo = new THREE.BoxGeometry(3.2, 0.25, 4.2);
+      const bbPcbMat = new THREE.MeshStandardMaterial({ color: 0xF8FAFC, roughness: 0.85 });
+      const bbPcb = new THREE.Mesh(bbPcbGeo, bbPcbMat);
+      bbPcb.castShadow = true;
+      bbPcb.receiveShadow = true;
+      bbGroup.add(bbPcb);
+
+      // LEDs on Breadboard
+      // Green LED (Pin D1)
+      const ledGeo = new THREE.SphereGeometry(0.2, 16, 12);
+      const greenLedMat = new THREE.MeshStandardMaterial({ color: 0x10B981, roughness: 0.2, emissive: 0x10B981, emissiveIntensity: 1.0 });
+      const greenLedMesh = new THREE.Mesh(ledGeo, greenLedMat);
+      greenLedMesh.position.set(-0.4, 0.45, -0.6);
+      bbGroup.add(greenLedMesh);
+
+      // Red LED (Pin D3)
+      const redLedMat = new THREE.MeshStandardMaterial({ color: 0xF43F5E, roughness: 0.2, emissive: 0xF43F5E, emissiveIntensity: 0.1 });
+      const redLedMesh = new THREE.Mesh(ledGeo, redLedMat);
+      redLedMesh.position.set(-0.4, 0.45, 0.3);
+      bbGroup.add(redLedMesh);
+
+      // Resistors on Breadboard
+      const resGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.6, 8);
+      resGeo.rotation.z = Math.PI / 2;
+      const resMat = new THREE.MeshStandardMaterial({ color: 0xD97706, roughness: 0.6 });
+      const res1 = new THREE.Mesh(resGeo, resMat);
+      res1.position.set(0.2, 0.25, -0.6);
+      const res2 = new THREE.Mesh(resGeo, resMat);
+      res2.position.set(0.2, 0.25, 0.3);
+      bbGroup.add(res1);
+      bbGroup.add(res2);
+
+      // Piezo Speaker / Buzzer (Cylindrical black transducer)
+      const spkGeo = new THREE.CylinderGeometry(0.65, 0.65, 0.5, 24);
+      const spkMat = new THREE.MeshStandardMaterial({ color: 0x1E293B, roughness: 0.5 });
+      const speakerMesh = new THREE.Mesh(spkGeo, spkMat);
+      speakerMesh.position.set(0.2, 0.4, 1.3);
+      bbGroup.add(speakerMesh);
+
+      // Speaker Center Hole
+      const holeGeo = new THREE.CylinderGeometry(0.18, 0.18, 0.52, 16);
+      const holeMesh = new THREE.Mesh(holeGeo, blackMat);
+      holeMesh.position.set(0.2, 0.41, 1.3);
+      bbGroup.add(holeMesh);
+      scene.add(bbGroup);
+
+      // === COLOR-CODED JUMPER WIRES ===
+      function createCurvedWire(p1, p2, colorHex, height = 1.6) {
+        const mid = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5);
+        mid.y += height;
+        const curve = new THREE.QuadraticBezierCurve3(p1, mid, p2);
+        const tubeGeo = new THREE.TubeGeometry(curve, 20, 0.04, 6, false);
+        const tubeMat = new THREE.MeshStandardMaterial({ color: colorHex, roughness: 0.5 });
+        const tube = new THREE.Mesh(tubeGeo, tubeMat);
+        scene.add(tube);
+        return tube;
+      }
+      // Analog Signal (Probe to Arduino A0) - Yellow
+      createCurvedWire(new THREE.Vector3(-2.4, 4.0, 0.6), new THREE.Vector3(0.6, 0.35, 0.0), 0xFACC15, 1.8);
+      // Green LED Control (Arduino D1 to Breadboard) - Green
+      createCurvedWire(new THREE.Vector3(0.8, 0.35, -2.3), new THREE.Vector3(2.4, 0.35, 0.6), 0x22C55E, 1.2);
+      // Red LED Control (Arduino D3 to Breadboard) - Red
+      createCurvedWire(new THREE.Vector3(1.0, 0.35, -2.3), new THREE.Vector3(2.4, 0.35, 1.5), 0xEF4444, 1.3);
+      // Speaker PWM (Arduino D5 to Speaker) - Purple
+      createCurvedWire(new THREE.Vector3(1.2, 0.35, -2.3), new THREE.Vector3(3.0, 0.35, 2.5), 0xA855F7, 1.4);
+      // Power Rails 5V (Red) & GND (Black)
+      createCurvedWire(new THREE.Vector3(-0.4, 0.35, -0.05), new THREE.Vector3(1.6, 0.35, 0.2), 0xDC2626, 0.9);
+      createCurvedWire(new THREE.Vector3(-0.2, 0.35, -0.05), new THREE.Vector3(1.6, 0.35, 2.6), 0x0F172A, 1.1);
+
+      // === WATERING DROPLET PARTICLES ===
+      const dropCount = 40;
+      const dropGeo = new THREE.SphereGeometry(0.06, 6, 6);
+      const dropMat = new THREE.MeshBasicMaterial({ color: 0x38BDF8, transparent: true, opacity: 0 });
+      const droplets = [];
+      for (let i = 0; i < dropCount; i++) {
+        const drop = new THREE.Mesh(dropGeo, dropMat);
+        drop.position.set(-3.2 + (Math.random() - 0.5) * 1.5, 6 + Math.random() * 2, (Math.random() - 0.5) * 1.5);
+        scene.add(drop);
+        droplets.push(drop);
+      }
+      let isRaining = false;
+      let rainProgress = 0;
+
+      // === SOUND WAVE RINGS ANIMATION ===
+      const waveGeo = new THREE.RingGeometry(0.65, 0.72, 24);
+      waveGeo.rotation.x = -Math.PI / 2;
+      const waveMat = new THREE.MeshBasicMaterial({ color: 0xA855F7, transparent: true, opacity: 0, side: THREE.DoubleSide });
+      const soundWaveRing = new THREE.Mesh(waveGeo, waveMat);
+      soundWaveRing.position.set(3.0, 0.55, 2.5);
+      scene.add(soundWaveRing);
+      let isSoundPulsing = false;
+
+      // --- 5. State & Telemetry Synchronization Controller ---
+      let currentMoisture = 72; // default 72%
+      const slider = document.getElementById('moisture-slider');
+      const sliderText = document.getElementById('slider-val-text');
+
+      // Update All UI & 3D Elements based on moisture level
+      function setMoistureLevel(val, animated = false) {
+        currentMoisture = Math.max(0, Math.min(100, val));
+        if (slider) slider.value = currentMoisture;
+
+        const ratio = currentMoisture / 100.0;
+        const adcVal = Math.round(ratio * 1023);
+
+        // Update Slider Text & Quick Status
+        if (sliderText) {
+          if (currentMoisture <= 10) sliderText.textContent = `${currentMoisture}% (Critical Dehydration)`;
+          else if (currentMoisture <= 30) sliderText.textContent = `${currentMoisture}% (Moderate Dry)`;
+          else sliderText.textContent = `${currentMoisture}% (Optimal Moisture)`;
+        }
+
+        const qMoist = document.getElementById('quick-moisture-val');
+        const qAdc = document.getElementById('quick-adc-val');
+        const qBadge = document.getElementById('quick-status-badge');
+        const qGreen = document.getElementById('quick-green-status');
+        const qRed = document.getElementById('quick-red-status');
+        const qSpk = document.getElementById('quick-speaker-status');
+
+        if (qMoist) qMoist.textContent = `${currentMoisture}%`;
+        if (qAdc) qAdc.textContent = `${adcVal}`;
+
+        // HUD Elements
+        const hudBadge = document.getElementById('hud-status-badge');
+        const hudRatio = document.getElementById('hud-ratio');
+        const hudRes = document.getElementById('hud-resistance');
+        const hudTone = document.getElementById('hud-tone');
+        const soundIndicator = document.getElementById('sound-indicator');
+        const soundText = document.getElementById('sound-indicator-text');
+
+        if (hudRatio) hudRatio.textContent = `${currentMoisture.toFixed(1)}%`;
+        if (hudRes) {
+          const ohms = Math.round(1023 - adcVal) * 2 + 150;
+          hudRes.textContent = `${ohms} Ω (${currentMoisture > 30 ? 'Conductive' : 'Resistive'})`;
+        }
+
+        // Logic branching matching Tyron's Arduino C++ Code:
+        // Case 1: Moisture <= 10% -> Red LED ON, Green LED OFF, Speaker tone 1000Hz
+        if (ratio <= 0.1) {
+          if (qBadge) { qBadge.textContent = 'CRITICAL DRY'; qBadge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30'; }
+          if (hudBadge) { hudBadge.textContent = 'DRY'; hudBadge.className = 'px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-300'; }
+          if (qGreen) { qGreen.textContent = 'LOW (OFF)'; qGreen.className = 'text-slate-500'; }
+          if (qRed) { qRed.textContent = 'HIGH (ON)'; qRed.className = 'text-rose-400 font-bold'; }
+          if (qSpk) { qSpk.textContent = '1000Hz ALARM'; qSpk.className = 'text-rose-400 font-bold'; }
+          if (hudTone) hudTone.textContent = '1000Hz ("I\'m Thirsty")';
+
+          // 3D LEDs
+          greenLedMat.emissiveIntensity = 0.05;
+          greenLedLight.intensity = 0.0;
+          redLedMat.emissiveIntensity = 1.2;
+          redLedLight.intensity = 2.8;
+
+          // Sound Wave Pulse
+          isSoundPulsing = true;
+          if (soundIndicator) { soundIndicator.classList.remove('hidden'); soundIndicator.classList.add('flex'); }
+          if (soundText) soundText.textContent = '1000Hz "THIRSTY" ALARM';
+
+          // Play Web Audio Tone
+          playTone(1000, 350);
+
+          // Highlight Rule Box
+          document.getElementById('rule-dry-box').className = 'p-2.5 rounded-lg bg-rose-950/40 border border-rose-500/40 transition-all flex items-center gap-2.5';
+          document.getElementById('rule-mod-box').className = 'p-2.5 rounded-lg bg-slate-900/60 border border-white/5 transition-all flex items-center gap-2.5';
+          document.getElementById('rule-wet-box').className = 'p-2.5 rounded-lg bg-slate-900/60 border border-white/5 transition-all flex items-center gap-2.5';
+
+          appendSerialLog(`moistureDetection() -> DRY ALERT: ${adcVal} (Ratio: ${(ratio*100).toFixed(1)}%) | Red: HIGH | Tone: 1000Hz`, 'text-rose-400');
+        }
+        // Case 2: 10% < Moisture <= 30% -> Red LED ON, Green LED OFF, Speaker SILENT
+        else if (ratio <= 0.3 && ratio > 0.1) {
+          if (qBadge) { qBadge.textContent = 'MODERATE'; qBadge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30'; }
+          if (hudBadge) { hudBadge.textContent = 'LOW MOIST'; hudBadge.className = 'px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300'; }
+          if (qGreen) { qGreen.textContent = 'LOW (OFF)'; qGreen.className = 'text-slate-500'; }
+          if (qRed) { qRed.textContent = 'HIGH (ON)'; qRed.className = 'text-amber-400 font-bold'; }
+          if (qSpk) { qSpk.textContent = 'SILENT (noTone)'; qSpk.className = 'text-slate-500'; }
+          if (hudTone) hudTone.textContent = 'Muted (noTone)';
+
+          greenLedMat.emissiveIntensity = 0.05;
+          greenLedLight.intensity = 0.0;
+          redLedMat.emissiveIntensity = 0.8;
+          redLedLight.intensity = 1.5;
+
+          isSoundPulsing = false;
+          if (soundIndicator) { soundIndicator.classList.add('hidden'); soundIndicator.classList.remove('flex'); }
+
+          document.getElementById('rule-dry-box').className = 'p-2.5 rounded-lg bg-slate-900/60 border border-white/5 transition-all flex items-center gap-2.5';
+          document.getElementById('rule-mod-box').className = 'p-2.5 rounded-lg bg-amber-950/40 border border-amber-500/40 transition-all flex items-center gap-2.5';
+          document.getElementById('rule-wet-box').className = 'p-2.5 rounded-lg bg-slate-900/60 border border-white/5 transition-all flex items-center gap-2.5';
+
+          appendSerialLog(`moistureDetection() -> MODERATE: ${adcVal} | Red: HIGH | noTone()`, 'text-amber-300');
+        }
+        // Case 3: Moisture > 30% -> Green LED ON, Red LED OFF, Speaker 1500Hz
+        else {
+          if (qBadge) { qBadge.textContent = 'OPTIMAL'; qBadge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'; }
+          if (hudBadge) { hudBadge.textContent = 'OPTIMAL'; hudBadge.className = 'px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300'; }
+          if (qGreen) { qGreen.textContent = 'HIGH (ON)'; qGreen.className = 'text-emerald-400 font-bold'; }
+          if (qRed) { qRed.textContent = 'LOW (OFF)'; qRed.className = 'text-slate-500'; }
+          if (qSpk) { qSpk.textContent = '1500Hz PULSE'; qSpk.className = 'text-emerald-400 font-bold'; }
+          if (hudTone) hudTone.textContent = '1500Hz ("I\'m Full")';
+
+          greenLedMat.emissiveIntensity = 1.2;
+          greenLedLight.intensity = 2.5;
+          redLedMat.emissiveIntensity = 0.05;
+          redLedLight.intensity = 0.0;
+
+          isSoundPulsing = false;
+          if (soundIndicator) { soundIndicator.classList.add('hidden'); soundIndicator.classList.remove('flex'); }
+
+          document.getElementById('rule-dry-box').className = 'p-2.5 rounded-lg bg-slate-900/60 border border-white/5 transition-all flex items-center gap-2.5';
+          document.getElementById('rule-mod-box').className = 'p-2.5 rounded-lg bg-slate-900/60 border border-white/5 transition-all flex items-center gap-2.5';
+          document.getElementById('rule-wet-box').className = 'p-2.5 rounded-lg bg-emerald-950/40 border border-emerald-500/40 transition-all flex items-center gap-2.5';
+
+          appendSerialLog(`moistureDetection() -> ADEQUATE: ${adcVal} | Green: HIGH | Tone: 1500Hz`, 'text-emerald-400');
+        }
+
+        // 3D Soil Color Interpolation (Dry sandy #5C4033 vs Rich wet loam #18100A)
+        const dryColor = new THREE.Color(0x654321);
+        const wetColor = new THREE.Color(0x1A1108);
+        soilMat.color.copy(dryColor).lerp(wetColor, ratio);
+
+        // Update Chart
+        telemetryChart.data.datasets[0].data.shift();
+        telemetryChart.data.datasets[0].data.push(currentMoisture);
+        telemetryChart.update();
+      }
+
+      // Slider listener
+      if (slider) {
+        slider.addEventListener('input', (e) => {
+          setMoistureLevel(parseFloat(e.target.value));
+        });
+      }
+
+      // Preset Buttons
+      const btnWater = document.getElementById('btn-water-plant');
+      const btnMod = document.getElementById('btn-moderate-plant');
+      const btnDry = document.getElementById('btn-dry-plant');
+
+      if (btnWater) {
+        btnWater.addEventListener('click', () => {
+          isRaining = true;
+          rainProgress = 0;
+          dropMat.opacity = 0.85;
+          let target = 85;
+          let start = currentMoisture;
+          let step = 0;
+          const interval = setInterval(() => {
+            step += 0.05;
+            setMoistureLevel(start + (target - start) * Math.min(1, step));
+            if (step >= 1) clearInterval(interval);
+          }, 30);
+          playTone(1500, 300);
+        });
+      }
+
+      if (btnMod) {
+        btnMod.addEventListener('click', () => {
+          setMoistureLevel(22);
+        });
+      }
+
+      if (btnDry) {
+        btnDry.addEventListener('click', () => {
+          setMoistureLevel(5);
+        });
+      }
+
+      // Camera preset angles
+      const camButtons = document.querySelectorAll('.cam-btn');
+      camButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          camButtons.forEach(b => b.classList.remove('active', 'border-emerald-500/40'));
+          btn.classList.add('active', 'border-emerald-500/40');
+          const view = btn.dataset.view;
+          if (view === 'default') {
+            camera.position.set(0, 7.5, 13);
+            controls.target.set(0, 1.8, 0);
+          } else if (view === 'top') {
+            camera.position.set(0, 14, 0.1);
+            controls.target.set(0, 0, 0);
+          } else if (view === 'plant') {
+            camera.position.set(-3.2, 5.5, 6);
+            controls.target.set(-3.2, 4.0, 0);
+          }
+        });
+      });
+
+      // --- 6. 3D Animation Render Loop ---
+      let clock = new THREE.Clock();
+
+      function animate() {
+        requestAnimationFrame(animate);
+        const delta = clock.getDelta();
+        const time = clock.getElapsedTime();
+
+        controls.update();
+
+        // Idle plant leaves gentle breeze sway
+        stemMesh.rotation.z = Math.sin(time * 1.5) * 0.02;
+
+        // Watering droplets animation
+        if (isRaining) {
+          rainProgress += delta * 1.5;
+          droplets.forEach((d, i) => {
+            d.position.y -= delta * (5 + (i % 3));
+            if (d.position.y < 3.3) {
+              d.position.y = 6.5 + Math.random();
+            }
+          });
+          if (rainProgress > 2.5) {
+            isRaining = false;
+            dropMat.opacity = 0;
+          }
+        }
+
+        // Sound Wave Rings Expansion Animation
+        if (isSoundPulsing) {
+          const waveCycle = (time * 3) % 1.0;
+          soundWaveRing.scale.set(1 + waveCycle * 1.8, 1 + waveCycle * 1.8, 1);
+          waveMat.opacity = (1.0 - waveCycle) * 0.75;
+        } else {
+          waveMat.opacity = 0;
+        }
+
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      // Window resize
+      window.addEventListener('resize', () => {
+        if (!container) return;
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.clientWidth, container.clientHeight);
+      });
+
+      // Periodic Background Simulated Loop readings (mimics Arduino loop() delay(100))
+      setInterval(() => {
+        // Natural micro-jitter in analog readings (+/- 0.3%)
+        const jitter = (Math.random() - 0.5) * 0.4;
+        const bounded = Math.max(0, Math.min(100, currentMoisture + jitter));
+        const adc = Math.round((bounded / 100) * 1023);
+        appendSerialLog(`${adc}`);
+      }, 4000);
+
+      // --- 7. Copy Code Functionality ---
+      const copyBtn = document.getElementById('btn-copy-code');
+      const copyLabel = document.getElementById('btn-copy-label');
+      const rawCode = document.getElementById('raw-arduino-code');
+
+      if (copyBtn && rawCode) {
+        copyBtn.addEventListener('click', () => {
+          navigator.clipboard.writeText(rawCode.textContent).then(() => {
+            copyLabel.textContent = 'Copied to Clipboard!';
+            setTimeout(() => { copyLabel.textContent = 'Copy Sketch Code'; }, 2000);
+          });
+        });
+      }
+
+      // Initial state load
+      setMoistureLevel(72);
+    })();
+
+    // Photo Modal Global Helpers
+    function openPhotoModal(imgSrc, title) {
+      const modal = document.getElementById('photo-modal');
+      const modalImg = document.getElementById('photo-modal-img');
+      const modalTitle = document.getElementById('photo-modal-title');
+      if (modal && modalImg) {
+        modalImg.src = imgSrc;
+        if (modalTitle) modalTitle.textContent = title || 'Hardware Photo';
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        modal.classList.add('opacity-100', 'pointer-events-auto');
+      }
+    }
+    function closePhotoModal() {
+      const modal = document.getElementById('photo-modal');
+      if (modal) {
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        modal.classList.remove('opacity-100', 'pointer-events-auto');
+      }
+    }
+  </script>
+</body>
+</html>

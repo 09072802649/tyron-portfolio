@@ -257,7 +257,7 @@
       <div class="glass-card rounded-2xl overflow-hidden border border-emerald-500/30 relative flex flex-col shadow-[0_0_50px_rgba(16,185,129,0.12)]">
         
         <!-- 3D Canvas Container -->
-        <div id="canvas-container" class="w-full h-[450px] sm:h-[550px] bg-[#05080E] relative cursor-grab active:cursor-grabbing">
+        <div id="canvas-container" class="w-full h-[450px] sm:h-[550px] bg-[#05080E] relative cursor-grab active:cursor-grabbing overflow-hidden" style="min-height: 480px; height: 550px; width: 100%;">
           <!-- WebGL Canvas injected here -->
 
           <!-- 3D Floating HUD Telemetry Overlay -->
@@ -408,37 +408,30 @@
           </div>
         </div>
 
-        <!-- Hardware Photo & Schematic Gallery -->
+        <!-- Hardware Photo Showcase -->
         <div class="glass-card rounded-2xl p-5 border border-white/10 flex flex-col justify-between space-y-4">
           <div>
             <div class="flex items-center justify-between mb-3">
               <div class="flex items-center gap-2.5">
                 <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
-                  <i class="fas fa-images text-xs"></i>
+                  <i class="fas fa-microchip text-xs"></i>
                 </div>
                 <div>
-                  <h3 class="text-sm font-bold text-white">Breadboard Prototype &amp; Circuit Schematics</h3>
-                  <span class="text-[10px] font-mono text-slate-400">Physical Component Interconnects</span>
+                  <h3 class="text-sm font-bold text-white">Physical Breadboard Prototype Setup</h3>
+                  <span class="text-[10px] font-mono text-slate-400">Laboratory Component Interconnects &amp; Assembly</span>
                 </div>
               </div>
-              <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">CIRCUIT LAYOUT</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">HARDWARE BUILD</span>
             </div>
 
-            <div class="grid grid-cols-2 gap-3">
-              <!-- Physical Hardware Setup Photo -->
-              <div class="rounded-xl overflow-hidden border border-white/10 bg-slate-950 aspect-video relative group cursor-pointer" onclick="openPhotoModal('assets/hardware-setup.jpg', 'Physical Arduino & Breadboard Prototype Setup')">
-                <img src="assets/hardware-setup.jpg" alt="Physical Arduino Breadboard Setup" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-2.5">
-                  <span class="text-[10px] font-mono text-white font-medium"><i class="fas fa-expand mr-1"></i> Breadboard &amp; Speaker Build</span>
-                </div>
-              </div>
-
-              <!-- Circuit Diagram Graphic -->
-              <div class="rounded-xl overflow-hidden border border-white/10 bg-slate-950 aspect-video relative group cursor-pointer" onclick="openPhotoModal('assets/circuit-diagram.png', 'Arduino & Soil Moisture Circuit Diagram')">
-                <img src="assets/circuit-diagram.png" alt="Circuit Schematic Diagram" class="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-2.5">
-                  <span class="text-[10px] font-mono text-white font-medium"><i class="fas fa-expand mr-1"></i> Wiring Schematic</span>
-                </div>
+            <!-- Physical Hardware Setup Photo Showcase -->
+            <div class="rounded-xl overflow-hidden border border-white/10 bg-slate-950 aspect-video relative group cursor-pointer" onclick="openPhotoModal('assets/hardware-setup.jpg', 'Physical Arduino Uno & Breadboard Prototype Setup')">
+              <img src="assets/hardware-setup.jpg" alt="Physical Arduino Breadboard Setup" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex items-end justify-between p-3">
+                <span class="text-xs font-mono text-white font-medium flex items-center gap-1.5">
+                  <i class="fas fa-expand text-cyan-400"></i> Breadboard &amp; Speaker Prototype Build
+                </span>
+                <span class="text-[10px] font-mono text-cyan-300/80 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-500/30">Click to expand</span>
               </div>
             </div>
           </div>
@@ -768,46 +761,54 @@ void loop() {
       }
 
       // --- 2. Chart.js Telemetry Graph Setup ---
-      const chartCtx = document.getElementById('telemetryChart').getContext('2d');
-      const maxDataPoints = 30;
-      const initialLabels = Array.from({length: maxDataPoints}, (_, i) => `${i}s`);
-      const initialData = Array.from({length: maxDataPoints}, () => 72);
+      let telemetryChart = null;
+      try {
+        const chartEl = document.getElementById('telemetryChart');
+        if (chartEl && typeof Chart !== 'undefined') {
+          const chartCtx = chartEl.getContext('2d');
+          const maxDataPoints = 30;
+          const initialLabels = Array.from({length: maxDataPoints}, (_, i) => `${i}s`);
+          const initialData = Array.from({length: maxDataPoints}, () => 72);
 
-      const telemetryChart = new Chart(chartCtx, {
-        type: 'line',
-        data: {
-          labels: initialLabels,
-          datasets: [{
-            label: 'Soil Moisture %',
-            data: initialData,
-            borderColor: '#10B981',
-            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-            borderWidth: 2,
-            tension: 0.35,
-            fill: true,
-            pointRadius: 0
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          animation: false,
-          scales: {
-            y: {
-              min: 0,
-              max: 100,
-              grid: { color: 'rgba(255, 255, 255, 0.05)' },
-              ticks: { color: '#94A3B8', font: { family: 'JetBrains Mono', size: 10 } }
+          telemetryChart = new Chart(chartCtx, {
+            type: 'line',
+            data: {
+              labels: initialLabels,
+              datasets: [{
+                label: 'Soil Moisture %',
+                data: initialData,
+                borderColor: '#10B981',
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                borderWidth: 2,
+                tension: 0.35,
+                fill: true,
+                pointRadius: 0
+              }]
             },
-            x: {
-              display: false
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              animation: false,
+              scales: {
+                y: {
+                  min: 0,
+                  max: 100,
+                  grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                  ticks: { color: '#94A3B8', font: { family: 'JetBrains Mono', size: 10 } }
+                },
+                x: {
+                  display: false
+                }
+              },
+              plugins: {
+                legend: { display: false }
+              }
             }
-          },
-          plugins: {
-            legend: { display: false }
-          }
+          });
         }
-      });
+      } catch (err) {
+        console.warn('Telemetry chart initialization:', err);
+      }
 
       // --- 3. Serial Monitor Streamer ---
       const terminalEl = document.getElementById('serial-terminal');
@@ -835,25 +836,80 @@ void loop() {
       const container = document.getElementById('canvas-container');
       const scene = new THREE.Scene();
       scene.background = new THREE.Color(0x05080E);
-      scene.fog = new THREE.FogExp2(0x05080E, 0.035);
+      scene.fog = new THREE.FogExp2(0x05080E, 0.032);
 
-      const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+      const cInitWidth = (container && container.clientWidth) ? container.clientWidth : 800;
+      const cInitHeight = (container && container.clientHeight) ? container.clientHeight : 550;
+
+      const camera = new THREE.PerspectiveCamera(45, cInitWidth / cInitHeight, 0.1, 100);
       camera.position.set(0, 7.5, 13);
 
       const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
-      renderer.setSize(container.clientWidth, container.clientHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(cInitWidth, cInitHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-      container.appendChild(renderer.domElement);
+      if (container) container.appendChild(renderer.domElement);
 
-      const controls = new THREE.OrbitControls(camera, renderer.domElement);
-      controls.enableDamping = true;
-      controls.dampingFactor = 0.06;
-      controls.maxPolarAngle = Math.PI / 2 - 0.02; // Don't go below ground
-      controls.minDistance = 4;
-      controls.maxDistance = 25;
-      controls.target.set(0, 1.8, 0);
+      // Safe OrbitControls initialization with integrated fallback
+      let controls;
+      if (typeof THREE.OrbitControls === 'function') {
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.06;
+        controls.maxPolarAngle = Math.PI / 2 - 0.02; // Don't go below ground
+        controls.minDistance = 4;
+        controls.maxDistance = 25;
+        controls.target.set(0, 1.8, 0);
+      } else {
+        // Fallback smooth orbit controls if CDN script was blocked or delayed
+        controls = {
+          target: new THREE.Vector3(0, 1.8, 0),
+          update: () => {}
+        };
+        let isDragging = false;
+        let lastX = 0, lastY = 0;
+        let camDist = 15;
+        let camTheta = 0;
+        let camPhi = Math.PI / 3.2;
+
+        const updateOrbitCam = () => {
+          camera.position.x = controls.target.x + camDist * Math.sin(camPhi) * Math.sin(camTheta);
+          camera.position.y = controls.target.y + camDist * Math.cos(camPhi);
+          camera.position.z = controls.target.z + camDist * Math.sin(camPhi) * Math.cos(camTheta);
+          camera.lookAt(controls.target);
+        };
+        updateOrbitCam();
+
+        renderer.domElement.addEventListener('pointerdown', (e) => {
+          isDragging = true;
+          lastX = e.clientX;
+          lastY = e.clientY;
+          renderer.domElement.style.cursor = 'grabbing';
+        });
+
+        window.addEventListener('pointermove', (e) => {
+          if (!isDragging) return;
+          const dx = e.clientX - lastX;
+          const dy = e.clientY - lastY;
+          lastX = e.clientX;
+          lastY = e.clientY;
+          camTheta -= dx * 0.007;
+          camPhi = Math.max(0.12, Math.min(Math.PI / 2 - 0.03, camPhi - dy * 0.007));
+          updateOrbitCam();
+        });
+
+        window.addEventListener('pointerup', () => {
+          isDragging = false;
+          renderer.domElement.style.cursor = 'grab';
+        });
+
+        renderer.domElement.addEventListener('wheel', (e) => {
+          e.preventDefault();
+          camDist = Math.max(5, Math.min(25, camDist + e.deltaY * 0.015));
+          updateOrbitCam();
+        }, { passive: false });
+      }
 
       // Lighting
       const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.65);
@@ -1034,7 +1090,7 @@ void loop() {
 
       // Resistors on Breadboard
       const resGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.6, 8);
-      resGeo.rotation.z = Math.PI / 2;
+      resGeo.rotateZ(Math.PI / 2);
       const resMat = new THREE.MeshStandardMaterial({ color: 0xD97706, roughness: 0.6 });
       const res1 = new THREE.Mesh(resGeo, resMat);
       res1.position.set(0.2, 0.25, -0.6);
@@ -1096,7 +1152,7 @@ void loop() {
 
       // === SOUND WAVE RINGS ANIMATION ===
       const waveGeo = new THREE.RingGeometry(0.65, 0.72, 24);
-      waveGeo.rotation.x = -Math.PI / 2;
+      waveGeo.rotateX(-Math.PI / 2);
       const waveMat = new THREE.MeshBasicMaterial({ color: 0xA855F7, transparent: true, opacity: 0, side: THREE.DoubleSide });
       const soundWaveRing = new THREE.Mesh(waveGeo, waveMat);
       soundWaveRing.position.set(3.0, 0.55, 2.5);
@@ -1231,9 +1287,11 @@ void loop() {
         soilMat.color.copy(dryColor).lerp(wetColor, ratio);
 
         // Update Chart
-        telemetryChart.data.datasets[0].data.shift();
-        telemetryChart.data.datasets[0].data.push(currentMoisture);
-        telemetryChart.update();
+        if (telemetryChart && telemetryChart.data && telemetryChart.data.datasets && telemetryChart.data.datasets[0]) {
+          telemetryChart.data.datasets[0].data.shift();
+          telemetryChart.data.datasets[0].data.push(currentMoisture);
+          telemetryChart.update();
+        }
       }
 
       // Slider listener
@@ -1338,13 +1396,22 @@ void loop() {
       }
       animate();
 
-      // Window resize
-      window.addEventListener('resize', () => {
-        if (!container) return;
-        camera.aspect = container.clientWidth / container.clientHeight;
+      // Window resize and container resize
+      function handleResize() {
+        if (!container || !renderer || !camera) return;
+        const w = container.clientWidth || 800;
+        const h = container.clientHeight || 550;
+        camera.aspect = w / h;
         camera.updateProjectionMatrix();
-        renderer.setSize(container.clientWidth, container.clientHeight);
-      });
+        renderer.setSize(w, h);
+      }
+      window.addEventListener('resize', handleResize);
+      if (typeof ResizeObserver !== 'undefined' && container) {
+        new ResizeObserver(handleResize).observe(container);
+      }
+      // Force initial layout synchronization
+      setTimeout(handleResize, 100);
+      setTimeout(handleResize, 500);
 
       // Periodic Background Simulated Loop readings (mimics Arduino loop() delay(100))
       setInterval(() => {

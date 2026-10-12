@@ -14,6 +14,9 @@
   <!-- FontAwesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+  <!-- Three.js CDN for 3D Interactive Visualizations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
   <!-- Tailwind CSS CDN with Custom Configurations -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -262,17 +265,23 @@
   <!-- MAIN CONTENT CONTAINER -->
   <main class="relative z-10 pt-20">
 
-    <!-- 1. HERO SECTION -->
+    <!-- 1. HERO SECTION (WITH 3D DOT GLOBE) -->
     <section id="hero" class="min-h-[calc(100vh-5rem)] flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      <!-- Ambient light blobs -->
-      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-[#00F2FE]/10 rounded-full blur-[140px] pointer-events-none -z-10"></div>
-      <div class="absolute bottom-10 right-10 w-[350px] h-[350px] bg-[#7F00FF]/10 rounded-full blur-[120px] pointer-events-none -z-10"></div>
+      <!-- 3D Dot Wireframe Globe Canvas Background -->
+      <canvas id="hero-globe-canvas" class="absolute inset-0 w-full h-full pointer-events-none -z-10"></canvas>
 
-      <div class="max-w-4xl mx-auto text-center flex flex-col items-center">
-        <!-- Live Status Badge -->
-        <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full glass-card border border-[#00F2FE]/30 mb-8 animate-float">
-          <span class="w-2.5 h-2.5 rounded-full bg-[#00F2FE] animate-ping"></span>
-          <span class="text-xs font-mono tracking-wider text-slate-200 uppercase font-semibold">Ready For Industry &bull; BSIT Senior</span>
+      <!-- Ambient glow lights from Globe Hero reference -->
+      <div class="absolute inset-0 bg-gradient-to-t from-[#080C14]/70 via-transparent to-[#080C14]/40 pointer-events-none -z-10"></div>
+      <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-[#00F2FE]/10 rounded-full blur-3xl animate-pulse pointer-events-none -z-10"></div>
+      <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-[#7F00FF]/15 rounded-full blur-3xl animate-pulse pointer-events-none -z-10"></div>
+
+      <div class="max-w-4xl mx-auto text-center flex flex-col items-center relative z-10">
+        <!-- Global Network Infrastructure Badge (from DotGlobeHero design) -->
+        <div class="relative inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#00F2FE]/20 via-[#00F2FE]/10 to-[#00F2FE]/20 border border-[#00F2FE]/30 backdrop-blur-xl shadow-2xl mb-8 group animate-float">
+          <div class="absolute inset-0 rounded-full bg-gradient-to-r from-[#00F2FE]/15 via-transparent to-[#00F2FE]/15 animate-pulse"></div>
+          <div class="w-2 h-2 bg-[#00F2FE] rounded-full animate-ping"></div>
+          <span class="relative z-10 text-xs font-mono font-bold text-[#00F2FE] tracking-widest uppercase">GLOBAL NETWORK INFRASTRUCTURE</span>
+          <div class="w-2 h-2 bg-[#00F2FE] rounded-full animate-ping"></div>
         </div>
 
         <!-- Avatar Container with Animated Neon Glowing Ring -->
@@ -281,11 +290,7 @@
             <div class="relative w-full h-full rounded-full bg-[#0B1120] border-2 border-[#00F2FE]/40 overflow-hidden flex items-center justify-center z-10 shadow-2xl">
               <!-- Profile Portrait Graphic Representation -->
               <div class="absolute inset-0 bg-gradient-to-b from-[#00F2FE]/20 via-[#4FACFE]/10 to-[#080C14] opacity-30 z-20 pointer-events-none"></div>
-              <img src="assets/profile.jpg" alt="Profile" class="w-full h-full object-cover z-10">
-
-
-
-
+              <img src="assets/profile.jpg" alt="Tyron John L. Dela Cruz" class="w-full h-full object-cover z-10">
             </div>
           </div>
           <!-- Tech status indicator badge -->
@@ -295,14 +300,17 @@
           </div>
         </div>
 
-        <!-- Hero Headline -->
-        <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-tight mb-4">
+        <!-- Hero Headline with Global Network Reference -->
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight leading-tight mb-2">
           Hi, I'm <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#00F2FE] via-[#4FACFE] to-white glow-text">Tyron John L. Dela Cruz</span>
         </h1>
 
+        <!-- Glow Accent Underline -->
+        <div class="h-1.5 w-48 sm:w-64 bg-gradient-to-r from-[#00F2FE] via-[#4FACFE] to-transparent rounded-full shadow-lg shadow-cyan-500/50 mx-auto mb-5"></div>
+
         <!-- Sub-header Badge -->
         <div class="mb-6 max-w-2xl">
-          <span class="inline-block text-base sm:text-lg md:text-xl font-medium text-slate-300 bg-slate-900/60 px-5 py-2 rounded-xl border border-white/10 shadow-inner">
+          <span class="inline-block text-base sm:text-lg md:text-xl font-medium text-slate-300 bg-slate-900/70 backdrop-blur-md px-5 py-2.5 rounded-xl border border-white/10 shadow-inner">
             BSIT Senior Student | Aspiring Network Engineer, Data Analyst &amp; Web Developer
           </span>
         </div>
@@ -313,25 +321,25 @@
             <i class="fas fa-award mr-1.5 text-amber-400"></i> Dean's Lister (GWA 1.20 - 1.80)
           </span>
           <span class="glass-card px-3 py-1.5 rounded-lg border border-[#00F2FE]/30 text-cyan-300">
-            <i class="fas fa-headset mr-1.5 text-[#00F2FE]"></i> Official Event Technical Lead
+            <i class="fas fa-network-wired mr-1.5 text-[#00F2FE]"></i> Official Event Technical Lead
           </span>
           <span class="glass-card px-3 py-1.5 rounded-lg border border-purple-500/30 text-purple-300">
             <i class="fas fa-graduation-cap mr-1.5 text-purple-400"></i> Datamex College of Saint Adeline
           </span>
         </div>
 
-        <!-- Call to Action Buttons -->
-        <div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-          <!-- Primary Solid Cyan Pill -->
-          <a href="#projects" class="w-full sm:w-auto px-8 py-3.5 rounded-full font-semibold text-sm bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] text-[#080C14] hover:shadow-cyan-glow transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
-            <span>View My Projects</span>
-            <i class="fas fa-arrow-down text-xs"></i>
+        <!-- Call to Action Buttons (Globe Hero Reference Style) -->
+        <div class="flex flex-col sm:flex-row items-center gap-5 w-full sm:w-auto">
+          <!-- Primary Glow Button -->
+          <a href="#projects" class="group relative w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-[#00F2FE] via-[#00F2FE] to-[#4FACFE] text-[#080C14] rounded-xl font-bold text-sm shadow-xl hover:shadow-cyan-glow transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-2.5 overflow-hidden">
+            <span class="tracking-wide">Explore Projects</span>
+            <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
           </a>
 
-          <!-- Secondary Outlined Glass Pill -->
-          <a href="tyron_dela_cruz_resume.pdf" download class="w-full sm:w-auto px-8 py-3.5 rounded-full font-semibold text-sm glass-card text-white border border-white/20 hover:border-[#00F2FE] hover:text-[#00F2FE] hover:bg-slate-800/50 transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
-            <i class="fas fa-download"></i>
-            <span>Download Resume</span>
+          <!-- Secondary Glass Button -->
+          <a href="tyron_dela_cruz_resume.pdf" download class="group w-full sm:w-auto px-8 py-4 border-2 border-white/15 rounded-xl font-semibold text-sm hover:border-[#00F2FE]/50 transition-all duration-300 backdrop-blur-xl bg-slate-900/60 hover:bg-slate-900/90 text-white shadow-lg flex items-center justify-center gap-2.5 hover:-translate-y-1">
+            <i class="fas fa-bolt text-[#00F2FE] group-hover:scale-110 transition-transform"></i>
+            <span class="tracking-wide">Download Resume</span>
           </a>
         </div>
       </div>
@@ -646,14 +654,74 @@
 
       <!-- Filter Tabs -->
       <div class="flex items-center justify-center gap-2 mb-12 flex-wrap">
-        <button type="button" class="filter-btn active px-5 py-2 rounded-full text-xs font-mono border border-white/10 hover:border-[#00F2FE]/50 transition-all" data-filter="all">All Projects (3)</button>
+        <button type="button" class="filter-btn active px-5 py-2 rounded-full text-xs font-mono border border-white/10 hover:border-[#00F2FE]/50 transition-all" data-filter="all">All Projects (4)</button>
         <button type="button" class="filter-btn px-5 py-2 rounded-full text-xs font-mono bg-slate-900/60 text-slate-400 border border-white/10 hover:border-[#00F2FE]/50 hover:text-white transition-all" data-filter="web-app">Web App</button>
         <button type="button" class="filter-btn px-5 py-2 rounded-full text-xs font-mono bg-slate-900/60 text-slate-400 border border-white/10 hover:border-[#00F2FE]/50 hover:text-white transition-all" data-filter="data-analytics">Data Analytics</button>
         <button type="button" class="filter-btn px-5 py-2 rounded-full text-xs font-mono bg-slate-900/60 text-slate-400 border border-white/10 hover:border-[#00F2FE]/50 hover:text-white transition-all" data-filter="specialization">Specialization</button>
       </div>
 
       <!-- Projects Grid -->
-      <div id="projects-grid" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Project 1: GoCash Microfinance & Lending System -->
+        <div class="project-card glass-card rounded-2xl overflow-hidden border border-white/10 flex flex-col justify-between group" data-category="web-app">
+          <div>
+            <div class="h-48 bg-gradient-to-br from-slate-900 via-[#0B251E] to-slate-950 p-6 relative flex flex-col justify-between border-b border-white/5">
+              <div class="flex items-center justify-between z-10">
+                <span class="text-[11px] font-mono font-semibold px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">FINTECH / REST API</span>
+                <span class="text-xs text-slate-400"><i class="fas fa-coins text-emerald-400 mr-1"></i> Lending Core</span>
+              </div>
+              <div class="z-10 flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
+                  <i class="fas fa-money-bill-transfer text-xl"></i>
+                </div>
+                <div>
+                  <h4 class="text-white font-bold text-base leading-tight">GoCa<span class="text-emerald-400">$</span>h</h4>
+                  <p class="text-xs text-slate-400">Microfinance Lending &amp; Remittances</p>
+                </div>
+              </div>
+              <div class="absolute inset-0 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:16px_16px] opacity-15"></div>
+            </div>
+
+            <div class="p-6">
+              <h3 class="text-lg font-bold text-white mb-2 group-hover:text-emerald-400 transition-colors">GoCash™ Microfinance &amp; Automated Loan Management System</h3>
+              <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                Enterprise microfinance platform and REST API engine featuring automated amortization calculations, receipt verification pipelines, multi-role client portals, and field collector remittance tracking.
+              </p>
+
+              <div class="space-y-1.5 mb-5 text-xs text-slate-300">
+                <div class="flex items-center gap-2">
+                  <i class="fas fa-check text-emerald-400 text-[10px]"></i>
+                  <span>Multi-role portals (Admin, Collector &amp; Borrower)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <i class="fas fa-check text-emerald-400 text-[10px]"></i>
+                  <span>Automated loan amortization &amp; daily installment engine</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <i class="fas fa-check text-emerald-400 text-[10px]"></i>
+                  <span>Proof-of-payment receipt verification queue</span>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-1.5 font-mono text-[11px] mb-4">
+                <span class="bg-slate-800/90 text-emerald-300 px-2 py-0.5 rounded border border-white/5">PHP 8</span>
+                <span class="bg-slate-800/90 text-cyan-300 px-2 py-0.5 rounded border border-white/5">MySQL</span>
+                <span class="bg-slate-800/90 text-blue-300 px-2 py-0.5 rounded border border-white/5">REST API</span>
+                <span class="bg-slate-800/90 text-amber-300 px-2 py-0.5 rounded border border-white/5">JavaScript</span>
+                <span class="bg-slate-800/90 text-purple-300 px-2 py-0.5 rounded border border-white/5">Chart.js</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-6 pt-0 flex items-center gap-3">
+            <a href="https://github.com/09072802649/loan_api" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-lg text-xs font-mono font-medium text-slate-300 bg-slate-900 border border-white/10 hover:border-white/30 hover:text-white text-center transition">
+              <i class="fab fa-github mr-1.5"></i> GitHub Repo
+            </a>
+            <a href="projects/loan-management-system/index.html" class="flex-1 py-2 px-3 rounded-lg text-xs font-mono font-semibold text-[#080C14] bg-gradient-to-r from-emerald-400 to-[#00F2FE] hover:shadow-cyan-sm text-center transition">
+              <i class="fas fa-play mr-1.5"></i> Live Demo
+            </a>
+          </div>
+        </div>
         <!-- Project 1: Web App -->
         <div class="project-card glass-card rounded-2xl overflow-hidden border border-white/10 flex flex-col justify-between group" data-category="web-app">
           <div>
@@ -1305,8 +1373,49 @@
         <div class="w-20 h-1 bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] mx-auto mt-4 rounded-full"></div>
       </div>
 
+      <!-- Gallery Mode Switcher -->
+      <div class="flex items-center justify-center gap-3 mb-8">
+        <button id="btn-toggle-3d" type="button" onclick="switchCertView('3d')" class="px-5 py-2.5 rounded-xl font-mono text-xs font-semibold flex items-center gap-2 border border-[#00F2FE]/50 bg-[#00F2FE]/15 text-[#00F2FE] shadow-cyan-sm transition cursor-pointer">
+          <i class="fas fa-cube text-sm"></i>
+          <span>3D Spatial Gallery</span>
+        </button>
+        <button id="btn-toggle-grid" type="button" onclick="switchCertView('grid')" class="px-5 py-2.5 rounded-xl font-mono text-xs font-semibold flex items-center gap-2 border border-white/10 bg-slate-900/60 text-slate-400 hover:text-white transition cursor-pointer">
+          <i class="fas fa-th-large text-sm"></i>
+          <span>Grid View</span>
+        </button>
+      </div>
+
+      <!-- 3D Infinite Certificate Vault View -->
+      <div id="cert-3d-view" class="mb-10 relative">
+        <div class="relative w-full h-[520px] sm:h-[620px] rounded-2xl overflow-hidden border border-white/10 bg-slate-950/80 shadow-2xl backdrop-blur-xl group">
+          <canvas id="cert-3d-canvas" class="w-full h-full block cursor-grab active:cursor-grabbing outline-none"></canvas>
+
+          <!-- Top-Left HUD Badge -->
+          <div class="absolute top-4 left-4 z-10 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/85 backdrop-blur-md border border-cyan-500/30 text-xs font-mono text-cyan-300 shadow-lg">
+            <span class="w-2 h-2 rounded-full bg-[#00F2FE] animate-ping"></span>
+            <i class="fas fa-cube text-[#00F2FE]"></i>
+            <span>3D Spatial Vault</span>
+          </div>
+
+          <!-- Top-Right Hovered Info Pill -->
+          <div id="cert-3d-info" class="absolute top-4 right-4 z-10 hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/85 backdrop-blur-md border border-white/10 text-xs font-mono text-slate-300 shadow-lg transition-all">
+            <i class="fas fa-info-circle text-[#00F2FE]"></i>
+            <span id="cert-3d-hover-title" class="truncate max-w-[240px]">Scroll / Hover card</span>
+          </div>
+
+          <!-- Bottom Control Bar -->
+          <div class="absolute bottom-5 inset-x-0 mx-auto w-fit max-w-[92%] z-10 px-4 py-2 rounded-full bg-slate-900/90 backdrop-blur-md border border-white/10 text-[11px] font-mono text-slate-300 flex items-center gap-2.5 shadow-xl text-center pointer-events-none">
+            <span class="text-[#00F2FE]"><i class="fas fa-mouse text-xs"></i> Scroll / Drag to fly</span>
+            <span class="opacity-30">|</span>
+            <span class="text-[#4FACFE]"><i class="fas fa-hand-pointer text-xs"></i> Hover waves cloth</span>
+            <span class="opacity-30">|</span>
+            <span class="text-emerald-400"><i class="fas fa-expand text-xs"></i> Click card to inspect</span>
+          </div>
+        </div>
+      </div>
+
       <!-- Badge Gallery (5 Specified Certifications) -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div id="cert-grid-view" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
 
         <!-- Cert 1: Cyber Awareness -->
         <button type="button" onclick="openCertModal('assets/certificates/cyber-awareness.png', 'Cyber Awareness')" class="glass-card rounded-2xl p-6 border border-white/5 flex flex-col justify-between hover:border-[#00F2FE]/40 transition group text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#00F2FE]">
@@ -2209,6 +2318,596 @@ ORDER BY peak_mbps DESC LIMIT 5;</code></pre>
         document.body.style.overflow = '';
       }
     });
+
+    // 7b. 3D Infinite Certificate Vault (Three.js Spatial Physics Engine)
+    function switchCertView(mode) {
+      const view3D = document.getElementById('cert-3d-view');
+      const viewGrid = document.getElementById('cert-grid-view');
+      const btn3D = document.getElementById('btn-toggle-3d');
+      const btnGrid = document.getElementById('btn-toggle-grid');
+
+      if (!view3D || !viewGrid || !btn3D || !btnGrid) return;
+
+      if (mode === '3d') {
+        view3D.classList.remove('hidden');
+        viewGrid.classList.add('hidden');
+        btn3D.className = "px-5 py-2.5 rounded-xl font-mono text-xs font-semibold flex items-center gap-2 border border-[#00F2FE]/50 bg-[#00F2FE]/15 text-[#00F2FE] shadow-cyan-sm transition cursor-pointer";
+        btnGrid.className = "px-5 py-2.5 rounded-xl font-mono text-xs font-semibold flex items-center gap-2 border border-white/10 bg-slate-900/60 text-slate-400 hover:text-white transition cursor-pointer";
+        window.dispatchEvent(new Event('resize'));
+      } else {
+        view3D.classList.add('hidden');
+        viewGrid.classList.remove('hidden');
+        btnGrid.className = "px-5 py-2.5 rounded-xl font-mono text-xs font-semibold flex items-center gap-2 border border-[#00F2FE]/50 bg-[#00F2FE]/15 text-[#00F2FE] shadow-cyan-sm transition cursor-pointer";
+        btn3D.className = "px-5 py-2.5 rounded-xl font-mono text-xs font-semibold flex items-center gap-2 border border-white/10 bg-slate-900/60 text-slate-400 hover:text-white transition cursor-pointer";
+      }
+    }
+
+    (function init3DCertificateGallery() {
+      const canvas = document.getElementById('cert-3d-canvas');
+      if (!canvas) return;
+
+      if (typeof THREE === 'undefined') {
+        console.warn('Three.js not loaded, switching to grid view');
+        switchCertView('grid');
+        return;
+      }
+
+      const certData = [
+        { src: 'assets/certificates/cyber-awareness.png', title: 'Cyber Awareness', issuer: 'Tech Security Cert', year: '2026', badge: 'Security' },
+        { src: 'assets/certificates/web-dev-101.png', title: 'Web Dev 101: System Integration', issuer: 'Modern Web Institute', year: '2025', badge: 'Web Dev' },
+        { src: 'assets/certificates/qa-101.png', title: 'QA 101: Software Quality', issuer: 'QA Software Alliance', year: '2025', badge: 'Software QA' },
+        { src: 'assets/certificates/pro-skills.png', title: 'Pro Skills for Tech Pros', issuer: 'Tech Leadership Forum', year: '2024', badge: 'Leadership' },
+        { src: 'assets/certificates/arduino-101.png', title: 'Arduino 101: Coding Meets Hardware', issuer: 'Embedded Systems Academy', year: '2024', badge: 'Embedded' },
+        { src: 'assets/certificates/cert-it-fundamentals.png', title: 'IT Fundamentals', issuer: 'UpskillTechPH', year: '2026', badge: 'Infrastructure' },
+        { src: 'assets/certificates/cert-ai-prompting.png', title: 'A.I Prompting Techniques', issuer: 'UpskillTechPH', year: '2026', badge: 'Artificial Intelligence' },
+        { src: 'assets/certificates/cert-ai-fundamentals.png', title: "AI Fundamentals: Automation", issuer: 'UpskillTechPH', year: '2026', badge: 'Automation' }
+      ];
+
+      let renderer, scene, camera;
+      try {
+        const testGl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        if (!testGl) {
+          switchCertView('grid');
+          return;
+        }
+
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(55, 1, 0.1, 100);
+        camera.position.set(0, 0, 0);
+
+        renderer = new THREE.WebGLRenderer({
+          canvas: canvas,
+          antialias: true,
+          alpha: true,
+          powerPreference: 'high-performance'
+        });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      } catch (e) {
+        console.error('WebGL init failed:', e);
+        switchCertView('grid');
+        return;
+      }
+
+      function updateCanvasSize() {
+        const rect = canvas.getBoundingClientRect();
+        const width = rect.width || canvas.clientWidth || 800;
+        const height = rect.height || canvas.clientHeight || 560;
+        if (width === 0 || height === 0) return;
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setSize(width, height, false);
+      }
+      updateCanvasSize();
+
+      // Create high-res canvas textures that display immediately, then paint image once loaded
+      function createCertTexture(cert) {
+        const texCanvas = document.createElement('canvas');
+        texCanvas.width = 960;
+        texCanvas.height = 640;
+        const ctx = texCanvas.getContext('2d');
+
+        // Dark tech card background
+        const grad = ctx.createLinearGradient(0, 0, 960, 640);
+        grad.addColorStop(0, '#0c1220');
+        grad.addColorStop(1, '#060a12');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 960, 640);
+
+        // Tech cyan border
+        ctx.strokeStyle = '#00F2FE';
+        ctx.lineWidth = 10;
+        ctx.strokeRect(12, 12, 936, 616);
+
+        // Inner glowing border
+        ctx.strokeStyle = 'rgba(79, 172, 254, 0.4)';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(24, 24, 912, 592);
+
+        // Verified Chip
+        ctx.fillStyle = 'rgba(0, 242, 254, 0.15)';
+        ctx.fillRect(50, 50, 320, 48);
+        ctx.strokeStyle = '#00F2FE';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(50, 50, 320, 48);
+        ctx.fillStyle = '#00F2FE';
+        ctx.font = 'bold 20px monospace';
+        ctx.fillText('VERIFIED • ' + cert.year, 70, 82);
+
+        // Title
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 38px sans-serif';
+        ctx.fillText(cert.title, 50, 160);
+
+        // Subtitle
+        ctx.fillStyle = '#4FACFE';
+        ctx.font = '24px monospace';
+        ctx.fillText('Credential: ' + cert.badge, 50, 210);
+
+        // Issuer
+        ctx.fillStyle = '#94A3B8';
+        ctx.font = '22px sans-serif';
+        ctx.fillText('Issuer: ' + cert.issuer, 50, 260);
+
+        // Watermark icon
+        ctx.fillStyle = 'rgba(0, 242, 254, 0.08)';
+        ctx.font = 'bold 160px sans-serif';
+        ctx.fillText('★', 680, 520);
+
+        const tex = new THREE.CanvasTexture(texCanvas);
+        tex.minFilter = THREE.LinearFilter;
+        tex.magFilter = THREE.LinearFilter;
+        tex.needsUpdate = true;
+
+        // Asynchronously load real image and draw over placeholder
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+          ctx.drawImage(img, 0, 0, 960, 640);
+          // Re-draw crisp outer cyber border over the certificate image
+          ctx.strokeStyle = '#00F2FE';
+          ctx.lineWidth = 8;
+          ctx.strokeRect(4, 4, 952, 632);
+          tex.needsUpdate = true;
+        };
+        img.src = cert.src;
+
+        return tex;
+      }
+
+      const textures = certData.map(c => createCertTexture(c));
+
+      const visibleCount = 8;
+      const totalImages = certData.length;
+      const depthRange = 36;
+      const maxHorizontalOffset = 5;
+      const maxVerticalOffset = 3.5;
+
+      const vertexShader = `
+        uniform float scrollForce;
+        uniform float time;
+        uniform float isHovered;
+        varying vec2 vUv;
+        varying vec3 vNormal;
+        
+        void main() {
+          vUv = uv;
+          vNormal = normal;
+          vec3 pos = position;
+          
+          float curveIntensity = scrollForce * 0.2;
+          float distanceFromCenter = length(pos.xy);
+          float curve = distanceFromCenter * distanceFromCenter * curveIntensity;
+          
+          float ripple1 = sin(pos.x * 2.0 + scrollForce * 3.0) * 0.02;
+          float ripple2 = sin(pos.y * 2.5 + scrollForce * 2.0) * 0.015;
+          float clothEffect = (ripple1 + ripple2) * abs(curveIntensity) * 2.0;
+          
+          float flagWave = 0.0;
+          if (isHovered > 0.5) {
+            float wavePhase = pos.x * 3.0 + time * 7.0;
+            float waveAmplitude = sin(wavePhase) * 0.08;
+            float dampening = smoothstep(-0.5, 0.5, pos.x);
+            flagWave = waveAmplitude * dampening;
+            float secondaryWave = sin(pos.x * 5.0 + time * 10.0) * 0.025 * dampening;
+            flagWave += secondaryWave;
+          }
+          
+          pos.z -= (curve + clothEffect + flagWave);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+        }
+      `;
+
+      // GLSL 1.0 completely safe fragment shader without textureSize
+      const fragmentShader = `
+        uniform sampler2D map;
+        uniform float opacity;
+        uniform float blurAmount;
+        uniform float scrollForce;
+        varying vec2 vUv;
+        varying vec3 vNormal;
+        
+        void main() {
+          vec4 color = texture2D(map, vUv);
+          
+          if (blurAmount > 0.1) {
+            vec2 texelSize = vec2(0.0018, 0.0018);
+            vec4 blurred = vec4(0.0);
+            float total = 0.0;
+            for (float x = -2.0; x <= 2.0; x += 1.0) {
+              for (float y = -2.0; y <= 2.0; y += 1.0) {
+                vec2 offset = vec2(x, y) * texelSize * blurAmount;
+                float weight = 1.0 / (1.0 + length(vec2(x, y)));
+                blurred += texture2D(map, vUv + offset) * weight;
+                total += weight;
+              }
+            }
+            color = blurred / total;
+          }
+          
+          float curveHighlight = abs(scrollForce) * 0.06;
+          color.rgb += vec3(curveHighlight * 0.12);
+          
+          gl_FragColor = vec4(color.rgb, color.a * opacity);
+        }
+      `;
+
+      const spatialPositions = [];
+      for (let i = 0; i < visibleCount; i++) {
+        const horizontalAngle = (i * 2.618) % (Math.PI * 2);
+        const verticalAngle = (i * 1.618 + Math.PI / 3) % (Math.PI * 2);
+        const horizontalRadius = (i % 3) * 0.9;
+        const verticalRadius = ((i + 1) % 4) * 0.65;
+        const x = (Math.sin(horizontalAngle) * horizontalRadius * maxHorizontalOffset) / 2.5;
+        const y = (Math.cos(verticalAngle) * verticalRadius * maxVerticalOffset) / 3.0;
+        spatialPositions.push({ x, y });
+      }
+
+      const geometry = new THREE.PlaneGeometry(1, 1, 32, 32);
+      const planes = [];
+
+      for (let i = 0; i < visibleCount; i++) {
+        const material = new THREE.ShaderMaterial({
+          transparent: true,
+          depthWrite: false,
+          uniforms: {
+            map: { value: textures[i % totalImages] },
+            opacity: { value: 1.0 },
+            blurAmount: { value: 0.0 },
+            scrollForce: { value: 0.0 },
+            time: { value: 0.0 },
+            isHovered: { value: 0.0 }
+          },
+          vertexShader: vertexShader,
+          fragmentShader: fragmentShader,
+          side: THREE.DoubleSide
+        });
+
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.scale.set(3.8, 2.55, 1);
+        mesh.userData = {
+          index: i,
+          imageIndex: i % totalImages,
+          z: (depthRange / visibleCount) * i,
+          x: spatialPositions[i].x,
+          y: spatialPositions[i].y
+        };
+
+        // Position strictly in front of camera (z in range -34 to -4)
+        const worldZ = -34 + (mesh.userData.z / depthRange) * 28;
+        mesh.position.set(spatialPositions[i].x, spatialPositions[i].y, worldZ);
+        scene.add(mesh);
+        planes.push(mesh);
+      }
+
+      let scrollVelocity = 0;
+      let autoPlay = true;
+      let lastInteraction = Date.now();
+      const speed = 1.0;
+
+      // Wheel listener
+      canvas.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        scrollVelocity += e.deltaY * 0.012 * speed;
+        autoPlay = false;
+        lastInteraction = Date.now();
+      }, { passive: false });
+
+      // Pointer drag listener
+      let isDragging = false;
+      let startPointerY = 0;
+
+      canvas.addEventListener('pointerdown', (e) => {
+        isDragging = true;
+        startPointerY = e.clientY;
+        autoPlay = false;
+        lastInteraction = Date.now();
+      });
+
+      window.addEventListener('pointermove', (e) => {
+        if (!isDragging) return;
+        const deltaY = startPointerY - e.clientY;
+        startPointerY = e.clientY;
+        scrollVelocity += deltaY * 0.02 * speed;
+        autoPlay = false;
+        lastInteraction = Date.now();
+      });
+
+      window.addEventListener('pointerup', () => {
+        isDragging = false;
+      });
+
+      // Keyboard arrow keys
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+          scrollVelocity -= 2.5 * speed;
+          autoPlay = false;
+          lastInteraction = Date.now();
+        } else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+          scrollVelocity += 2.5 * speed;
+          autoPlay = false;
+          lastInteraction = Date.now();
+        }
+      });
+
+      // Raycaster for hover wave & modal click
+      const raycaster = new THREE.Raycaster();
+      const pointer = new THREE.Vector2();
+      let hoveredMesh = null;
+      const hoverTitle = document.getElementById('cert-3d-hover-title');
+
+      canvas.addEventListener('pointermove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+        raycaster.setFromCamera(pointer, camera);
+        const intersects = raycaster.intersectObjects(planes);
+
+        planes.forEach(p => {
+          if (p.material && p.material.uniforms) {
+            p.material.uniforms.isHovered.value = 0.0;
+          }
+        });
+
+        if (intersects.length > 0) {
+          const topHit = intersects[0].object;
+          if (topHit.material && topHit.material.uniforms) {
+            topHit.material.uniforms.isHovered.value = 1.0;
+          }
+          hoveredMesh = topHit;
+          canvas.style.cursor = 'pointer';
+          if (hoverTitle && certData[topHit.userData.imageIndex]) {
+            hoverTitle.textContent = certData[topHit.userData.imageIndex].title;
+          }
+        } else {
+          hoveredMesh = null;
+          canvas.style.cursor = 'grab';
+          if (hoverTitle) hoverTitle.textContent = 'Scroll / Hover card';
+        }
+      });
+
+      canvas.addEventListener('click', () => {
+        if (hoveredMesh && typeof openCertModal === 'function') {
+          const item = certData[hoveredMesh.userData.imageIndex];
+          if (item) {
+            openCertModal(item.src, item.title);
+          }
+        }
+      });
+
+      window.addEventListener('resize', updateCanvasSize);
+
+      const clock = new THREE.Clock();
+
+      function renderLoop() {
+        requestAnimationFrame(renderLoop);
+        const delta = Math.min(clock.getDelta(), 0.1);
+        const elapsedTime = clock.getElapsedTime();
+
+        if (Date.now() - lastInteraction > 3000) {
+          autoPlay = true;
+        }
+
+        if (autoPlay) {
+          scrollVelocity += 0.35 * delta;
+        }
+
+        scrollVelocity *= 0.94;
+
+        planes.forEach((plane, i) => {
+          const mat = plane.material;
+          if (!mat || !mat.uniforms) return;
+
+          mat.uniforms.time.value = elapsedTime;
+          mat.uniforms.scrollForce.value = scrollVelocity;
+
+          let newZ = plane.userData.z + scrollVelocity * delta * 10;
+          let wrapsForward = 0;
+          let wrapsBackward = 0;
+
+          if (newZ >= depthRange) {
+            wrapsForward = Math.floor(newZ / depthRange);
+            newZ -= depthRange * wrapsForward;
+          } else if (newZ < 0) {
+            wrapsBackward = Math.ceil(-newZ / depthRange);
+            newZ += depthRange * wrapsBackward;
+          }
+
+          if (wrapsForward > 0) {
+            plane.userData.imageIndex = (plane.userData.imageIndex + wrapsForward * (visibleCount % totalImages || totalImages)) % totalImages;
+            mat.uniforms.map.value = textures[plane.userData.imageIndex];
+          }
+          if (wrapsBackward > 0) {
+            const step = plane.userData.imageIndex - wrapsBackward * (visibleCount % totalImages || totalImages);
+            plane.userData.imageIndex = ((step % totalImages) + totalImages) % totalImages;
+            mat.uniforms.map.value = textures[plane.userData.imageIndex];
+          }
+
+          plane.userData.z = ((newZ % depthRange) + depthRange) % depthRange;
+
+          // Always strictly in front of camera
+          const worldZ = -34 + (plane.userData.z / depthRange) * 28;
+          plane.position.z = worldZ;
+          plane.position.x = spatialPositions[i].x;
+          plane.position.y = spatialPositions[i].y;
+
+          // Calculate scale to keep aspect ratio proportional
+          const normPos = plane.userData.z / depthRange; // 0.0 (far) to 1.0 (near)
+
+          // Smooth progressive fade in (spawn far away) and fade out (near camera)
+          let opacity = 1.0;
+          if (normPos < 0.12) {
+            opacity = normPos / 0.12;
+          } else if (normPos > 0.85) {
+            opacity = (1.0 - normPos) / 0.15;
+          }
+          mat.uniforms.opacity.value = Math.max(0.0, Math.min(1.0, opacity));
+
+          // Depth blur: slightly blurred when very far or very near
+          let blur = 0.0;
+          if (normPos < 0.1) {
+            blur = 2.0 * (1.0 - normPos / 0.1);
+          } else if (normPos > 0.88) {
+            blur = 2.0 * ((normPos - 0.88) / 0.12);
+          }
+          mat.uniforms.blurAmount.value = blur;
+        });
+
+        renderer.render(scene, camera);
+      }
+
+      renderLoop();
+    })();
+
+    // 7c. 3D Dot Wireframe Globe in Hero Background (from DotGlobeHero component)
+    (function initHeroGlobe() {
+      const canvas = document.getElementById('hero-globe-canvas');
+      if (!canvas || typeof THREE === 'undefined') return;
+
+      const heroSection = document.getElementById('hero');
+      if (!heroSection) return;
+
+      let renderer, scene, camera;
+      try {
+        const testGl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        if (!testGl) return;
+
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(55, 1, 0.1, 100);
+        camera.position.set(0, 0, 3.4);
+
+        renderer = new THREE.WebGLRenderer({
+          canvas: canvas,
+          antialias: true,
+          alpha: true,
+          powerPreference: 'high-performance'
+        });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      } catch (e) {
+        console.warn('Hero globe WebGL init skipped:', e);
+        return;
+      }
+
+      function updateSize() {
+        const width = heroSection.clientWidth || canvas.clientWidth || window.innerWidth;
+        const height = heroSection.clientHeight || canvas.clientHeight || window.innerHeight;
+        if (width === 0 || height === 0) return;
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setSize(width, height, false);
+      }
+      updateSize();
+      window.addEventListener('resize', updateSize);
+
+      const globeGroup = new THREE.Group();
+      scene.add(globeGroup);
+
+      // 1. Primary Cyan Wireframe Sphere (DotGlobeHero)
+      const sphereGeo = new THREE.SphereGeometry(1.5, 48, 48);
+      const wireframeMat = new THREE.MeshBasicMaterial({
+        color: 0x00F2FE,
+        transparent: true,
+        opacity: 0.18,
+        wireframe: true
+      });
+      const wireframeMesh = new THREE.Mesh(sphereGeo, wireframeMat);
+      globeGroup.add(wireframeMesh);
+
+      // 2. Secondary Inner Violet Core
+      const innerGeo = new THREE.SphereGeometry(1.42, 32, 32);
+      const innerMat = new THREE.MeshBasicMaterial({
+        color: 0x7F00FF,
+        transparent: true,
+        opacity: 0.08,
+        wireframe: true
+      });
+      const innerMesh = new THREE.Mesh(innerGeo, innerMat);
+      globeGroup.add(innerMesh);
+
+      // 3. Global Network Node Dots
+      const dotCount = 220;
+      const dotGeo = new THREE.BufferGeometry();
+      const dotPositions = new Float32Array(dotCount * 3);
+      for (let i = 0; i < dotCount; i++) {
+        const phi = Math.acos(-1 + (2 * i) / dotCount);
+        const theta = Math.sqrt(dotCount * Math.PI) * phi;
+        const r = 1.51;
+        dotPositions[i * 3] = r * Math.cos(theta) * Math.sin(phi);
+        dotPositions[i * 3 + 1] = r * Math.sin(theta) * Math.sin(phi);
+        dotPositions[i * 3 + 2] = r * Math.cos(phi);
+      }
+      dotGeo.setAttribute('position', new THREE.BufferAttribute(dotPositions, 3));
+      const dotMat = new THREE.PointsMaterial({
+        color: 0x00F2FE,
+        size: 0.045,
+        transparent: true,
+        opacity: 0.85
+      });
+      const dotsMesh = new THREE.Points(dotGeo, dotMat);
+      globeGroup.add(dotsMesh);
+
+      // 4. Subtle Orbital Ring
+      const ringGeo = new THREE.RingGeometry(1.75, 1.78, 64);
+      const ringMat = new THREE.MeshBasicMaterial({
+        color: 0x4FACFE,
+        transparent: true,
+        opacity: 0.25,
+        side: THREE.DoubleSide
+      });
+      const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+      ringMesh.rotation.x = Math.PI / 2.6;
+      globeGroup.add(ringMesh);
+
+      // Ambient & Point light
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+      scene.add(ambientLight);
+      const pointLight = new THREE.PointLight(0x00F2FE, 1.2, 50);
+      pointLight.position.set(10, 10, 10);
+      scene.add(pointLight);
+
+      // Interactive mouse parallax
+      let mouseX = 0;
+      let mouseY = 0;
+      window.addEventListener('pointermove', (e) => {
+        mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+        mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+      });
+
+      const rotationSpeed = 0.004;
+
+      function renderGlobe() {
+        requestAnimationFrame(renderGlobe);
+        globeGroup.rotation.y += rotationSpeed;
+        globeGroup.rotation.x += rotationSpeed * 0.3;
+        globeGroup.rotation.z += rotationSpeed * 0.1;
+
+        globeGroup.position.x += (mouseX * 0.2 - globeGroup.position.x) * 0.04;
+        globeGroup.position.y += (mouseY * 0.15 - globeGroup.position.y) * 0.04;
+
+        renderer.render(scene, camera);
+      }
+      renderGlobe();
+    })();
 
     // 8. Contact Form Validation & Toast Notification
     const contactForm = document.getElementById('contact-form');

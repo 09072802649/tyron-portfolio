@@ -1492,8 +1492,12 @@
       </div>
 
       <!-- Gallery Mode Switcher -->
-      <div class="flex items-center justify-center gap-3 mb-8">
-        <button id="btn-toggle-3d" type="button" onclick="switchCertView('3d')" class="px-5 py-2.5 rounded-xl font-mono text-xs font-semibold flex items-center gap-2 border border-[#00F2FE]/50 bg-[#00F2FE]/15 text-[#00F2FE] shadow-cyan-sm transition cursor-pointer">
+      <div class="flex flex-wrap items-center justify-center gap-3 mb-8">
+        <button id="btn-toggle-tilted" type="button" onclick="switchCertView('tilted')" class="px-5 py-2.5 rounded-xl font-mono text-xs font-semibold flex items-center gap-2 border border-[#00F2FE]/50 bg-[#00F2FE]/15 text-[#00F2FE] shadow-cyan-sm transition cursor-pointer">
+          <i class="fas fa-circle-nodes text-sm"></i>
+          <span>Tilted 3D Cylinder</span>
+        </button>
+        <button id="btn-toggle-3d" type="button" onclick="switchCertView('3d')" class="px-5 py-2.5 rounded-xl font-mono text-xs font-semibold flex items-center gap-2 border border-white/10 bg-slate-900/60 text-slate-400 hover:text-white transition cursor-pointer">
           <i class="fas fa-cube text-sm"></i>
           <span>3D Spatial Gallery</span>
         </button>
@@ -1503,8 +1507,40 @@
         </button>
       </div>
 
+      <!-- Tilted Cylindrical 3D Certificate Vault View -->
+      <div id="cert-tilted-view" class="mb-10 relative">
+        <div id="cert-tilted-container" class="relative w-full h-[520px] sm:h-[620px] rounded-2xl overflow-hidden border border-white/10 bg-slate-950/80 shadow-2xl backdrop-blur-xl group select-none" style="container-type: size;">
+          <div id="cert-tilted-band" class="absolute inset-0 transition-opacity duration-500">
+            <!-- Dynamically populated 16-facet cylindrical tiles -->
+          </div>
+
+          <!-- Top-Left HUD Badge -->
+          <div class="absolute top-4 left-4 z-10 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/85 backdrop-blur-md border border-cyan-500/30 text-xs font-mono text-cyan-300 shadow-lg pointer-events-auto">
+            <span class="w-2 h-2 rounded-full bg-[#00F2FE] animate-ping"></span>
+            <i class="fas fa-circle-nodes text-[#00F2FE]"></i>
+            <span>Tilted Cylindrical Arc</span>
+          </div>
+
+          <!-- Center Subtle Title Overlay -->
+          <div class="absolute inset-x-0 top-12 mx-auto text-center pointer-events-none z-10 px-4">
+            <span class="text-[11px] font-mono tracking-widest uppercase text-cyan-400/80 bg-slate-950/60 px-3 py-1 rounded-full border border-cyan-500/20 backdrop-blur">
+              Continuous 3D Curved Flow
+            </span>
+          </div>
+
+          <!-- Bottom Control Bar -->
+          <div class="absolute bottom-5 inset-x-0 mx-auto w-fit max-w-[92%] z-10 px-4 py-2 rounded-full bg-slate-900/90 backdrop-blur-md border border-white/10 text-[11px] font-mono text-slate-300 flex items-center gap-2.5 shadow-xl text-center pointer-events-none">
+            <span class="text-[#00F2FE]"><i class="fas fa-play text-xs mr-1"></i> Continuous Cylindrical Arc</span>
+            <span class="opacity-30">|</span>
+            <span class="text-[#4FACFE]"><i class="fas fa-layer-group text-xs mr-1"></i> 16-Facet Perspective Slicing</span>
+            <span class="opacity-30">|</span>
+            <span class="text-emerald-400"><i class="fas fa-hand-pointer text-xs mr-1"></i> Click card to inspect</span>
+          </div>
+        </div>
+      </div>
+
       <!-- 3D Infinite Certificate Vault View -->
-      <div id="cert-3d-view" class="mb-10 relative">
+      <div id="cert-3d-view" class="mb-10 relative hidden">
         <div class="relative w-full h-[520px] sm:h-[620px] rounded-2xl overflow-hidden border border-white/10 bg-slate-950/80 shadow-2xl backdrop-blur-xl group">
           <canvas id="cert-3d-canvas" class="w-full h-full block cursor-grab active:cursor-grabbing outline-none"></canvas>
 
@@ -2548,28 +2584,180 @@ ORDER BY peak_mbps DESC LIMIT 5;</code></pre>
       }
     });
 
-    // 7b. 3D Infinite Certificate Vault (Three.js Spatial Physics Engine)
+    // 7b. Tilted Cylindrical & 3D Infinite Certificate Vaults
     function switchCertView(mode) {
+      const viewTilted = document.getElementById('cert-tilted-view');
       const view3D = document.getElementById('cert-3d-view');
       const viewGrid = document.getElementById('cert-grid-view');
+      const btnTilted = document.getElementById('btn-toggle-tilted');
       const btn3D = document.getElementById('btn-toggle-3d');
       const btnGrid = document.getElementById('btn-toggle-grid');
 
-      if (!view3D || !viewGrid || !btn3D || !btnGrid) return;
+      const activeClass = "px-5 py-2.5 rounded-xl font-mono text-xs font-semibold flex items-center gap-2 border border-[#00F2FE]/50 bg-[#00F2FE]/15 text-[#00F2FE] shadow-cyan-sm transition cursor-pointer";
+      const inactiveClass = "px-5 py-2.5 rounded-xl font-mono text-xs font-semibold flex items-center gap-2 border border-white/10 bg-slate-900/60 text-slate-400 hover:text-white transition cursor-pointer";
 
-      if (mode === '3d') {
+      if (viewTilted) viewTilted.classList.add('hidden');
+      if (view3D) view3D.classList.add('hidden');
+      if (viewGrid) viewGrid.classList.add('hidden');
+
+      if (btnTilted) btnTilted.className = inactiveClass;
+      if (btn3D) btn3D.className = inactiveClass;
+      if (btnGrid) btnGrid.className = inactiveClass;
+
+      if (mode === 'tilted' && viewTilted) {
+        viewTilted.classList.remove('hidden');
+        if (btnTilted) btnTilted.className = activeClass;
+      } else if (mode === '3d' && view3D) {
         view3D.classList.remove('hidden');
-        viewGrid.classList.add('hidden');
-        btn3D.className = "px-5 py-2.5 rounded-xl font-mono text-xs font-semibold flex items-center gap-2 border border-[#00F2FE]/50 bg-[#00F2FE]/15 text-[#00F2FE] shadow-cyan-sm transition cursor-pointer";
-        btnGrid.className = "px-5 py-2.5 rounded-xl font-mono text-xs font-semibold flex items-center gap-2 border border-white/10 bg-slate-900/60 text-slate-400 hover:text-white transition cursor-pointer";
+        if (btn3D) btn3D.className = activeClass;
         window.dispatchEvent(new Event('resize'));
-      } else {
-        view3D.classList.add('hidden');
+      } else if (viewGrid) {
         viewGrid.classList.remove('hidden');
-        btnGrid.className = "px-5 py-2.5 rounded-xl font-mono text-xs font-semibold flex items-center gap-2 border border-[#00F2FE]/50 bg-[#00F2FE]/15 text-[#00F2FE] shadow-cyan-sm transition cursor-pointer";
-        btn3D.className = "px-5 py-2.5 rounded-xl font-mono text-xs font-semibold flex items-center gap-2 border border-white/10 bg-slate-900/60 text-slate-400 hover:text-white transition cursor-pointer";
+        if (btnGrid) btnGrid.className = activeClass;
       }
     }
+
+    (function initTiltedCertificateHero() {
+      const container = document.getElementById('cert-tilted-container');
+      const band = document.getElementById('cert-tilted-band');
+      if (!container || !band) return;
+
+      const certs = [
+        { src: 'assets/certificates/cyber-awareness.png', title: 'Cyber Awareness' },
+        { src: 'assets/certificates/web-dev-101.png', title: 'Web Dev 101: System Integration' },
+        { src: 'assets/certificates/qa-101.png', title: 'QA 101: Software Quality' },
+        { src: 'assets/certificates/pro-skills.png', title: 'Pro Skills for Tech Pros' },
+        { src: 'assets/certificates/arduino-101.png', title: 'Arduino 101: Coding Meets Hardware' },
+        { src: 'assets/certificates/cert-it-fundamentals.png', title: 'IT Fundamentals' },
+        { src: 'assets/certificates/cert-ai-prompting.png', title: 'A.I Prompting Techniques' },
+        { src: 'assets/certificates/cert-ai-fundamentals.png', title: 'AI Fundamentals: Automation' }
+      ];
+
+      const SLICES = 16;
+      const CAMERA = 1.6;
+      const MAX_WIDTH = 55;
+      const tileHeight = 32;
+      const aspectRatio = 16 / 10;
+      const gap = 8;
+      const curve = 75;
+      const speed = 4;
+      const fade = 12;
+      const axis = 54;
+
+      function arc(bend) {
+        return (CAMERA - 1 + Math.cos(bend)) / (2 * CAMERA * Math.sin(bend));
+      }
+
+      function measure(w, h) {
+        const bend = (Math.min(85, Math.max(5, curve)) * Math.PI) / 180;
+        const tileH = Math.min((tileHeight / 100) * h, ((MAX_WIDTH / 100) * w) / aspectRatio);
+        const radius = w * arc(bend);
+        if (!(tileH > 0) || !(radius > 0)) return null;
+        const deg = rad => (rad * 180) / Math.PI;
+        const unit = deg(tileH / radius);
+        const pitch = (aspectRatio + gap / 100) * unit;
+        const limit = deg(bend) + (aspectRatio * unit) / 2;
+        const columns = Math.min(60, Math.max(2, Math.ceil((2 * limit) / pitch)));
+        const sweep = +((columns * pitch) / 2).toFixed(4);
+        return { columns, sweep, unit: +unit.toFixed(4), limit: +Math.min(sweep, limit).toFixed(4), radius, bend };
+      }
+
+      let layout = null;
+      let styleTag = document.getElementById('cert-tilted-keyframes');
+      if (!styleTag) {
+        styleTag = document.createElement('style');
+        styleTag.id = 'cert-tilted-keyframes';
+        document.head.appendChild(styleTag);
+      }
+
+      function render() {
+        const rect = container.getBoundingClientRect();
+        const next = measure(rect.width, rect.height);
+        if (!next) return;
+        layout = next;
+
+        const { columns, sweep, unit, limit, radius, bend } = layout;
+        const orbitId = 'tgh-cert-orbit';
+        const tileClass = 'tgh-cert-tile';
+
+        const rPercent = (100 * arc(bend)).toFixed(3);
+        const u = n => `calc(${+n.toFixed(4)} * min(${tileHeight}cqh, ${+(MAX_WIDTH / aspectRatio).toFixed(4)}cqw))`;
+        const turn = deg => `translateZ(${rPercent}cqw) rotateY(${+deg.toFixed(4)}deg) translateZ(-${rPercent}cqw)`;
+        const hide = +(((sweep - limit) / (2 * sweep || 1)) * 100).toFixed(4);
+
+        styleTag.innerHTML = `
+          @keyframes ${orbitId} {
+            from { transform: ${turn(-sweep)}; }
+            to { transform: ${turn(sweep)}; }
+            0%, ${hide}%, ${100 - hide}%, 100% { visibility: hidden; }
+            ${hide + 0.001}%, ${100 - hide - 0.001}% { visibility: visible; }
+          }
+          .${tileClass}:hover {
+            filter: drop-shadow(0 0 16px rgba(0, 242, 254, 0.45));
+            cursor: pointer;
+          }
+        `;
+
+        const share = aspectRatio / SLICES;
+        const duration = columns * speed;
+        const mask = `linear-gradient(90deg, transparent, #000 ${fade}%, #000 ${100 - fade}%, transparent)`;
+
+        band.style.perspective = `${+(parseFloat(rPercent) * CAMERA).toFixed(3)}cqw`;
+        band.style.perspectiveOrigin = `50% ${axis}%`;
+        band.style.maskImage = mask;
+        band.style.webkitMaskImage = mask;
+
+        band.innerHTML = '';
+
+        for (let t = 0; t < columns; t++) {
+          const first = columns - 1 - t;
+          const cert = certs[first % certs.length];
+
+          const tileDiv = document.createElement('div');
+          tileDiv.className = `absolute pointer-events-auto ${tileClass}`;
+          tileDiv.style.left = `calc(50% - ${u(aspectRatio / 2)})`;
+          tileDiv.style.top = `calc(${axis}% - ${u(0.5)})`;
+          tileDiv.style.width = u(aspectRatio);
+          tileDiv.style.height = u(1);
+          tileDiv.style.transformStyle = 'preserve-3d';
+          tileDiv.style.animation = `${orbitId} ${duration}s linear ${-t * speed}s infinite`;
+          tileDiv.title = `Click to inspect: ${cert.title}`;
+
+          tileDiv.addEventListener('click', () => {
+            openCertModal(cert.src, cert.title);
+          });
+
+          for (let k = 0; k < SLICES; k++) {
+            const strip = document.createElement('div');
+            strip.className = 'absolute top-0 overflow-hidden bg-slate-900 border-y border-white/10';
+            if (k === 0) strip.className += ' rounded-l-lg border-l';
+            if (k === SLICES - 1) strip.className += ' rounded-r-lg border-r';
+
+            strip.style.left = u((aspectRatio - share) / 2);
+            strip.style.width = k === SLICES - 1 ? u(share) : `calc(${u(share)} + 1px)`;
+            strip.style.height = u(1);
+            strip.style.transform = turn((aspectRatio / 2 - (k + 0.5) * share) * unit);
+
+            const img = document.createElement('img');
+            img.src = cert.src;
+            img.alt = cert.title;
+            img.draggable = false;
+            img.className = 'absolute top-0 max-w-none object-cover';
+            img.style.left = u(-k * share);
+            img.style.width = u(aspectRatio);
+            img.style.height = u(1);
+
+            strip.appendChild(img);
+            tileDiv.appendChild(strip);
+          }
+
+          band.appendChild(tileDiv);
+        }
+      }
+
+      window.addEventListener('resize', render);
+      setTimeout(render, 150);
+    })();
 
     (function init3DCertificateGallery() {
       const canvas = document.getElementById('cert-3d-canvas');

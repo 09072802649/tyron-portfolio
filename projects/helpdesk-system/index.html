@@ -3,10 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IT HELP DESK SYSTEM v2.5 - Admin + Supabase</title>
+  <title>AI Help Desk &amp; Service Ticket System v2.5 | Enterprise Dashboard</title>
   
   <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
   <!-- FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
@@ -17,10 +20,11 @@
       theme: {
         extend: {
           colors: {
-            'cyber-bg': '#060A12',
-            'cyber-card': 'rgba(15, 23, 42, 0.75)',
+            'cyber-bg': '#040711',
+            'cyber-card': 'rgba(10, 16, 30, 0.75)',
             'cyber-cyan': '#00F2FE',
             'cyber-blue': '#4FACFE',
+            'cyber-purple': '#7F00FF',
           },
           fontFamily: {
             sans: ['Inter', 'sans-serif'],
@@ -35,59 +39,82 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
+    :root {
+      --cyber-cyan: #00F2FE;
+      --cyber-blue: #4FACFE;
+      --cyber-purple: #7F00FF;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      background-color: #060A12;
+      background-color: #040711;
       color: #94A3B8;
       font-family: 'Inter', sans-serif;
       min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
     }
-    body::before {
-      content: '';
+
+    /* Interactive Background Canvas */
+    #cyber-bg-canvas {
       position: fixed;
       inset: 0;
-      background:
-        radial-gradient(ellipse at 10% 10%, rgba(0, 242, 254, 0.06) 0%, transparent 50%),
-        radial-gradient(ellipse at 90% 90%, rgba(79, 172, 254, 0.06) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 50%, rgba(139, 92, 246, 0.03) 0%, transparent 60%);
+      width: 100%;
+      height: 100%;
       pointer-events: none;
       z-index: 0;
     }
 
-    /* Grid pattern overlay */
-    body::after {
-      content: '';
+    /* Ambient cyber grid overlay */
+    .cyber-grid-overlay {
       position: fixed;
       inset: 0;
       background-image: 
-        linear-gradient(rgba(0, 242, 254, 0.015) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 242, 254, 0.015) 1px, transparent 1px);
-      background-size: 60px 60px;
+        linear-gradient(rgba(0, 242, 254, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 242, 254, 0.02) 1px, transparent 1px);
+      background-size: 50px 50px;
       pointer-events: none;
-      z-index: 0;
-    }
-
-    .glass-card {
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
       z-index: 1;
     }
-    .glass-card:hover {
-      border-color: rgba(0, 242, 254, 0.25);
-      box-shadow: 0 8px 32px rgba(0, 242, 254, 0.08), inset 0 0 0 1px rgba(0, 242, 254, 0.05);
+
+    /* Ambient radial glow spots */
+    .ambient-glow-spots {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(0, 242, 254, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 85% 80%, rgba(127, 0, 255, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(79, 172, 254, 0.04) 0%, transparent 55%);
+      pointer-events: none;
+      z-index: 1;
     }
 
+    /* Glassmorphism Cards */
+    .glass-card {
+      background: rgba(10, 16, 30, 0.75);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+    .glass-card:hover {
+      border-color: rgba(0, 242, 254, 0.3);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(0, 242, 254, 0.06);
+    }
+
+    /* Metric Card Polish */
     .metric-card {
-      background: linear-gradient(135deg, rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.4));
+      background: linear-gradient(145deg, rgba(13, 22, 42, 0.8), rgba(9, 14, 26, 0.6));
       backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       overflow: hidden;
-      z-index: 1;
+      cursor: pointer;
     }
     .metric-card::before {
       content: '';
@@ -95,39 +122,111 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 2px;
-      opacity: 0;
-      transition: opacity 0.3s;
+      height: 2.5px;
+      opacity: 0.8;
+      transition: all 0.35s ease;
     }
-    .metric-card:hover::before { opacity: 1; }
     .metric-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+      transform: translateY(-3px);
+      border-color: rgba(0, 242, 254, 0.35);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), 0 0 25px rgba(0, 242, 254, 0.1);
     }
-    .metric-card.cyan::before { background: linear-gradient(90deg, transparent, #00F2FE, transparent); }
-    .metric-card.amber::before { background: linear-gradient(90deg, transparent, #F59E0B, transparent); }
-    .metric-card.emerald::before { background: linear-gradient(90deg, transparent, #10B981, transparent); }
-    .metric-card.slate::before { background: linear-gradient(90deg, transparent, #94A3B8, transparent); }
+    .metric-card.cyan::before { background: linear-gradient(90deg, #00F2FE, #4FACFE); }
+    .metric-card.amber::before { background: linear-gradient(90deg, #F59E0B, #F97316); }
+    .metric-card.emerald::before { background: linear-gradient(90deg, #10B981, #059669); }
+    .metric-card.slate::before { background: linear-gradient(90deg, #64748B, #94A3B8); }
 
+    /* Interactive Ticket Card */
     .ticket-card {
-      background: linear-gradient(145deg, rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.4));
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      background: linear-gradient(155deg, rgba(13, 21, 38, 0.85), rgba(7, 12, 22, 0.7));
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
       transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
-      z-index: 1;
     }
     .ticket-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(0, 242, 254, 0.3);
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3), 0 0 24px rgba(0, 242, 254, 0.06);
+      transform: translateY(-4px) scale-[1.01];
+      border-color: rgba(0, 242, 254, 0.35);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 242, 254, 0.1);
     }
 
-    /* Scrollbar */
-    ::-webkit-scrollbar { width: 6px; }
+    /* Cyber Corner Brackets */
+    .cyber-brackets {
+      position: relative;
+    }
+    .cyber-brackets::before, .cyber-brackets::after {
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+    .cyber-brackets::before {
+      top: -1px; left: -1px;
+      border-top: 2px solid #00F2FE;
+      border-left: 2px solid #00F2FE;
+    }
+    .cyber-brackets::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 2px solid #00F2FE;
+      border-right: 2px solid #00F2FE;
+    }
+
+    /* Gradient Text */
+    .gradient-text {
+      background: linear-gradient(135deg, #00F2FE, #4FACFE);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Pulse Ring on Status */
+    @keyframes pulse-ring {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
+      70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    .pulse-ring { animation: pulse-ring 2s infinite; }
+
+    /* Scanline Animation for AI Diagnostic */
+    @keyframes ai-scan {
+      0% { transform: translateY(-100%); opacity: 0; }
+      50% { opacity: 0.8; }
+      100% { transform: translateY(400%); opacity: 0; }
+    }
+    .ai-scanline {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #00F2FE, #7F00FF, transparent);
+      box-shadow: 0 0 15px #00F2FE;
+      animation: ai-scan 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    /* Glowing Rotation Animations */
+    @keyframes spin-slow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .animate-spin-slow {
+      animation: spin-slow 16s linear infinite;
+    }
+
+    @keyframes spin-reverse {
+      from { transform: rotate(360deg); }
+      to { transform: rotate(0deg); }
+    }
+    .animate-spin-reverse {
+      animation: spin-reverse 22s linear infinite;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(0, 242, 254, 0.15); border-radius: 999px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(0, 242, 254, 0.4); }
+    ::-webkit-scrollbar-thumb { background: rgba(0, 242, 254, 0.2); border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(0, 242, 254, 0.5); }
 
     /* Toast Animation */
     @keyframes slideIn {
@@ -138,286 +237,458 @@
       from { transform: translateX(0); opacity: 1; }
       to { transform: translateX(120%); opacity: 0; }
     }
-    .toast-enter { animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+    .toast-enter { animation: slideIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
     .toast-exit { animation: slideOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
 
-    /* Input focus glow */
+    /* Input Focus Glow */
     input:focus, select:focus, textarea:focus {
-      box-shadow: 0 0 0 2px rgba(0, 242, 254, 0.15), 0 0 16px rgba(0, 242, 254, 0.08);
+      box-shadow: 0 0 0 2px rgba(0, 242, 254, 0.25), 0 0 20px rgba(0, 242, 254, 0.12);
     }
-
-    /* Modal overlay */
-    .modal-overlay { z-index: 110; }
-
-    /* Gradient text */
-    .gradient-text {
-      background: linear-gradient(135deg, #00F2FE, #4FACFE);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    /* Pulse ring on status */
-    @keyframes pulse-ring {
-      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
-      70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-    }
-    .pulse-ring { animation: pulse-ring 2s infinite; }
-
-    /* Counter animation */
-    @keyframes countUp {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .count-anim { animation: countUp 0.4s ease-out; }
   </style>
 </head>
-<body class="antialiased relative">
+<body class="antialiased selection:bg-[#00F2FE] selection:text-[#040711]">
 
-  <!-- ================= AUTHENTICATION SYSTEM ================= -->
-  <div id="auth-screen" class="fixed inset-0 z-[100] bg-[#060A12] flex items-center justify-center p-4 transition-opacity duration-500">
-    <!-- Animated background orbs -->
-    <div class="absolute inset-0 overflow-hidden">
-      <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/5 rounded-full blur-[100px] animate-pulse"></div>
-      <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-blue-500/5 rounded-full blur-[80px] animate-pulse" style="animation-delay: 1s"></div>
-    </div>
+  <!-- ================= 1. INTERACTIVE CYBER BACKGROUND ================= -->
+  <!-- 60FPS Dynamic Network Topology Canvas -->
+  <canvas id="cyber-bg-canvas"></canvas>
+  <div class="cyber-grid-overlay"></div>
+  <div class="ambient-glow-spots"></div>
 
-    <div class="glass-card max-w-md w-full p-10 rounded-3xl border-t border-t-cyan-500/50 shadow-[0_32px_64px_rgba(0,0,0,0.5)] relative overflow-hidden">
-      <div class="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-full blur-3xl"></div>
-      <div class="absolute -bottom-20 -left-20 w-40 h-40 bg-gradient-to-tr from-violet-500/5 to-cyan-500/5 rounded-full blur-3xl"></div>
+  <!-- ================= 2. ENHANCED AUTHENTICATION / LOGIN UI ================= -->
+  <div id="auth-screen" class="fixed inset-0 z-[100] bg-[#040711]/95 backdrop-blur-2xl flex items-center justify-center p-4 transition-all duration-700">
+    
+    <!-- Floating Cyber Halo Behind Card -->
+    <div class="absolute w-[450px] h-[450px] rounded-full bg-gradient-to-tr from-[#00F2FE]/15 via-[#4FACFE]/10 to-[#7F00FF]/20 blur-3xl pointer-events-none animate-pulse"></div>
+
+    <div class="glass-card cyber-brackets max-w-md w-full p-8 sm:p-10 rounded-3xl border border-white/10 shadow-[0_32px_80px_rgba(0,0,0,0.8)] relative overflow-hidden z-10">
       
-      <div class="text-center mb-10 relative">
-        <div class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-[#00F2FE] to-[#4FACFE] p-[2px] mx-auto mb-5 shadow-[0_0_30px_rgba(0,242,254,0.2)]">
-          <div class="w-full h-full bg-[#0B1120] rounded-[14px] flex items-center justify-center text-[#00F2FE] text-3xl">
-            <i class="fas fa-shield-halved"></i>
+      <!-- Top Decorative Accent Line -->
+      <div class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-[#00F2FE] to-[#7F00FF]"></div>
+      
+      <!-- Holographic Badge Header -->
+      <div class="text-center mb-8 relative">
+        <div class="relative w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+          <!-- Animated Concentric Rings -->
+          <div class="absolute inset-0 rounded-full border border-dashed border-cyan-400/40 animate-spin-slow pointer-events-none"></div>
+          <div class="absolute -inset-2 rounded-full border border-purple-500/30 animate-spin-reverse pointer-events-none"></div>
+          
+          <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#00F2FE] to-[#4FACFE] p-[2px] shadow-[0_0_30px_rgba(0,242,254,0.35)]">
+            <div class="w-full h-full bg-[#080E1C] rounded-[14px] flex items-center justify-center text-[#00F2FE] text-2xl">
+              <i class="fas fa-shield-halved"></i>
+            </div>
           </div>
         </div>
-        <h2 class="text-3xl font-extrabold text-white tracking-wide">SYSTEM ACCESS</h2>
-        <p class="text-sm text-slate-400 mt-2 font-light">Please authenticate to access the system</p>
+
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-[10px] font-mono text-cyan-300 mb-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>ENTERPRISE SECURE GATEWAY</span>
+        </div>
+        
+        <h2 class="text-2xl font-black text-white tracking-wide">IT HELP DESK <span class="gradient-text font-mono">v2.5</span></h2>
+        <p class="text-xs text-slate-400 mt-1">Authenticate identity token to unlock technician dashboard</p>
       </div>
 
-      <form id="login-form" class="space-y-5 relative">
+      <!-- Quick 1-Click Demo Login Switcher Chips -->
+      <div class="mb-6 p-3 rounded-2xl bg-slate-900/80 border border-white/5 space-y-2">
+        <div class="text-[10px] font-mono uppercase tracking-wider text-slate-400 text-center font-semibold">
+          ⚡ One-Click Quick Credentials
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" onclick="fillCredentials('admin', 'admin123')" class="px-3 py-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 text-xs font-mono font-semibold transition-all flex items-center justify-center gap-1.5 active:scale-95 group cursor-pointer">
+            <i class="fas fa-user-shield text-[11px] group-hover:scale-110 transition-transform"></i>
+            <span>Admin (Full)</span>
+          </button>
+          <button type="button" onclick="fillCredentials('user', 'user123')" class="px-3 py-2 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 text-purple-300 text-xs font-mono font-semibold transition-all flex items-center justify-center gap-1.5 active:scale-95 group cursor-pointer">
+            <i class="fas fa-user text-[11px] group-hover:scale-110 transition-transform"></i>
+            <span>User (View)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form" class="space-y-4 relative" novalidate>
         <div>
-          <label class="block text-xs font-mono text-slate-400 mb-2 tracking-wider uppercase">Username <span class="text-cyan-400">(admin / user)</span></label>
+          <label class="block text-[11px] font-mono text-slate-400 mb-1.5 tracking-wider uppercase flex justify-between">
+            <span>Username</span>
+            <span class="text-slate-500 text-[10px]">admin / user</span>
+          </label>
           <div class="relative group">
-            <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-cyan-400 transition"></i>
-            <input type="text" id="auth-user" class="w-full bg-slate-900/60 border border-white/10 rounded-xl py-3.5 pl-11 pr-4 text-sm text-white focus:outline-none focus:border-cyan-400/60 transition-all" placeholder="Enter username">
+            <i class="fas fa-id-badge absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-cyan-400 transition-colors"></i>
+            <input type="text" id="auth-user" required class="w-full bg-slate-900/70 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-cyan-400 transition-all font-mono" placeholder="Enter username (e.g. admin)">
           </div>
         </div>
+
         <div>
-          <label class="block text-xs font-mono text-slate-400 mb-2 tracking-wider uppercase">Password <span class="text-cyan-400">(admin123 / user123)</span></label>
+          <label class="block text-[11px] font-mono text-slate-400 mb-1.5 tracking-wider uppercase flex justify-between">
+            <span>Password</span>
+            <span class="text-slate-500 text-[10px]">admin123 / user123</span>
+          </label>
           <div class="relative group">
-            <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-cyan-400 transition"></i>
-            <input type="password" id="auth-pass" class="w-full bg-slate-900/60 border border-white/10 rounded-xl py-3.5 pl-11 pr-4 text-sm text-white focus:outline-none focus:border-cyan-400/60 transition-all" placeholder="Enter password">
+            <i class="fas fa-key absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-cyan-400 transition-colors"></i>
+            <input type="password" id="auth-pass" required class="w-full bg-slate-900/70 border border-white/10 rounded-xl py-3 pl-11 pr-11 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-cyan-400 transition-all font-mono" placeholder="Enter password">
+            <button type="button" onclick="togglePassVisibility()" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-cyan-400 transition-colors p-1 cursor-pointer" aria-label="Toggle password visibility">
+              <i id="pass-eye-icon" class="fas fa-eye text-xs"></i>
+            </button>
           </div>
         </div>
-        <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] text-[#060A12] font-bold text-sm hover:shadow-[0_0_24px_rgba(0,242,254,0.35)] active:scale-[0.98] transition-all mt-3">
-          <i class="fas fa-fingerprint mr-2"></i> Authenticate
+
+        <!-- Biometric Progress Bar (Visible during authentication) -->
+        <div id="auth-telemetry" class="hidden pt-1">
+          <div class="flex items-center justify-between text-[10px] font-mono text-cyan-400 mb-1">
+            <span id="auth-step-text"><i class="fas fa-fingerprint animate-pulse mr-1"></i> Verifying credentials...</span>
+            <span id="auth-step-pct">0%</span>
+          </div>
+          <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+            <div id="auth-progress-bar" class="h-full bg-gradient-to-r from-[#00F2FE] to-[#7F00FF] transition-all duration-300 w-0"></div>
+          </div>
+        </div>
+
+        <button type="submit" id="btn-login-submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#00F2FE] via-[#00F2FE] to-[#4FACFE] text-[#040711] font-bold text-sm hover:shadow-[0_0_30px_rgba(0,242,254,0.4)] active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4 cursor-pointer">
+          <i class="fas fa-fingerprint text-base"></i>
+          <span>Authenticate &amp; Launch</span>
         </button>
       </form>
+
+      <!-- Security Guarantee Footer -->
+      <div class="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-slate-500">
+        <span class="flex items-center gap-1"><i class="fas fa-lock text-cyan-400/80"></i> 256-Bit SSL/TLS</span>
+        <span class="flex items-center gap-1"><i class="fas fa-database text-emerald-400/80"></i> Supabase PostgreSQL</span>
+      </div>
     </div>
   </div>
 
-  <!-- ================= TOAST NOTIFICATION SYSTEM ================= -->
-  <div id="toast-container" class="fixed bottom-5 right-5 z-[150] flex flex-col gap-3"></div>
+  <!-- ================= 3. TOAST NOTIFICATION SYSTEM ================= -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-[150] flex flex-col gap-3 pointer-events-none"></div>
 
-  <!-- ================= MAIN DASHBOARD UI ================= -->
+  <!-- ================= 4. MAIN DASHBOARD APPLICATION ================= -->
   <div id="app-dashboard" class="max-w-7xl mx-auto px-4 sm:px-6 py-8 hidden opacity-0 transition-opacity duration-500 relative z-10">
     
-    <!-- Header -->
-    <header class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 glass-card p-5 rounded-2xl">
-      <div class="flex items-center gap-4">
-        <div class="w-14 h-14 rounded-xl bg-gradient-to-tr from-[#00F2FE] to-[#4FACFE] p-[2px] shadow-[0_0_20px_rgba(0,242,254,0.15)]">
-          <div class="w-full h-full bg-[#0B1120] rounded-[10px] flex items-center justify-center text-[#00F2FE] text-2xl">
+    <!-- Top Executive Header -->
+    <header class="flex flex-col lg:flex-row justify-between items-center mb-8 gap-4 glass-card p-5 rounded-2xl cyber-brackets">
+      <div class="flex items-center gap-4 w-full lg:w-auto">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#00F2FE] via-[#4FACFE] to-[#7F00FF] p-[2px] shadow-[0_0_25px_rgba(0,242,254,0.25)] flex-shrink-0">
+          <div class="w-full h-full bg-[#080E1C] rounded-[14px] flex items-center justify-center text-[#00F2FE] text-2xl">
             <i class="fas fa-headset"></i>
           </div>
         </div>
         <div>
-          <h1 class="text-xl font-extrabold text-white tracking-wide">IT HELP DESK <span class="gradient-text text-sm font-mono">v2.5</span></h1>
-          <div class="flex items-center gap-2 mt-1.5">
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 pulse-ring" id="status-indicator"></span>
-            <span class="text-xs font-mono text-emerald-400" id="db-status">Connecting to Database...</span>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-black text-white tracking-wide">IT HELP DESK OS</h1>
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-cyan-500/15 text-[#00F2FE] border border-cyan-500/30">v2.5</span>
+          </div>
+          <div class="flex items-center gap-3 mt-1 text-xs font-mono">
+            <div class="flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 pulse-ring" id="status-indicator"></span>
+              <span class="text-emerald-400 font-medium" id="db-status">Connecting to Database...</span>
+            </div>
+            <span class="text-slate-600">|</span>
+            <span class="text-slate-400 hidden sm:inline" id="live-clock">--:--:-- UTC+8</span>
           </div>
         </div>
       </div>
-      <div class="flex items-center gap-3">
-        <div class="hidden sm:flex items-center gap-2 mr-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/5">
-          <div id="profile-avatar" class="w-7 h-7 rounded-full bg-gradient-to-tr from-cyan-500 to-blue-500 flex items-center justify-center text-white text-xs font-bold">A</div>
-          <span id="profile-name" class="text-sm text-slate-300 font-medium">Admin</span>
+
+      <div class="flex items-center justify-between lg:justify-end gap-3 w-full lg:w-auto">
+        <!-- Active User Badge -->
+        <div class="flex items-center gap-2.5 px-3.5 py-1.5 rounded-xl bg-slate-900/90 border border-white/10 shadow-sm">
+          <div id="profile-avatar" class="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-blue-500 flex items-center justify-center text-white text-xs font-bold shadow-cyan-sm">A</div>
+          <div>
+            <span id="profile-name" class="text-xs text-white font-bold block leading-tight">Admin User</span>
+            <span id="profile-role-tag" class="text-[9px] font-mono text-cyan-400 uppercase tracking-wider block">SUPERADMIN</span>
+          </div>
         </div>
-        <button onclick="logout()" class="px-4 py-2.5 rounded-xl border border-rose-500/20 text-rose-400 hover:bg-rose-500/10 hover:border-rose-500/40 transition-all text-sm font-medium flex items-center gap-2">
-          <i class="fas fa-sign-out-alt"></i> <span class="hidden sm:inline">Logout</span>
+
+        <!-- Logout Action -->
+        <button onclick="logout()" class="px-4 py-2.5 rounded-xl border border-rose-500/30 text-rose-400 hover:bg-rose-500/15 hover:border-rose-500/60 transition-all text-xs font-mono font-semibold flex items-center gap-2 cursor-pointer shadow-sm">
+          <i class="fas fa-sign-out-alt"></i>
+          <span class="hidden sm:inline">Logout</span>
         </button>
-        <a href="../../index.html" class="px-4 py-2.5 rounded-xl border border-white/10 hover:border-cyan-500/40 text-slate-300 hover:text-white transition-all text-sm font-medium flex items-center gap-2">
-          <i class="fas fa-arrow-left"></i> <span class="hidden sm:inline">Portfolio</span>
+
+        <!-- Back to Portfolio -->
+        <a href="../../index.html#projects" class="px-4 py-2.5 rounded-xl border border-white/15 hover:border-cyan-500/50 hover:bg-slate-900/80 text-slate-300 hover:text-white transition-all text-xs font-mono font-semibold flex items-center gap-2 shadow-sm">
+          <i class="fas fa-arrow-left text-cyan-400"></i>
+          <span class="hidden sm:inline">Portfolio</span>
         </a>
       </div>
     </header>
 
-    <!-- Metrics Bar -->
+    <!-- Metrics Bar with Click-to-Filter Shortcuts -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-      <div class="metric-card slate p-5 rounded-2xl flex items-center justify-between">
+      
+      <!-- Metric 1: Total -->
+      <div onclick="filterByMetric('All')" class="metric-card slate p-5 rounded-2xl flex items-center justify-between" title="Click to view all tickets">
         <div>
-          <p class="text-[10px] font-mono text-slate-500 mb-1.5 tracking-widest uppercase">Total Tickets</p>
-          <h3 class="text-3xl font-extrabold text-white count-anim" id="metric-total">0</h3>
+          <p class="text-[10px] font-mono text-slate-400 mb-1 tracking-widest uppercase font-semibold">Total Tickets</p>
+          <h3 class="text-3xl font-black text-white" id="metric-total">0</h3>
+          <span class="text-[10px] font-mono text-slate-500 mt-1 block">Live Postgres Pool</span>
         </div>
-        <div class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-slate-400 text-lg"><i class="fas fa-layer-group"></i></div>
+        <div class="w-12 h-12 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center text-slate-300 text-lg shadow-inner">
+          <i class="fas fa-layer-group"></i>
+        </div>
       </div>
-      <div class="metric-card cyan p-5 rounded-2xl flex items-center justify-between">
+
+      <!-- Metric 2: Open -->
+      <div onclick="filterByMetric('Open')" class="metric-card cyan p-5 rounded-2xl flex items-center justify-between" title="Click to filter Open tickets">
         <div>
-          <p class="text-[10px] font-mono text-cyan-500/70 mb-1.5 tracking-widest uppercase">Open</p>
-          <h3 class="text-3xl font-extrabold text-cyan-400 count-anim" id="metric-open">0</h3>
+          <p class="text-[10px] font-mono text-cyan-400 mb-1 tracking-widest uppercase font-semibold">Open Tickets</p>
+          <h3 class="text-3xl font-black text-cyan-400" id="metric-open">0</h3>
+          <span class="text-[10px] font-mono text-cyan-500/70 mt-1 block">Awaiting Triage</span>
         </div>
-        <div class="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-400 text-lg"><i class="fas fa-folder-open"></i></div>
+        <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-lg shadow-inner">
+          <i class="fas fa-folder-open"></i>
+        </div>
       </div>
-      <div class="metric-card amber p-5 rounded-2xl flex items-center justify-between">
+
+      <!-- Metric 3: In Progress -->
+      <div onclick="filterByMetric('In Progress')" class="metric-card amber p-5 rounded-2xl flex items-center justify-between" title="Click to filter In Progress tickets">
         <div>
-          <p class="text-[10px] font-mono text-amber-500/70 mb-1.5 tracking-widest uppercase">In Progress</p>
-          <h3 class="text-3xl font-extrabold text-amber-400 count-anim" id="metric-progress">0</h3>
+          <p class="text-[10px] font-mono text-amber-400 mb-1 tracking-widest uppercase font-semibold">In Progress</p>
+          <h3 class="text-3xl font-black text-amber-400" id="metric-progress">0</h3>
+          <span class="text-[10px] font-mono text-amber-500/70 mt-1 block">Active Diagnostics</span>
         </div>
-        <div class="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400 text-lg"><i class="fas fa-clock"></i></div>
+        <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-lg shadow-inner">
+          <i class="fas fa-screwdriver-wrench"></i>
+        </div>
       </div>
-      <div class="metric-card emerald p-5 rounded-2xl flex items-center justify-between">
+
+      <!-- Metric 4: Resolved -->
+      <div onclick="filterByMetric('Resolved')" class="metric-card emerald p-5 rounded-2xl flex items-center justify-between" title="Click to filter Resolved tickets">
         <div>
-          <p class="text-[10px] font-mono text-emerald-500/70 mb-1.5 tracking-widest uppercase">Resolved</p>
-          <h3 class="text-3xl font-extrabold text-emerald-400 count-anim" id="metric-resolved">0</h3>
+          <p class="text-[10px] font-mono text-emerald-400 mb-1 tracking-widest uppercase font-semibold">Resolved</p>
+          <h3 class="text-3xl font-black text-emerald-400" id="metric-resolved">0</h3>
+          <span class="text-[10px] font-mono text-emerald-500/70 mt-1 block">Verified Closed</span>
         </div>
-        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-lg"><i class="fas fa-check-double"></i></div>
+        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-lg shadow-inner">
+          <i class="fas fa-circle-check"></i>
+        </div>
       </div>
     </div>
 
-    <!-- Search & Controls -->
-    <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+    <!-- Category Filter Pills Bar -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-3 mb-6 text-xs font-mono scrollbar-none">
+      <span class="text-slate-500 uppercase tracking-wider text-[11px] font-semibold flex items-center gap-1.5 mr-1 flex-shrink-0">
+        <i class="fas fa-filter text-cyan-400"></i> Category:
+      </span>
+      <button type="button" onclick="setCategoryFilter('All')" class="cat-pill active px-3.5 py-1.5 rounded-xl border border-white/10 bg-slate-900/60 text-slate-300 hover:text-white transition-all flex-shrink-0 cursor-pointer" data-cat="All">All Categories</button>
+      <button type="button" onclick="setCategoryFilter('Hardware Failure')" class="cat-pill px-3.5 py-1.5 rounded-xl border border-white/10 bg-slate-900/60 text-slate-400 hover:text-white transition-all flex-shrink-0 cursor-pointer" data-cat="Hardware Failure">💻 Hardware</button>
+      <button type="button" onclick="setCategoryFilter('Software Bug')" class="cat-pill px-3.5 py-1.5 rounded-xl border border-white/10 bg-slate-900/60 text-slate-400 hover:text-white transition-all flex-shrink-0 cursor-pointer" data-cat="Software Bug">🐛 Software</button>
+      <button type="button" onclick="setCategoryFilter('Network Connectivity')" class="cat-pill px-3.5 py-1.5 rounded-xl border border-white/10 bg-slate-900/60 text-slate-400 hover:text-white transition-all flex-shrink-0 cursor-pointer" data-cat="Network Connectivity">🌐 Network</button>
+      <button type="button" onclick="setCategoryFilter('Access/Authentication')" class="cat-pill px-3.5 py-1.5 rounded-xl border border-white/10 bg-slate-900/60 text-slate-400 hover:text-white transition-all flex-shrink-0 cursor-pointer" data-cat="Access/Authentication">🔐 Auth &amp; IAM</button>
+      <button type="button" onclick="setCategoryFilter('System Maintenance')" class="cat-pill px-3.5 py-1.5 rounded-xl border border-white/10 bg-slate-900/60 text-slate-400 hover:text-white transition-all flex-shrink-0 cursor-pointer" data-cat="System Maintenance">⚙️ Maintenance</button>
+    </div>
+
+    <!-- Search & Controls Toolbar -->
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
       <div class="flex-1 w-full flex flex-col sm:flex-row items-center gap-3">
+        <!-- Live Search -->
         <div class="relative w-full md:w-96 group">
-          <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-cyan-400 transition"></i>
-          <input type="text" id="search-input" placeholder="Search tickets..." class="w-full bg-slate-900/50 border border-white/8 rounded-xl py-3 pl-11 pr-4 text-sm text-white focus:outline-none focus:border-cyan-400/40 transition-all">
+          <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-cyan-400 transition-colors"></i>
+          <input type="text" id="search-input" placeholder="Search by ticket #, user, description..." class="w-full bg-slate-900/70 border border-white/10 rounded-xl py-3 pl-11 pr-10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition-all font-mono">
+          <button type="button" onclick="clearSearch()" id="btn-clear-search" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white p-1 cursor-pointer" title="Clear search">
+            <i class="fas fa-times text-xs"></i>
+          </button>
         </div>
-        <select id="status-filter" class="w-full sm:w-auto bg-slate-900/50 border border-white/8 rounded-xl py-3 px-4 text-sm text-slate-300 focus:outline-none focus:border-cyan-400/40 transition-all">
+
+        <!-- Status Filter -->
+        <select id="status-filter" class="w-full sm:w-auto bg-slate-900/70 border border-white/10 rounded-xl py-3 px-4 text-xs font-mono text-slate-300 focus:outline-none focus:border-cyan-400 transition-all cursor-pointer">
           <option value="All">All Statuses</option>
-          <option value="Open">Open</option>
-          <option value="In Progress">In Progress</option>
-          <option value="Resolved">Resolved</option>
-          <option value="Closed">Closed</option>
+          <option value="Open">Status: Open</option>
+          <option value="In Progress">Status: In Progress</option>
+          <option value="Resolved">Status: Resolved</option>
+          <option value="Closed">Status: Closed</option>
         </select>
       </div>
-      <button onclick="openCreateModal()" class="w-full md:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] text-[#060A12] font-bold text-sm hover:shadow-[0_0_24px_rgba(0,242,254,0.3)] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-        <i class="fas fa-plus"></i> New Ticket
+
+      <!-- Action: Create Ticket -->
+      <button onclick="openCreateModal()" class="w-full md:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] text-[#040711] font-bold text-xs font-mono uppercase tracking-wider hover:shadow-[0_0_28px_rgba(0,242,254,0.4)] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg">
+        <i class="fas fa-plus text-xs"></i>
+        <span>Create Ticket</span>
       </button>
     </div>
 
-    <!-- Ticket List Container -->
+    <!-- Ticket Cards Grid Container -->
     <div id="tickets-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-      <!-- Tickets rendered here -->
+      <!-- Tickets dynamically rendered via renderTicketsList() -->
     </div>
 
   </div>
 
-  <!-- ================= CREATE MODAL ================= -->
-  <div id="create-modal" class="fixed inset-0 modal-overlay bg-black/70 backdrop-blur-md hidden flex justify-center items-start pt-10 pb-10 overflow-y-auto px-4">
-    <div class="glass-card w-full max-w-lg rounded-2xl border border-cyan-500/20 overflow-hidden shadow-[0_32px_64px_rgba(0,0,0,0.5)]">
-      <div class="p-6 border-b border-white/5 flex justify-between items-center bg-gradient-to-r from-slate-900/80 to-slate-900/40">
-        <h3 class="text-lg font-bold text-white flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg bg-cyan-500/15 flex items-center justify-center"><i class="fas fa-ticket text-cyan-400 text-sm"></i></div>
-          New Support Ticket
-        </h3>
-        <button type="button" onclick="closeCreateModal()" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition"><i class="fas fa-times text-sm"></i></button>
+  <!-- ================= 5. CREATE TICKET MODAL ================= -->
+  <div id="create-modal" class="fixed inset-0 z-[120] bg-black/80 backdrop-blur-md hidden flex justify-center items-start pt-10 pb-10 overflow-y-auto px-4 transition-all">
+    <div class="glass-card cyber-brackets w-full max-w-xl rounded-2xl border border-cyan-500/30 overflow-hidden shadow-[0_32px_80px_rgba(0,0,0,0.8)] my-auto">
+      
+      <!-- Modal Header -->
+      <div class="p-6 border-b border-white/10 flex justify-between items-center bg-gradient-to-r from-slate-900/90 to-slate-900/60">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+            <i class="fas fa-ticket text-base"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-white">Create New Support Ticket</h3>
+            <span class="text-[11px] font-mono text-cyan-400">Dispatch to Enterprise Incident Pool</span>
+          </div>
+        </div>
+        <button type="button" onclick="closeCreateModal()" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/15 flex items-center justify-center text-slate-400 hover:text-white transition cursor-pointer">
+          <i class="fas fa-times text-sm"></i>
+        </button>
       </div>
       
-      <form id="create-form" class="p-6 space-y-5" novalidate>
-        <div class="grid grid-cols-2 gap-4">
+      <!-- Create Form -->
+      <form id="create-form" class="p-6 space-y-4" novalidate>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-[11px] font-mono text-slate-500 mb-2 tracking-wider uppercase">Reporter Name <span class="text-rose-400">*</span></label>
-            <input type="text" id="c-name" placeholder="Full name" class="w-full bg-slate-900/50 border border-white/8 rounded-xl p-3 text-sm text-white focus:border-cyan-400/50 focus:outline-none transition-all">
+            <label class="block text-[11px] font-mono text-slate-400 mb-1.5 uppercase font-semibold">Reporter Name <span class="text-rose-400">*</span></label>
+            <input type="text" id="c-name" required placeholder="e.g. Prof. Alan Turing" class="w-full bg-slate-900/70 border border-white/10 rounded-xl p-3 text-sm text-white focus:border-cyan-400 focus:outline-none transition-all font-sans">
           </div>
           <div>
-            <label class="block text-[11px] font-mono text-slate-500 mb-2 tracking-wider uppercase">Email <span class="text-rose-400">*</span></label>
-            <input type="email" id="c-email" placeholder="email@domain.com" class="w-full bg-slate-900/50 border border-white/8 rounded-xl p-3 text-sm text-white focus:border-cyan-400/50 focus:outline-none transition-all">
+            <label class="block text-[11px] font-mono text-slate-400 mb-1.5 uppercase font-semibold">Reporter Email <span class="text-rose-400">*</span></label>
+            <input type="email" id="c-email" required placeholder="turing@college.edu" class="w-full bg-slate-900/70 border border-white/10 rounded-xl p-3 text-sm text-white focus:border-cyan-400 focus:outline-none transition-all font-mono">
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-4">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-[11px] font-mono text-slate-500 mb-2 tracking-wider uppercase">Device Type</label>
-            <select id="c-device" class="w-full bg-slate-900/50 border border-white/8 rounded-xl p-3 text-sm text-white focus:border-cyan-400/50 focus:outline-none">
-              <option value="Laptop/PC">Laptop/PC</option>
-              <option value="Network/Router">Network/Router</option>
-              <option value="Server">Server</option>
-              <option value="Mobile/Tablet">Mobile/Tablet</option>
-              <option value="Software/App">Software/App</option>
+            <label class="block text-[11px] font-mono text-slate-400 mb-1.5 uppercase font-semibold">Hardware / Device</label>
+            <select id="c-device" class="w-full bg-slate-900/70 border border-white/10 rounded-xl p-3 text-xs font-mono text-white focus:border-cyan-400 focus:outline-none cursor-pointer">
+              <option value="Laptop/PC">💻 Laptop / PC Workstation</option>
+              <option value="Network/Router">🌐 Network Switch / Router</option>
+              <option value="Server">🖥️ Enterprise Rack Server</option>
+              <option value="Mobile/Tablet">📱 Mobile Device / Tablet</option>
+              <option value="Software/App">💾 Operating System / App</option>
             </select>
           </div>
           <div>
-            <label class="block text-[11px] font-mono text-slate-500 mb-2 tracking-wider uppercase">Priority</label>
-            <select id="c-priority" class="w-full bg-slate-900/50 border border-white/8 rounded-xl p-3 text-sm text-white focus:border-cyan-400/50 focus:outline-none">
-              <option value="Low">Low</option>
-              <option value="Medium" selected>Medium</option>
-              <option value="High">High</option>
-              <option value="Critical">Critical</option>
+            <label class="block text-[11px] font-mono text-slate-400 mb-1.5 uppercase font-semibold">Initial Priority</label>
+            <select id="c-priority" class="w-full bg-slate-900/70 border border-white/10 rounded-xl p-3 text-xs font-mono text-white focus:border-cyan-400 focus:outline-none cursor-pointer">
+              <option value="Low">Low (General Query)</option>
+              <option value="Medium" selected>Medium (Standard Task)</option>
+              <option value="High">High (Service Degradation)</option>
+              <option value="Critical">Critical (System Offline)</option>
             </select>
           </div>
         </div>
+
         <div>
-          <label class="block text-[11px] font-mono text-slate-500 mb-2 tracking-wider uppercase">Issue Category</label>
-          <select id="c-category" class="w-full bg-slate-900/50 border border-white/8 rounded-xl p-3 text-sm text-white focus:border-cyan-400/50 focus:outline-none">
+          <label class="block text-[11px] font-mono text-slate-400 mb-1.5 uppercase font-semibold">Incident Category</label>
+          <select id="c-category" class="w-full bg-slate-900/70 border border-white/10 rounded-xl p-3 text-xs font-mono text-white focus:border-cyan-400 focus:outline-none cursor-pointer">
             <option value="Hardware Failure">Hardware Failure</option>
             <option value="Software Bug">Software Bug</option>
             <option value="Network Connectivity">Network Connectivity</option>
-            <option value="Access/Authentication">Access/Authentication</option>
+            <option value="Access/Authentication">Access / Authentication (IAM)</option>
             <option value="System Maintenance">System Maintenance</option>
           </select>
         </div>
+
         <div>
-          <label class="block text-[11px] font-mono text-slate-500 mb-2 tracking-wider uppercase">Description <span class="text-rose-400">*</span></label>
-          <textarea id="c-desc" rows="4" placeholder="Describe the issue in detail..." class="w-full bg-slate-900/50 border border-white/8 rounded-xl p-3 text-sm text-white focus:border-cyan-400/50 focus:outline-none resize-none transition-all"></textarea>
+          <label class="block text-[11px] font-mono text-slate-400 mb-1.5 uppercase font-semibold">Technical Description <span class="text-rose-400">*</span></label>
+          <textarea id="c-desc" rows="4" required placeholder="Document the empirical error symptoms, IP address, switch port, or crash code..." class="w-full bg-slate-900/70 border border-white/10 rounded-xl p-3 text-sm text-white focus:border-cyan-400 focus:outline-none resize-none transition-all leading-relaxed"></textarea>
         </div>
-        <div class="pt-4 flex justify-end gap-3 border-t border-white/5">
-          <button type="button" onclick="closeCreateModal()" class="px-5 py-2.5 rounded-xl bg-white/5 text-slate-300 text-sm font-medium hover:bg-white/10 transition">Cancel</button>
-          <button type="submit" id="btn-submit-ticket" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] text-[#060A12] text-sm font-bold hover:shadow-[0_0_20px_rgba(0,242,254,0.3)] active:scale-[0.98] transition-all flex items-center gap-2">
-            <i class="fas fa-paper-plane"></i> Submit Ticket
+
+        <div class="pt-4 flex justify-end gap-3 border-t border-white/10">
+          <button type="button" onclick="closeCreateModal()" class="px-5 py-2.5 rounded-xl bg-white/5 text-slate-300 text-xs font-mono font-medium hover:bg-white/10 transition cursor-pointer">Cancel</button>
+          <button type="submit" id="btn-submit-ticket" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] text-[#040711] text-xs font-mono font-bold hover:shadow-[0_0_24px_rgba(0,242,254,0.4)] active:scale-[0.98] transition-all flex items-center gap-2 cursor-pointer">
+            <i class="fas fa-paper-plane text-xs"></i>
+            <span>Submit Ticket</span>
           </button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- ================= UPDATE / DELETE MODAL ================= -->
-  <div id="edit-modal" class="fixed inset-0 modal-overlay bg-black/70 backdrop-blur-md hidden flex justify-center items-start pt-10 pb-10 overflow-y-auto px-4">
-    <div class="glass-card w-full max-w-lg rounded-2xl border border-amber-500/20 overflow-hidden shadow-[0_32px_64px_rgba(0,0,0,0.5)]">
-      <div class="p-6 border-b border-white/5 flex justify-between items-center bg-gradient-to-r from-slate-900/80 to-slate-900/40">
-        <h3 class="text-lg font-bold text-white flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg bg-amber-500/15 flex items-center justify-center"><i class="fas fa-pen-to-square text-amber-400 text-sm"></i></div>
-          Update Ticket <span id="e-ticket-code" class="gradient-text font-mono text-sm ml-1"></span>
-        </h3>
-        <button type="button" onclick="closeEditModal()" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition"><i class="fas fa-times text-sm"></i></button>
+  <!-- ================= 6. UPDATE / INSPECT / AI DIAGNOSTIC MODAL ================= -->
+  <div id="edit-modal" class="fixed inset-0 z-[120] bg-black/80 backdrop-blur-md hidden flex justify-center items-start pt-10 pb-10 overflow-y-auto px-4 transition-all">
+    <div class="glass-card cyber-brackets w-full max-w-xl rounded-2xl border border-cyan-500/30 overflow-hidden shadow-[0_32px_80px_rgba(0,0,0,0.8)] my-auto relative">
+      
+      <!-- Modal Header -->
+      <div class="p-6 border-b border-white/10 flex justify-between items-center bg-gradient-to-r from-slate-900/90 to-slate-900/60">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+            <i class="fas fa-microchip text-base"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+              <span>Incident Docket:</span>
+              <span id="e-ticket-code" class="gradient-text font-mono text-sm"></span>
+            </h3>
+            <span class="text-[11px] font-mono text-slate-400" id="e-display-category">Hardware / System Diagnostics</span>
+          </div>
+        </div>
+        <button type="button" onclick="closeEditModal()" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/15 flex items-center justify-center text-slate-400 hover:text-white transition cursor-pointer">
+          <i class="fas fa-times text-sm"></i>
+        </button>
       </div>
       
-      <form id="edit-form" class="p-6 space-y-5">
+      <form id="edit-form" class="p-6 space-y-4">
         <input type="hidden" id="e-id">
         
-        <!-- Ticket summary -->
-        <div class="p-4 bg-gradient-to-r from-slate-900/60 to-slate-800/30 border border-white/5 rounded-xl">
-          <div class="flex items-center gap-2 mb-1.5">
-            <i class="fas fa-user text-slate-500 text-xs"></i>
-            <div class="font-semibold text-white text-sm" id="e-display-name"></div>
+        <!-- Summary Box -->
+        <div class="p-4 bg-slate-900/80 border border-white/10 rounded-xl space-y-1.5">
+          <div class="flex items-center justify-between text-xs font-mono">
+            <span class="text-slate-400 flex items-center gap-1.5">
+              <i class="fas fa-user-circle text-cyan-400"></i>
+              <strong class="text-white font-sans" id="e-display-name"></strong>
+            </span>
+            <span class="text-slate-400 text-[11px]" id="e-display-date"></span>
           </div>
-          <div class="text-xs text-slate-400 leading-relaxed pl-5" id="e-display-desc"></div>
+          <p class="text-xs text-slate-300 leading-relaxed font-sans pt-1 border-t border-white/5" id="e-display-desc"></p>
         </div>
         
-        <div id="admin-controls" class="space-y-4 mt-4">
+        <!-- ================= AI DIAGNOSTIC ENGINE CONTAINER ================= -->
+        <div class="border border-indigo-500/40 bg-gradient-to-br from-indigo-950/40 to-slate-900/80 rounded-2xl p-5 relative overflow-hidden shadow-lg">
+          <!-- Ambient AI Glow and Scanline -->
+          <div class="absolute -right-8 -top-8 w-28 h-28 bg-indigo-500/15 rounded-full blur-2xl pointer-events-none"></div>
+          <div id="ai-scanner-line" class="ai-scanline hidden"></div>
+          
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 mb-3 border-b border-indigo-500/20 relative z-10">
+            <div class="flex items-center gap-2">
+              <div class="w-7 h-7 rounded-lg bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center text-indigo-300 text-xs">
+                <i class="fas fa-brain"></i>
+              </div>
+              <div>
+                <h4 class="text-xs font-mono font-bold text-indigo-300 uppercase tracking-wider">AI Diagnostic Engine</h4>
+                <p class="text-[10px] text-slate-400 font-mono">Empirical triage &amp; automated troubleshooting checklist</p>
+              </div>
+            </div>
+
+            <button type="button" onclick="generateAISuggestions()" id="btn-ai" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-mono text-[11px] font-bold shadow-[0_0_20px_rgba(99,102,241,0.3)] transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 flex-shrink-0">
+              <i class="fas fa-wand-magic-sparkles text-xs"></i>
+              <span id="btn-ai-label">Run AI Diagnostic</span>
+            </button>
+          </div>
+
+          <!-- AI Checklist Output Area -->
+          <div id="ai-suggestions-container" class="relative z-10 text-xs text-slate-300 space-y-2">
+            <div class="text-center py-4 text-slate-400 italic font-mono text-[11px]">
+              Click "Run AI Diagnostic" to generate intelligent root-cause checklist and remediation steps.
+            </div>
+          </div>
+
+          <!-- AI Action Bar (Append to Notes) -->
+          <div id="ai-action-bar" class="hidden mt-3 pt-3 border-t border-indigo-500/20 flex flex-wrap items-center justify-between gap-2 relative z-10">
+            <span class="text-[10px] font-mono text-indigo-300" id="ai-progress-counter">0 of 4 completed (0%)</span>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="copyAiToNotes()" class="px-2.5 py-1 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-200 border border-indigo-500/30 text-[10px] font-mono transition-all flex items-center gap-1 cursor-pointer">
+                <i class="fas fa-copy"></i>
+                <span>Append to Notes</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Admin Editable Fields -->
+        <div id="admin-controls" class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-[11px] font-mono text-slate-500 mb-2 tracking-wider uppercase">Status</label>
-              <select id="e-status" class="w-full bg-slate-900/50 border border-white/8 rounded-xl p-3 text-sm text-white focus:border-amber-400/50 focus:outline-none transition-all">
-                <option value="Open">Open</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Resolved">Resolved</option>
-                <option value="Closed">Closed</option>
+              <label class="block text-[11px] font-mono text-slate-400 mb-1.5 uppercase font-semibold">Incident Status</label>
+              <select id="e-status" class="w-full bg-slate-900/70 border border-white/10 rounded-xl p-3 text-xs font-mono text-white focus:border-cyan-400 focus:outline-none transition-all cursor-pointer">
+                <option value="Open">Open (Pending)</option>
+                <option value="In Progress">In Progress (Active)</option>
+                <option value="Resolved">Resolved (Fixed)</option>
+                <option value="Closed">Closed (Archived)</option>
               </select>
             </div>
             <div>
-              <label class="block text-[11px] font-mono text-slate-500 mb-2 tracking-wider uppercase">Priority</label>
-              <select id="e-priority" class="w-full bg-slate-900/50 border border-white/8 rounded-xl p-3 text-sm text-white focus:border-amber-400/50 focus:outline-none transition-all">
+              <label class="block text-[11px] font-mono text-slate-400 mb-1.5 uppercase font-semibold">Priority</label>
+              <select id="e-priority" class="w-full bg-slate-900/70 border border-white/10 rounded-xl p-3 text-xs font-mono text-white focus:border-cyan-400 focus:outline-none transition-all cursor-pointer">
                 <option value="Low">Low</option>
                 <option value="Medium">Medium</option>
                 <option value="High">High</option>
@@ -426,61 +697,41 @@
             </div>
           </div>
           
-          <!-- AI Suggestions / Checklist -->
-          <div class="border border-indigo-500/30 bg-indigo-500/5 rounded-xl p-4 relative overflow-hidden mt-2 mb-2">
-            <div class="absolute -right-6 -top-6 w-24 h-24 bg-indigo-500/10 rounded-full blur-xl"></div>
-            <div class="flex justify-between items-center mb-3 relative z-10">
-              <h4 class="text-[11px] font-mono text-indigo-400 tracking-wider uppercase flex items-center gap-2">
-                <i class="fas fa-robot text-indigo-300"></i> AI Diagnostic and Suggest To Do
-              </h4>
-              <button type="button" onclick="generateAISuggestions()" id="btn-ai" class="text-[10px] bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 px-3 py-1.5 rounded-lg border border-indigo-500/20 transition-all flex items-center gap-1.5 font-bold">
-                <i class="fas fa-wand-magic-sparkles"></i> AI Diagnostic and Suggest To Do
-              </button>
-            </div>
-            <div id="ai-suggestions-container" class="relative z-10 text-xs text-slate-400 italic">
-              Click the button above to analyze the ticket and run AI diagnostic and suggest to do.
-            </div>
-          </div>
-
           <div>
-            <label class="block text-[11px] font-mono text-slate-500 mb-2 tracking-wider uppercase">Technician Notes</label>
-            <textarea id="e-notes" rows="4" placeholder="Add resolution notes..." class="w-full bg-slate-900/50 border border-white/8 rounded-xl p-3 text-sm text-white focus:border-amber-400/50 focus:outline-none resize-none transition-all"></textarea>
+            <label class="block text-[11px] font-mono text-slate-400 mb-1.5 uppercase font-semibold">Technician Resolution Notes</label>
+            <textarea id="e-notes" rows="4" placeholder="Document the root cause diagnosis, hardware serial replaced, or fix applied..." class="w-full bg-slate-900/70 border border-white/10 rounded-xl p-3 text-xs text-white focus:border-cyan-400 focus:outline-none resize-none transition-all font-mono leading-relaxed"></textarea>
           </div>
         </div>
 
-        <div id="user-view-only" class="hidden mt-4">
-          <div class="p-4 bg-slate-900/40 border border-white/5 rounded-xl">
-            <div class="grid grid-cols-2 gap-4 mb-4">
-              <div>
-                <p class="text-[10px] font-mono text-slate-500 uppercase tracking-wider mb-1">Status</p>
-                <p class="text-sm text-white font-medium" id="v-status"></p>
-              </div>
-              <div>
-                <p class="text-[10px] font-mono text-slate-500 uppercase tracking-wider mb-1">Priority</p>
-                <p class="text-sm text-white font-medium" id="v-priority"></p>
-              </div>
+        <!-- Read-Only View for User Role -->
+        <div id="user-view-only" class="hidden space-y-3">
+          <div class="p-4 bg-slate-900/60 border border-white/10 rounded-xl grid grid-cols-2 gap-4 text-xs font-mono">
+            <div>
+              <span class="text-slate-500 uppercase block text-[10px]">Current Status</span>
+              <span class="text-cyan-400 font-bold" id="v-status"></span>
             </div>
             <div>
-              <p class="text-[10px] font-mono text-slate-500 uppercase tracking-wider mb-1">Technician Notes</p>
-              <p class="text-sm text-slate-300 italic" id="v-notes"></p>
+              <span class="text-slate-500 uppercase block text-[10px]">Priority Level</span>
+              <span class="text-amber-400 font-bold" id="v-priority"></span>
             </div>
           </div>
-          <div id="v-ai-suggestions-wrapper" class="hidden mt-3 p-4 bg-indigo-500/10 border border-indigo-500/20 rounded-xl">
-            <h4 class="text-[10px] font-mono text-indigo-400 tracking-wider uppercase mb-2 flex items-center gap-1.5">
-              <i class="fas fa-robot"></i> AI Diagnostic and Suggest To Do
-            </h4>
-            <div id="v-ai-suggestions-content" class="space-y-2"></div>
+          <div class="p-4 bg-slate-900/60 border border-white/10 rounded-xl text-xs">
+            <span class="text-slate-500 font-mono uppercase block text-[10px] mb-1">Assigned Technician Notes</span>
+            <p class="text-slate-300 italic font-mono leading-relaxed" id="v-notes"></p>
           </div>
         </div>
 
-        <div class="pt-4 flex justify-between gap-3 border-t border-white/5 items-center">
-          <button type="button" onclick="deleteTicket()" id="btn-del" class="px-4 py-2.5 rounded-xl border border-rose-500/20 text-rose-400 text-sm font-medium hover:bg-rose-500/10 hover:border-rose-500/40 transition-all flex items-center gap-2">
-            <i class="fas fa-trash-can"></i> Delete
+        <!-- Actions Toolbar -->
+        <div class="pt-4 flex justify-between gap-3 border-t border-white/10 items-center">
+          <button type="button" onclick="deleteTicket()" id="btn-del" class="px-4 py-2.5 rounded-xl border border-rose-500/30 text-rose-400 text-xs font-mono font-semibold hover:bg-rose-500/15 transition-all flex items-center gap-1.5 cursor-pointer">
+            <i class="fas fa-trash-can text-xs"></i>
+            <span>Delete</span>
           </button>
           <div class="flex gap-2 w-full justify-end" id="btn-actions-container">
-            <button type="button" onclick="closeEditModal()" class="px-5 py-2.5 rounded-xl bg-white/5 text-slate-300 text-sm font-medium hover:bg-white/10 transition">Close</button>
-            <button type="submit" id="btn-update" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-[#060A12] text-sm font-bold hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] active:scale-[0.98] transition-all flex items-center gap-2">
-              <i class="fas fa-save"></i> Save Changes
+            <button type="button" onclick="closeEditModal()" class="px-5 py-2.5 rounded-xl bg-white/5 text-slate-300 text-xs font-mono font-medium hover:bg-white/10 transition cursor-pointer">Close</button>
+            <button type="submit" id="btn-update" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-[#040711] text-xs font-mono font-bold hover:shadow-[0_0_24px_rgba(245,158,11,0.4)] active:scale-[0.98] transition-all flex items-center gap-1.5 cursor-pointer">
+              <i class="fas fa-save text-xs"></i>
+              <span>Save Changes</span>
             </button>
           </div>
         </div>
@@ -488,88 +739,260 @@
     </div>
   </div>
 
-  <!-- ================= SCRIPTS ================= -->
+  <!-- ================= 7. JAVASCRIPT ES6+ LOGIC ================= -->
   <script>
-    // --- Error Handling & Toast Notifications ---
+    // --- 7a. Interactive Constellation Canvas Background ---
+    (function initCyberBackground() {
+      const canvas = document.getElementById('cyber-bg-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      let width = canvas.width = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
+
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+
+      const mouse = { x: -9999, y: -9999 };
+      window.addEventListener('pointermove', (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+      });
+      window.addEventListener('pointerleave', () => {
+        mouse.x = -9999;
+        mouse.y = -9999;
+      });
+
+      // Generate network nodes
+      const nodeCount = Math.floor(Math.min(width, 1600) / 22);
+      const nodes = [];
+      for (let i = 0; i < nodeCount; i++) {
+        nodes.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.45,
+          vy: (Math.random() - 0.5) * 0.45,
+          radius: Math.random() * 1.6 + 0.8,
+          color: Math.random() > 0.4 ? 'rgba(0, 242, 254, ' : 'rgba(79, 172, 254, '
+        });
+      }
+
+      function drawNetwork() {
+        ctx.clearRect(0, 0, width, height);
+
+        // Update and draw nodes
+        for (let i = 0; i < nodes.length; i++) {
+          const n = nodes[i];
+          n.x += n.vx;
+          n.y += n.vy;
+
+          if (n.x < 0) n.x = width;
+          else if (n.x > width) n.x = 0;
+          if (n.y < 0) n.y = height;
+          else if (n.y > height) n.y = 0;
+
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
+          ctx.fillStyle = n.color + '0.7)';
+          ctx.fill();
+
+          // Connect with nearby nodes
+          for (let j = i + 1; j < nodes.length; j++) {
+            const n2 = nodes[j];
+            const dx = n.x - n2.x;
+            const dy = n.y - n2.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < 110) {
+              const alpha = (1 - dist / 110) * 0.16;
+              ctx.beginPath();
+              ctx.moveTo(n.x, n.y);
+              ctx.lineTo(n2.x, n2.y);
+              ctx.strokeStyle = `rgba(0, 242, 254, ${alpha})`;
+              ctx.lineWidth = 0.8;
+              ctx.stroke();
+            }
+          }
+
+          // Connect to cursor
+          const mdx = n.x - mouse.x;
+          const mdy = n.y - mouse.y;
+          const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
+          if (mdist < 140) {
+            const mAlpha = (1 - mdist / 140) * 0.35;
+            ctx.beginPath();
+            ctx.moveTo(n.x, n.y);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.strokeStyle = `rgba(0, 242, 254, ${mAlpha})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+
+        requestAnimationFrame(drawNetwork);
+      }
+      drawNetwork();
+    })();
+
+    // --- 7b. Live UTC+8 Digital Clock ---
+    function updateClock() {
+      const clockEl = document.getElementById('live-clock');
+      if (!clockEl) return;
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('en-US', { hour12: false });
+      clockEl.textContent = `${timeStr} UTC+8`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // --- 7c. Toast Notification System ---
     function showToast(message, type = 'error') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
       
       const configs = {
-        error: { icon: 'fa-circle-xmark text-rose-400', border: 'border-rose-500/40', bg: 'from-rose-500/10' },
-        success: { icon: 'fa-circle-check text-emerald-400', border: 'border-emerald-500/40', bg: 'from-emerald-500/10' },
-        warning: { icon: 'fa-triangle-exclamation text-amber-400', border: 'border-amber-500/40', bg: 'from-amber-500/10' }
+        error: { icon: 'fa-circle-xmark text-rose-400', border: 'border-rose-500/50', bg: 'from-rose-500/15' },
+        success: { icon: 'fa-circle-check text-emerald-400', border: 'border-emerald-500/50', bg: 'from-emerald-500/15' },
+        warning: { icon: 'fa-triangle-exclamation text-amber-400', border: 'border-amber-500/50', bg: 'from-amber-500/15' },
+        info: { icon: 'fa-circle-info text-cyan-400', border: 'border-cyan-500/50', bg: 'from-cyan-500/15' }
       };
       const c = configs[type] || configs.error;
 
-      toast.className = `toast-enter glass-card bg-gradient-to-r ${c.bg} to-slate-900/90 border-l-4 ${c.border} px-5 py-4 rounded-xl shadow-[0_16px_48px_rgba(0,0,0,0.4)] flex items-center gap-3 min-w-[280px]`;
-      toast.innerHTML = `<i class="fas ${c.icon} text-lg"></i> <span class="text-sm font-medium text-white">${message}</span>`;
+      toast.className = `toast-enter glass-card bg-gradient-to-r ${c.bg} to-slate-900/95 border-l-4 ${c.border} px-5 py-3.5 rounded-xl shadow-2xl flex items-center gap-3 min-w-[300px] pointer-events-auto`;
+      toast.innerHTML = `
+        <i class="fas ${c.icon} text-lg flex-shrink-0"></i>
+        <div class="text-xs font-mono font-medium text-white leading-tight">${message}</div>
+      `;
       
       container.appendChild(toast);
-      setTimeout(() => { toast.classList.replace('toast-enter','toast-exit'); setTimeout(()=>toast.remove(), 300); }, 3500);
+      setTimeout(() => {
+        toast.classList.replace('toast-enter', 'toast-exit');
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
     }
-    
-    function setBtnLoading(btnId, isLoading, originalText) {
+
+    function setBtnLoading(btnId, isLoading, originalHtml) {
       const btn = document.getElementById(btnId);
-      if(isLoading) {
+      if (!btn) return;
+      if (isLoading) {
         btn.disabled = true;
-        btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-1"></i> Processing...`;
-        btn.classList.add('opacity-70', 'pointer-events-none');
+        btn.innerHTML = `<i class="fas fa-spinner fa-spin text-xs"></i> <span>Processing...</span>`;
+        btn.classList.add('opacity-75', 'pointer-events-none');
       } else {
         btn.disabled = false;
-        btn.innerHTML = originalText;
-        btn.classList.remove('opacity-70', 'pointer-events-none');
+        btn.innerHTML = originalHtml;
+        btn.classList.remove('opacity-75', 'pointer-events-none');
       }
     }
 
-    // --- Authentication ---
+    // --- 7d. Quick Credential Switcher & Password Visibility ---
+    function fillCredentials(user, pass) {
+      document.getElementById('auth-user').value = user;
+      document.getElementById('auth-pass').value = pass;
+      showToast(`Loaded ${user.toUpperCase()} credentials`, 'info');
+    }
+
+    function togglePassVisibility() {
+      const passInput = document.getElementById('auth-pass');
+      const eyeIcon = document.getElementById('pass-eye-icon');
+      if (passInput.type === 'password') {
+        passInput.type = 'text';
+        eyeIcon.className = 'fas fa-eye-slash text-xs text-cyan-400';
+      } else {
+        passInput.type = 'password';
+        eyeIcon.className = 'fas fa-eye text-xs text-slate-500';
+      }
+    }
+
+    // --- 7e. Authentication Flow with Biometric Simulation ---
     const authScreen = document.getElementById('auth-screen');
     const appDashboard = document.getElementById('app-dashboard');
 
     if (localStorage.getItem('hd_auth') === 'true') {
-      const role = localStorage.getItem('hd_role');
-      if (role === 'user') {
-        document.getElementById('profile-avatar').innerText = 'U';
-        document.getElementById('profile-avatar').className = 'w-7 h-7 rounded-full bg-gradient-to-tr from-violet-500 to-fuchsia-500 flex items-center justify-center text-white text-xs font-bold';
-        document.getElementById('profile-name').innerText = 'User';
-      }
+      applyUserRole(localStorage.getItem('hd_role') || 'admin');
       authScreen.classList.add('hidden');
       appDashboard.classList.remove('hidden');
       setTimeout(() => appDashboard.classList.remove('opacity-0'), 50);
     }
 
+    function applyUserRole(role) {
+      const avatar = document.getElementById('profile-avatar');
+      const name = document.getElementById('profile-name');
+      const roleTag = document.getElementById('profile-role-tag');
+
+      if (role === 'user') {
+        avatar.innerText = 'U';
+        avatar.className = 'w-8 h-8 rounded-lg bg-gradient-to-tr from-purple-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold';
+        name.innerText = 'Staff User';
+        roleTag.innerText = 'READ ONLY / TICKET VIEW';
+        roleTag.className = 'text-[9px] font-mono text-purple-400 uppercase tracking-wider block';
+      } else {
+        avatar.innerText = 'A';
+        avatar.className = 'w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-blue-500 flex items-center justify-center text-white text-xs font-bold shadow-cyan-sm';
+        name.innerText = 'Admin Lead';
+        roleTag.innerText = 'SUPERADMIN / FULL CRUD';
+        roleTag.className = 'text-[9px] font-mono text-cyan-400 uppercase tracking-wider block';
+      }
+    }
+
     document.getElementById('login-form').addEventListener('submit', (e) => {
       e.preventDefault();
-      const user = document.getElementById('auth-user').value;
-      const pass = document.getElementById('auth-pass').value;
+      const user = document.getElementById('auth-user').value.trim();
+      const pass = document.getElementById('auth-pass').value.trim();
 
-      if (!user || !pass) return showToast('Credentials cannot be empty', 'error');
+      if (!user || !pass) return showToast('Please enter both username and password', 'error');
       
-      if (user === 'admin' && pass === 'admin123' || user === 'user' && pass === 'user123') {
+      if ((user === 'admin' && pass === 'admin123') || (user === 'user' && pass === 'user123')) {
         const role = user === 'admin' ? 'admin' : 'user';
-        localStorage.setItem('hd_auth', 'true');
-        localStorage.setItem('hd_role', role);
         
-        if (role === 'user') {
-          document.getElementById('profile-avatar').innerText = 'U';
-          document.getElementById('profile-avatar').className = 'w-7 h-7 rounded-full bg-gradient-to-tr from-violet-500 to-fuchsia-500 flex items-center justify-center text-white text-xs font-bold';
-          document.getElementById('profile-name').innerText = 'User';
-        } else {
-          document.getElementById('profile-avatar').innerText = 'A';
-          document.getElementById('profile-avatar').className = 'w-7 h-7 rounded-full bg-gradient-to-tr from-cyan-500 to-blue-500 flex items-center justify-center text-white text-xs font-bold';
-          document.getElementById('profile-name').innerText = 'Admin';
-        }
+        // Show simulated Biometric scanning animation
+        const telemetryBox = document.getElementById('auth-telemetry');
+        const progressBar = document.getElementById('auth-progress-bar');
+        const stepText = document.getElementById('auth-step-text');
+        const stepPct = document.getElementById('auth-step-pct');
+        const submitBtn = document.getElementById('btn-login-submit');
 
-        showToast('Authentication Successful', 'success');
-        authScreen.classList.add('opacity-0');
+        telemetryBox.classList.remove('hidden');
+        submitBtn.disabled = true;
+        submitBtn.classList.add('opacity-75', 'pointer-events-none');
+
+        progressBar.style.width = '35%';
+        stepText.innerHTML = '<i class="fas fa-fingerprint animate-pulse text-cyan-400 mr-1"></i> Validating credentials token...';
+        stepPct.textContent = '35%';
+
         setTimeout(() => {
-          authScreen.classList.add('hidden');
-          appDashboard.classList.remove('hidden');
-          setTimeout(() => appDashboard.classList.remove('opacity-0'), 50);
-          fetchTickets();
-        }, 500);
+          progressBar.style.width = '75%';
+          stepText.innerHTML = '<i class="fas fa-network-wired animate-pulse text-cyan-400 mr-1"></i> Synchronizing Supabase session...';
+          stepPct.textContent = '75%';
+        }, 350);
+
+        setTimeout(() => {
+          progressBar.style.width = '100%';
+          stepText.innerHTML = '<i class="fas fa-check-circle text-emerald-400 mr-1"></i> Authentication Granted!';
+          stepPct.textContent = '100%';
+
+          localStorage.setItem('hd_auth', 'true');
+          localStorage.setItem('hd_role', role);
+          applyUserRole(role);
+
+          showToast(`Welcome back, ${role.toUpperCase()}!`, 'success');
+          
+          setTimeout(() => {
+            authScreen.classList.add('opacity-0');
+            setTimeout(() => {
+              authScreen.classList.add('hidden');
+              appDashboard.classList.remove('hidden');
+              setTimeout(() => appDashboard.classList.remove('opacity-0'), 50);
+              fetchTickets();
+            }, 500);
+          }, 300);
+        }, 750);
+
       } else {
-        showToast('Invalid Access Credentials', 'error');
+        showToast('Invalid access credentials. Use admin/admin123 or user/user123', 'error');
       }
     });
 
@@ -577,14 +1000,20 @@
       localStorage.removeItem('hd_auth');
       localStorage.removeItem('hd_role');
       appDashboard.classList.add('opacity-0');
+      showToast('Logged out of session', 'info');
       setTimeout(() => {
         appDashboard.classList.add('hidden');
         authScreen.classList.remove('hidden');
+        document.getElementById('auth-telemetry').classList.add('hidden');
+        document.getElementById('auth-progress-bar').style.width = '0%';
+        const submitBtn = document.getElementById('btn-login-submit');
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('opacity-75', 'pointer-events-none');
         setTimeout(() => authScreen.classList.remove('opacity-0'), 50);
       }, 500);
     }
 
-    // --- Supabase DB ---
+    // --- 7f. Supabase Database Integration ---
     const _supabaseUrl = 'https://vfwkhyvecnryvdnclaow.supabase.co';
     const _supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZmd2toeXZlY25yeXZkbmNsYW93Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEzOTE1MzUsImV4cCI6MjEwNjk2NzUzNX0.Ia9Tezt_jPUnI20Fs40m-deJMn5qQT2hABiOWwSdD6w';
     let db = null;
@@ -602,23 +1031,23 @@
         if (error) throw error;
         currentTickets = data || [];
         isConnectedToSupabase = true;
-        document.getElementById('db-status').innerText = "Supabase Database Connected";
-        document.getElementById('db-status').className = "text-xs font-mono text-emerald-400";
+        document.getElementById('db-status').innerText = "Supabase Realtime Postgres Connected";
+        document.getElementById('db-status').className = "text-xs font-mono text-emerald-400 font-medium";
+        document.getElementById('status-indicator').className = "w-2.5 h-2.5 rounded-full bg-emerald-500 pulse-ring";
         
         // Setup Realtime Subscription
         if (!realtimeChannel && db) {
           realtimeChannel = db.channel('public:tickets')
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'tickets' }, payload => {
-              // Auto-refresh when database changes
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'tickets' }, () => {
               fetchTicketsSilently();
             })
             .subscribe();
         }
       } catch(err) {
-        console.error("Supabase Error:", err);
-        showToast("Using Local Storage Fallback", 'warning');
-        document.getElementById('db-status').innerText = "Local Storage Mode";
-        document.getElementById('db-status').className = "text-xs font-mono text-amber-400";
+        console.warn("Supabase Fallback:", err);
+        showToast("Using Local Storage Database Fallback", 'warning');
+        document.getElementById('db-status').innerText = "Local Storage Offline Pool";
+        document.getElementById('db-status').className = "text-xs font-mono text-amber-400 font-medium";
         document.getElementById('status-indicator').className = "w-2.5 h-2.5 rounded-full bg-amber-500 pulse-ring";
         const stored = localStorage.getItem('helpdesk_backup_db');
         currentTickets = stored ? JSON.parse(stored) : [];
@@ -644,20 +1073,22 @@
       const email = document.getElementById('c-email').value.trim();
       const desc = document.getElementById('c-desc').value.trim();
 
-      if (name.length < 2) return showToast('Name must be at least 2 characters', 'error');
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showToast('Invalid email format', 'error');
-      if (desc.length < 10) return showToast('Description too short (min 10 chars)', 'error');
+      if (name.length < 2) return showToast('Reporter name must be at least 2 characters', 'error');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showToast('Please enter a valid email address', 'error');
+      if (desc.length < 8) return showToast('Please describe the issue in detail (min 8 chars)', 'error');
 
-      setBtnLoading('btn-submit-ticket', true, '<i class="fas fa-paper-plane"></i> Submit Ticket');
+      setBtnLoading('btn-submit-ticket', true, '<i class="fas fa-paper-plane text-xs"></i> <span>Submit Ticket</span>');
 
       const newTicket = {
         code: 'TICK-' + Math.floor(1000 + Math.random() * 9000),
-        reporter_name: name, reporter_email: email,
+        reporter_name: name,
+        reporter_email: email,
         device_type: document.getElementById('c-device').value,
         category: document.getElementById('c-category').value,
         priority: document.getElementById('c-priority').value,
-        status: 'Open', description: desc,
-        notes: 'Awaiting technician assignment.',
+        status: 'Open',
+        description: desc,
+        notes: 'Awaiting initial technician diagnostic triage.',
         created_at: new Date().toISOString()
       };
 
@@ -667,21 +1098,24 @@
           if (error) throw error;
           currentTickets.unshift(data[0]);
         } else {
-          newTicket.id = Date.now().toString();
+          newTicket.id = 'loc_' + Date.now().toString();
           currentTickets.unshift(newTicket);
           localStorage.setItem('helpdesk_backup_db', JSON.stringify(currentTickets));
         }
-        showToast('Ticket submitted successfully', 'success');
+        showToast(`Ticket #${newTicket.code} created successfully`, 'success');
         closeCreateModal();
         renderUI();
-      } catch(err) { showToast("Error: " + err.message, 'error'); }
-      finally { setBtnLoading('btn-submit-ticket', false, '<i class="fas fa-paper-plane"></i> Submit Ticket'); }
+      } catch(err) {
+        showToast("Error creating ticket: " + err.message, 'error');
+      } finally {
+        setBtnLoading('btn-submit-ticket', false, '<i class="fas fa-paper-plane text-xs"></i> <span>Submit Ticket</span>');
+      }
     });
 
     // UPDATE
     document.getElementById('edit-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      setBtnLoading('btn-update', true, '<i class="fas fa-save"></i> Save Changes');
+      setBtnLoading('btn-update', true, '<i class="fas fa-save text-xs"></i> <span>Save Changes</span>');
       const id = document.getElementById('e-id').value;
       const status = document.getElementById('e-status').value;
       const priority = document.getElementById('e-priority').value;
@@ -703,34 +1137,82 @@
             localStorage.setItem('helpdesk_backup_db', JSON.stringify(currentTickets)); 
           }
         }
-        showToast('Ticket updated', 'success');
+        showToast('Ticket updated successfully', 'success');
         closeEditModal();
         renderUI();
-      } catch (err) { showToast('Error: ' + err.message, 'error'); }
-      finally { setBtnLoading('btn-update', false, '<i class="fas fa-save"></i> Save Changes'); }
+      } catch (err) {
+        showToast('Error: ' + err.message, 'error');
+      } finally {
+        setBtnLoading('btn-update', false, '<i class="fas fa-save text-xs"></i> <span>Save Changes</span>');
+      }
     });
 
     // DELETE
     async function deleteTicket() {
       const id = document.getElementById('e-id').value;
-      if (!confirm("Delete this ticket permanently?")) return;
-      setBtnLoading('btn-del', true, '<i class="fas fa-trash-can"></i> Delete');
+      if (!confirm("Permanently delete this incident ticket from database?")) return;
+      setBtnLoading('btn-del', true, '<i class="fas fa-trash-can text-xs"></i> <span>Delete</span>');
       try {
-        if (isConnectedToSupabase && db) { const { error } = await db.from('tickets').delete().eq('id', id); if (error) throw error; }
+        if (isConnectedToSupabase && db) {
+          const { error } = await db.from('tickets').delete().eq('id', id);
+          if (error) throw error;
+        }
         currentTickets = currentTickets.filter(t => t.id !== id);
         if (!isConnectedToSupabase) localStorage.setItem('helpdesk_backup_db', JSON.stringify(currentTickets));
-        showToast('Ticket deleted', 'warning');
-        closeEditModal(); renderUI();
-      } catch(err) { showToast('Error: ' + err.message, 'error'); }
-      finally { setBtnLoading('btn-del', false, '<i class="fas fa-trash-can"></i> Delete'); }
+        showToast('Ticket purged from record', 'warning');
+        closeEditModal();
+        renderUI();
+      } catch(err) {
+        showToast('Error: ' + err.message, 'error');
+      } finally {
+        setBtnLoading('btn-del', false, '<i class="fas fa-trash-can text-xs"></i> <span>Delete</span>');
+      }
     }
 
-    // --- Search & Filter ---
-    document.getElementById('search-input').addEventListener('input', renderTicketsList);
+    // --- 7g. Search & Filter Handlers ---
+    let activeCategory = 'All';
+
+    document.getElementById('search-input').addEventListener('input', (e) => {
+      const clearBtn = document.getElementById('btn-clear-search');
+      if (e.target.value.length > 0) clearBtn.classList.remove('hidden');
+      else clearBtn.classList.add('hidden');
+      renderTicketsList();
+    });
+
     document.getElementById('status-filter').addEventListener('change', renderTicketsList);
 
-    // --- UI Renderers ---
-    function renderUI() { renderMetrics(); renderTicketsList(); }
+    function clearSearch() {
+      const searchInput = document.getElementById('search-input');
+      searchInput.value = '';
+      document.getElementById('btn-clear-search').classList.add('hidden');
+      renderTicketsList();
+    }
+
+    function setCategoryFilter(cat) {
+      activeCategory = cat;
+      document.querySelectorAll('.cat-pill').forEach(btn => {
+        if (btn.getAttribute('data-cat') === cat) {
+          btn.classList.add('border-cyan-400', 'text-[#00F2FE]', 'bg-cyan-500/10');
+          btn.classList.remove('border-white/10', 'text-slate-400', 'bg-slate-900/60');
+        } else {
+          btn.classList.remove('border-cyan-400', 'text-[#00F2FE]', 'bg-cyan-500/10');
+          btn.classList.add('border-white/10', 'text-slate-400', 'bg-slate-900/60');
+        }
+      });
+      renderTicketsList();
+    }
+
+    function filterByMetric(status) {
+      document.getElementById('status-filter').value = status;
+      renderTicketsList();
+      showToast(`Filtered by status: ${status}`, 'info');
+    }
+
+    // --- 7h. UI Renderers ---
+    function renderUI() {
+      renderMetrics();
+      renderTicketsList();
+    }
 
     function renderMetrics() {
       document.getElementById('metric-total').innerText = currentTickets.length;
@@ -745,190 +1227,313 @@
       const statusFilter = document.getElementById('status-filter').value;
 
       const filtered = currentTickets.filter(t => {
-        const matchSearch = t.code.toLowerCase().includes(searchTerm) || t.reporter_name.toLowerCase().includes(searchTerm) || t.device_type.toLowerCase().includes(searchTerm);
+        const matchSearch = t.code.toLowerCase().includes(searchTerm) || 
+                            t.reporter_name.toLowerCase().includes(searchTerm) || 
+                            t.device_type.toLowerCase().includes(searchTerm) ||
+                            t.description.toLowerCase().includes(searchTerm);
         const matchStatus = statusFilter === 'All' || t.status === statusFilter;
-        return matchSearch && matchStatus;
+        const matchCategory = activeCategory === 'All' || t.category === activeCategory;
+        return matchSearch && matchStatus && matchCategory;
       });
 
       if (filtered.length === 0) {
         container.innerHTML = `
-          <div class="col-span-full glass-card p-16 text-center rounded-2xl flex flex-col items-center justify-center">
-            <div class="w-16 h-16 rounded-2xl bg-slate-800/50 flex items-center justify-center mb-4"><i class="fas fa-inbox text-3xl text-slate-600"></i></div>
-            <p class="text-slate-400 font-medium">No tickets found</p>
-            <p class="text-xs text-slate-500 mt-1">Try adjusting your search or filters</p>
+          <div class="col-span-full glass-card p-14 text-center rounded-2xl flex flex-col items-center justify-center border border-white/10">
+            <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-4 text-[#00F2FE]">
+              <i class="fas fa-inbox text-2xl"></i>
+            </div>
+            <p class="text-white font-bold text-base">No Matching Incident Records</p>
+            <p class="text-xs text-slate-400 mt-1 font-mono">Adjust search query or category filters to expand results.</p>
           </div>`;
         return;
       }
 
       const statusConfig = {
-        'Open': { color: 'text-cyan-400', bg: 'bg-cyan-400/10', border: 'border-cyan-400/30', top: 'border-t-cyan-500', dot: 'bg-cyan-400' },
-        'In Progress': { color: 'text-amber-400', bg: 'bg-amber-400/10', border: 'border-amber-400/30', top: 'border-t-amber-500', dot: 'bg-amber-400' },
-        'Resolved': { color: 'text-emerald-400', bg: 'bg-emerald-400/10', border: 'border-emerald-400/30', top: 'border-t-emerald-500', dot: 'bg-emerald-400' },
+        'Open': { color: 'text-cyan-400', bg: 'bg-cyan-400/10', border: 'border-cyan-400/30', top: 'border-t-cyan-400', dot: 'bg-cyan-400' },
+        'In Progress': { color: 'text-amber-400', bg: 'bg-amber-400/10', border: 'border-amber-400/30', top: 'border-t-amber-400', dot: 'bg-amber-400' },
+        'Resolved': { color: 'text-emerald-400', bg: 'bg-emerald-400/10', border: 'border-emerald-400/30', top: 'border-t-emerald-400', dot: 'bg-emerald-400' },
         'Closed': { color: 'text-slate-400', bg: 'bg-slate-500/10', border: 'border-slate-500/30', top: 'border-t-slate-500', dot: 'bg-slate-400' }
       };
+
       const priorityConfig = {
-        'Critical': '<span class="flex items-center gap-1 text-rose-400"><i class="fas fa-fire text-[10px]"></i>Critical</span>',
-        'High': '<span class="flex items-center gap-1 text-orange-400"><i class="fas fa-arrow-up text-[10px]"></i>High</span>',
+        'Critical': '<span class="flex items-center gap-1 text-rose-400 font-bold"><i class="fas fa-fire text-[10px] animate-pulse"></i>Critical</span>',
+        'High': '<span class="flex items-center gap-1 text-orange-400 font-semibold"><i class="fas fa-arrow-up text-[10px]"></i>High</span>',
         'Medium': '<span class="flex items-center gap-1 text-blue-400"><i class="fas fa-minus text-[10px]"></i>Medium</span>',
         'Low': '<span class="flex items-center gap-1 text-slate-400"><i class="fas fa-arrow-down text-[10px]"></i>Low</span>'
       };
-      const deviceIcons = { 'Laptop': 'fa-laptop', 'Network': 'fa-network-wired', 'Server': 'fa-server', 'Mobile': 'fa-mobile-screen', 'Software': 'fa-window-restore' };
-      const getDeviceIcon = (d) => { for (const [k,v] of Object.entries(deviceIcons)) { if (d.includes(k)) return v; } return 'fa-desktop'; };
-      const formatDate = (d) => new Date(d).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
 
-      container.innerHTML = filtered.map(t => {
+      const deviceIcons = { 
+        'Laptop': 'fa-laptop', 
+        'Network': 'fa-network-wired', 
+        'Server': 'fa-server', 
+        'Mobile': 'fa-mobile-screen', 
+        'Software': 'fa-window-restore' 
+      };
+      const getDeviceIcon = (d) => { 
+        for (const [k, v] of Object.entries(deviceIcons)) { 
+          if (d.includes(k)) return v; 
+        } 
+        return 'fa-desktop'; 
+      };
+
+      const formatDate = (d) => {
+        try {
+          return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
+        } catch(e) {
+          return 'Recent';
+        }
+      };
+
+      container.innerHTML = filtered.map((t, idx) => {
         const sc = statusConfig[t.status] || statusConfig['Closed'];
+        const hasAi = t.ai_suggestions ? true : false;
+
         return `
-        <div class="ticket-card rounded-2xl p-5 border-t-2 ${sc.top} flex flex-col justify-between cursor-pointer" onclick="openEditModal('${t.id}')">
+        <div class="ticket-card cyber-brackets rounded-2xl p-5 border-t-[3px] ${sc.top} flex flex-col justify-between cursor-pointer group" onclick="openEditModal('${t.id}')" style="animation-delay: ${idx * 40}ms">
           <div>
-            <div class="flex justify-between items-start mb-4">
-              <span class="font-mono text-[11px] font-bold gradient-text bg-white/5 px-2.5 py-1 rounded-lg border border-white/5">${t.code}</span>
-              <span class="text-[11px] px-2.5 py-1 rounded-lg border ${sc.border} ${sc.bg} ${sc.color} font-medium flex items-center gap-1.5">
-                <span class="w-1.5 h-1.5 rounded-full ${sc.dot}"></span>${t.status}
+            <div class="flex justify-between items-start mb-3">
+              <span class="font-mono text-xs font-bold text-cyan-300 bg-cyan-500/10 px-2.5 py-1 rounded-lg border border-cyan-500/30">
+                #${t.code}
+              </span>
+              <span class="text-[11px] px-2.5 py-1 rounded-lg border ${sc.border} ${sc.bg} ${sc.color} font-mono font-medium flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full ${sc.dot} animate-pulse"></span>
+                ${t.status}
               </span>
             </div>
-            <h4 class="text-white font-semibold mb-1.5 text-[15px] truncate">${t.category}</h4>
-            <p class="text-xs text-slate-400 leading-relaxed line-clamp-2 mb-4">${t.description}</p>
-          </div>
-          <div class="border-t border-white/5 pt-3 flex justify-between items-center text-[11px] text-slate-500">
-            <div class="flex items-center gap-2 truncate max-w-[50%]">
-              <i class="fas ${getDeviceIcon(t.device_type)} text-slate-600"></i>
-              <span class="truncate font-medium">${t.reporter_name}</span>
+
+            <div class="flex items-center gap-2 mb-2">
+              <span class="w-6 h-6 rounded-lg bg-white/5 flex items-center justify-center text-cyan-400 text-xs">
+                <i class="fas ${getDeviceIcon(t.device_type)}"></i>
+              </span>
+              <h4 class="text-white font-bold text-sm truncate group-hover:text-cyan-300 transition-colors">${t.category}</h4>
             </div>
-            <div class="flex items-center gap-3">
+
+            <p class="text-xs text-slate-400 leading-relaxed line-clamp-2 mb-4 font-sans">${t.description}</p>
+
+            ${hasAi ? `
+              <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-indigo-500/15 border border-indigo-500/30 text-[10px] font-mono text-indigo-300 mb-3">
+                <i class="fas fa-brain text-[9px]"></i> AI Diagnostic Attached
+              </div>
+            ` : ''}
+          </div>
+
+          <div class="border-t border-white/5 pt-3 flex justify-between items-center text-[11px] text-slate-400 font-mono">
+            <div class="flex items-center gap-1.5 truncate max-w-[50%]">
+              <i class="fas fa-user-circle text-slate-500"></i>
+              <span class="truncate font-sans font-medium text-slate-300">${t.reporter_name}</span>
+            </div>
+            <div class="flex items-center gap-2.5">
               ${priorityConfig[t.priority] || ''}
-              <span class="text-slate-600">•</span>
-              <span>${formatDate(t.created_at)}</span>
+              <span class="text-slate-600">&bull;</span>
+              <span class="text-[10px] text-slate-500">${formatDate(t.created_at)}</span>
             </div>
           </div>
         </div>`;
       }).join('');
     }
 
-    // --- Modal Logic ---
-    function openCreateModal() { document.getElementById('create-form').reset(); document.getElementById('create-modal').classList.remove('hidden'); }
-    function closeCreateModal() { document.getElementById('create-modal').classList.add('hidden'); }
+    // --- 7i. Modal Logic ---
+    function openCreateModal() { 
+      document.getElementById('create-form').reset(); 
+      document.getElementById('create-modal').classList.remove('hidden'); 
+    }
+    function closeCreateModal() { 
+      document.getElementById('create-modal').classList.add('hidden'); 
+    }
+
     function openEditModal(id) {
       const t = currentTickets.find(ticket => ticket.id === id);
-      if (!t) return showToast('Error reading record', 'error');
+      if (!t) return showToast('Error: Record not found', 'error');
+
       document.getElementById('e-id').value = t.id;
-      document.getElementById('e-ticket-code').innerText = t.code;
-      document.getElementById('e-display-name').innerText = t.reporter_name + ' — ' + t.category;
+      document.getElementById('e-ticket-code').innerText = '#' + t.code;
+      document.getElementById('e-display-category').innerText = t.device_type + ' &bull; ' + t.category;
+      document.getElementById('e-display-name').innerText = t.reporter_name;
       document.getElementById('e-display-desc').innerText = t.description;
+      document.getElementById('e-display-date').innerText = new Date(t.created_at).toLocaleString();
       document.getElementById('e-status').value = t.status;
       document.getElementById('e-priority').value = t.priority;
-      document.getElementById('e-notes').value = t.notes || '';
       document.getElementById('e-notes').value = t.notes || '';
       
       currentAiSuggestions = t.ai_suggestions || null;
       
       const role = localStorage.getItem('hd_role');
       if (role === 'user') {
-        // User view mode
+        // Read-only user mode
         document.getElementById('admin-controls').classList.add('hidden');
         document.getElementById('user-view-only').classList.remove('hidden');
         document.getElementById('btn-del').classList.add('hidden');
         document.getElementById('btn-update').classList.add('hidden');
+        document.getElementById('btn-ai').classList.add('hidden');
         document.getElementById('v-status').innerText = t.status;
         document.getElementById('v-priority').innerText = t.priority;
-        document.getElementById('v-notes').innerText = t.notes || 'No notes available.';
+        document.getElementById('v-notes').innerText = t.notes || 'No notes currently recorded by technician.';
         
-        // Render saved AI Suggestions for User if exists
-        const vAiWrapper = document.getElementById('v-ai-suggestions-wrapper');
-        const vAiContent = document.getElementById('v-ai-suggestions-content');
-        if (currentAiSuggestions) {
-          try {
-            const parsed = typeof currentAiSuggestions === 'string' ? JSON.parse(currentAiSuggestions) : currentAiSuggestions;
-            vAiContent.innerHTML = parsed.map(s => `
-              <div class="flex items-start gap-2 bg-slate-900/60 p-2.5 rounded-lg border border-indigo-500/10">
-                <i class="fas fa-check text-indigo-400 mt-0.5 text-[10px]"></i>
-                <p class="text-xs text-slate-300 leading-relaxed">${s}</p>
-              </div>
-            `).join('');
-            vAiWrapper.classList.remove('hidden');
-          } catch(e) {
-            vAiWrapper.classList.add('hidden');
-          }
-        } else {
-          vAiWrapper.classList.add('hidden');
-        }
-
+        renderAiSuggestionsForUser(currentAiSuggestions);
       } else {
-        // Admin edit mode
+        // Full admin mode
         document.getElementById('admin-controls').classList.remove('hidden');
         document.getElementById('user-view-only').classList.add('hidden');
         document.getElementById('btn-del').classList.remove('hidden');
         document.getElementById('btn-update').classList.remove('hidden');
+        document.getElementById('btn-ai').classList.remove('hidden');
         
-        // Render AI Suggestions for Admin
-        const btnAi = document.getElementById('btn-ai');
-        const container = document.getElementById('ai-suggestions-container');
-        btnAi.disabled = false;
-
-        if (currentAiSuggestions) {
-          try {
-            const parsed = typeof currentAiSuggestions === 'string' ? JSON.parse(currentAiSuggestions) : currentAiSuggestions;
-            btnAi.innerHTML = '<i class="fas fa-rotate"></i> Re-generate';
-            container.innerHTML = parsed.map((s, i) => `
-              <div class="flex items-start gap-2 mb-2 bg-slate-900/50 p-2 rounded-lg border border-white/5">
-                <input type="checkbox" id="ai-chk-${i}" class="mt-0.5 accent-indigo-500 cursor-pointer rounded bg-slate-800 border-white/10">
-                <label for="ai-chk-${i}" class="text-xs text-slate-300 cursor-pointer select-none leading-relaxed">${s}</label>
-              </div>
-            `).join('');
-          } catch(e) {
-            btnAi.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> AI Diagnostic and Suggest To Do';
-            container.innerHTML = 'Click the button above to analyze the ticket and run AI diagnostic and suggest to do.';
-          }
-        } else {
-          btnAi.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> AI Diagnostic and Suggest To Do';
-          container.innerHTML = 'Click the button above to analyze the ticket and run AI diagnostic and suggest to do.';
-        }
+        renderAiSuggestionsForAdmin(currentAiSuggestions);
       }
 
       document.getElementById('edit-modal').classList.remove('hidden');
     }
 
-    function generateAISuggestions() {
-      const btn = document.getElementById('btn-ai');
+    function renderAiSuggestionsForAdmin(suggestions) {
+      const btnAi = document.getElementById('btn-ai');
+      const btnAiLabel = document.getElementById('btn-ai-label');
       const container = document.getElementById('ai-suggestions-container');
-      const category = document.getElementById('e-display-name').innerText.split('—')[1]?.trim() || '';
-      
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
-      btn.disabled = true;
-      container.innerHTML = '<div class="flex items-center gap-2 text-indigo-400 text-xs"><i class="fas fa-circle-notch fa-spin"></i> AI is reviewing ticket details...</div>';
+      const actionBar = document.getElementById('ai-action-bar');
+      btnAi.disabled = false;
 
-      setTimeout(() => {
-        let suggestions = [];
-        if (category === 'Hardware Failure') {
-          suggestions = ['Verify physical connections and power supply.', 'Run built-in hardware diagnostics.', 'Check for visible physical damage.', 'Schedule replacement part order if under warranty.'];
-        } else if (category === 'Network Connectivity') {
-          suggestions = ['Ping standard gateways and DNS servers.', 'Verify IP configuration and DHCP lease.', 'Check physical switch port status.', 'Review firewall or VPN logs for blocked traffic.'];
-        } else if (category === 'Access/Authentication') {
-          suggestions = ['Verify user account is not locked out.', 'Check Active Directory/IAM role assignments.', 'Reset password and force MFA re-enrollment.', 'Review recent login attempt logs.'];
-        } else if (category === 'Software Bug') {
-          suggestions = ['Attempt to replicate the bug on a test environment.', 'Clear application cache and restart.', 'Check for recent software updates or patches.', 'Collect error logs and escalate to development team.'];
-        } else {
-          suggestions = ['Contact user for more detailed information.', 'Review standard operating procedures for this request.', 'Escalate to Tier 2 support if unresolved after 30 minutes.'];
+      if (suggestions) {
+        try {
+          const parsed = typeof suggestions === 'string' ? JSON.parse(suggestions) : suggestions;
+          btnAiLabel.textContent = 'Re-analyze with AI';
+          actionBar.classList.remove('hidden');
+          
+          container.innerHTML = parsed.map((s, i) => `
+            <div class="flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-900/60 border border-white/5 hover:border-indigo-500/30 transition-colors">
+              <input type="checkbox" id="ai-chk-${i}" onchange="updateAiChecklistCounter()" class="mt-0.5 accent-indigo-500 cursor-pointer w-4 h-4 rounded bg-slate-800 border-white/10">
+              <label for="ai-chk-${i}" class="text-xs text-slate-200 cursor-pointer select-none leading-relaxed font-sans">${s}</label>
+            </div>
+          `).join('');
+          updateAiChecklistCounter();
+        } catch(e) {
+          btnAiLabel.textContent = 'Run AI Diagnostic';
+          actionBar.classList.add('hidden');
+          container.innerHTML = `<div class="text-center py-4 text-slate-400 italic font-mono text-[11px]">Click "Run AI Diagnostic" to generate intelligent root-cause checklist and remediation steps.</div>`;
         }
-
-        const checklistHtml = suggestions.map((s, i) => `
-          <div class="flex items-start gap-2 mb-2 bg-slate-900/50 p-2 rounded-lg border border-white/5">
-            <input type="checkbox" id="ai-chk-${i}" class="mt-0.5 accent-indigo-500 cursor-pointer rounded bg-slate-800 border-white/10">
-            <label for="ai-chk-${i}" class="text-xs text-slate-300 cursor-pointer select-none leading-relaxed">${s}</label>
-          </div>
-        `).join('');
-
-        container.innerHTML = checklistHtml;
-        currentAiSuggestions = JSON.stringify(suggestions);
-        btn.innerHTML = '<i class="fas fa-rotate"></i> Re-generate';
-        showToast('AI Diagnostic and Suggest To Do Generated', 'success');
-      }, 1500);
+      } else {
+        btnAiLabel.textContent = 'Run AI Diagnostic';
+        actionBar.classList.add('hidden');
+        container.innerHTML = `<div class="text-center py-4 text-slate-400 italic font-mono text-[11px]">Click "Run AI Diagnostic" to generate intelligent root-cause checklist and remediation steps.</div>`;
+      }
     }
 
-    function closeEditModal() { document.getElementById('edit-modal').classList.add('hidden'); }
+    function renderAiSuggestionsForUser(suggestions) {
+      const container = document.getElementById('ai-suggestions-container');
+      const actionBar = document.getElementById('ai-action-bar');
+      actionBar.classList.add('hidden');
 
-    // Init
-    if (localStorage.getItem('hd_auth') === 'true') { fetchTickets(); }
+      if (suggestions) {
+        try {
+          const parsed = typeof suggestions === 'string' ? JSON.parse(suggestions) : suggestions;
+          container.innerHTML = parsed.map(s => `
+            <div class="flex items-start gap-2 bg-slate-900/60 p-2.5 rounded-xl border border-indigo-500/15">
+              <i class="fas fa-circle-check text-indigo-400 mt-0.5 text-xs"></i>
+              <p class="text-xs text-slate-300 leading-relaxed font-sans">${s}</p>
+            </div>
+          `).join('');
+        } catch(e) {
+          container.innerHTML = '<p class="text-xs text-slate-400 italic font-mono">No AI diagnostic report generated for this ticket.</p>';
+        }
+      } else {
+        container.innerHTML = '<p class="text-xs text-slate-400 italic font-mono">No AI diagnostic report generated for this ticket.</p>';
+      }
+    }
+
+    function updateAiChecklistCounter() {
+      const checkboxes = document.querySelectorAll('#ai-suggestions-container input[type="checkbox"]');
+      if (checkboxes.length === 0) return;
+      let checked = 0;
+      checkboxes.forEach(c => { if (c.checked) checked++; });
+      const pct = Math.round((checked / checkboxes.length) * 100);
+      document.getElementById('ai-progress-counter').textContent = `${checked} of ${checkboxes.length} verified (${pct}%)`;
+    }
+
+    function copyAiToNotes() {
+      const notesEl = document.getElementById('e-notes');
+      if (!currentAiSuggestions) return;
+      try {
+        const parsed = typeof currentAiSuggestions === 'string' ? JSON.parse(currentAiSuggestions) : currentAiSuggestions;
+        const appendText = `\n[AI Remediation Steps - ${new Date().toLocaleTimeString()}]:\n` + parsed.map((s, i) => `${i + 1}. ${s}`).join('\n');
+        notesEl.value = (notesEl.value + appendText).trim();
+        showToast('AI suggestions appended to technician notes', 'success');
+      } catch(e) {}
+    }
+
+    function generateAISuggestions() {
+      const btn = document.getElementById('btn-ai');
+      const btnLabel = document.getElementById('btn-ai-label');
+      const container = document.getElementById('ai-suggestions-container');
+      const scanline = document.getElementById('ai-scanner-line');
+      const category = document.getElementById('e-display-category').innerText;
+      
+      btn.disabled = true;
+      btnLabel.textContent = 'Analyzing...';
+      scanline.classList.remove('hidden');
+      
+      container.innerHTML = `
+        <div class="flex flex-col items-center justify-center py-6 gap-3">
+          <div class="flex items-center gap-2 text-indigo-300 font-mono text-xs">
+            <i class="fas fa-circle-notch fa-spin"></i>
+            <span>Deep Diagnostic Neural Net Scanning Incident Telemetry...</span>
+          </div>
+          <div class="w-48 h-1 bg-slate-800 rounded-full overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-indigo-500 to-[#00F2FE] animate-pulse w-full"></div>
+          </div>
+        </div>`;
+
+      setTimeout(() => {
+        scanline.classList.add('hidden');
+        let suggestions = [];
+
+        if (category.includes('Hardware')) {
+          suggestions = [
+            'Inspect physical cable seating, power supply voltage rails, and thermal heatsink.',
+            'Execute onboard hardware diagnostic firmware test (POST / vendor utility).',
+            'Verify DDR RAM parity & check for SMART SSD/HDD sector allocation faults.',
+            'Confirm parts warranty coverage with vendor support matrix.'
+          ];
+        } else if (category.includes('Network')) {
+          suggestions = [
+            'Perform ICMP ping & traceroute to default gateway (10.0.0.1) & public DNS (8.8.8.8).',
+            'Validate 802.1Q VLAN assignment & check switchport CRC error counters with CLI.',
+            'Inspect DHCP server lease exhaustion and IP address duplicate conflict alerts.',
+            'Audit firewall ACL rules & stateful packet inspection logs for blocked drops.'
+          ];
+        } else if (category.includes('Access') || category.includes('Auth')) {
+          suggestions = [
+            'Verify Active Directory / LDAP user principal name & account lockout timestamp.',
+            'Inspect RBAC roles, group policy inheritance, and MFA TOTP token sync.',
+            'Trigger self-service password reset workflow with forced rotation on next login.',
+            'Review authentication SIEM audit log for brute-force or impossible travel flags.'
+          ];
+        } else if (category.includes('Software')) {
+          suggestions = [
+            'Attempt reproduction of software fault in isolated sandbox container environment.',
+            'Purge corrupted application local cache, temp directories, and restart system service.',
+            'Audit semantic version changelog and test compatibility with latest patch release.',
+            'Collect stack trace crash dump logs and escalate to L3 engineering docket.'
+          ];
+        } else {
+          suggestions = [
+            'Contact reporter to capture precise reproduction steps & desktop screenshots.',
+            'Cross-reference knowledge base documentation for known workaround procedures.',
+            'Escalate to Tier-2 senior infrastructure specialist if unresolved after 30 min.'
+          ];
+        }
+
+        currentAiSuggestions = JSON.stringify(suggestions);
+        renderAiSuggestionsForAdmin(suggestions);
+        showToast('AI Diagnostic & Remediation Checklist Generated', 'success');
+      }, 1400);
+    }
+
+    function closeEditModal() { 
+      document.getElementById('edit-modal').classList.add('hidden'); 
+    }
+
+    // Initialize data on load if authenticated
+    if (localStorage.getItem('hd_auth') === 'true') { 
+      fetchTickets(); 
+    }
   </script>
 </body>
 </html>

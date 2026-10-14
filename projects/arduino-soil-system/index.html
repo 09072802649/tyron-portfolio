@@ -293,6 +293,16 @@
             <i class="fas fa-broadcast-tower animate-bounce text-purple-400"></i>
             <span id="sound-indicator-text">1000Hz ALARM SOUNDING</span>
           </div>
+
+          <!-- Interactive Draggable Watering Pot Floating Bar -->
+          <div id="pot-drag-hint" class="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 bg-slate-950/90 border border-cyan-500/50 px-3 sm:px-4 py-2 rounded-full text-xs font-mono text-cyan-300 shadow-[0_0_30px_rgba(6,182,212,0.35)] backdrop-blur-md transition-all max-w-[95%]">
+            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping inline-block shrink-0"></span>
+            <i class="fas fa-faucet-drip text-cyan-400 shrink-0"></i>
+            <span id="pot-status-text" class="text-[10px] sm:text-xs truncate">Drag the 3D Watering Can over the Plant to Water Soil!</span>
+            <button type="button" id="btn-auto-water-pot" class="shrink-0 ml-1 px-3 py-1 rounded-full bg-gradient-to-r from-cyan-500 to-emerald-400 hover:from-cyan-400 hover:to-emerald-300 text-slate-950 font-bold text-[10px] sm:text-[11px] transition shadow-md flex items-center gap-1 cursor-pointer">
+              <i class="fas fa-droplet text-[9px]"></i> <span>Water Now</span>
+            </button>
+          </div>
         </div>
 
         <!-- Interactive Control Bar Below 3D Canvas -->
@@ -1576,8 +1586,185 @@ void loop() {
       createCurvedWire(new THREE.Vector3(-0.4, 0.35, -0.05), new THREE.Vector3(1.6, 0.35, 0.2), 0xDC2626, 0.9);
       createCurvedWire(new THREE.Vector3(-0.2, 0.35, -0.05), new THREE.Vector3(1.6, 0.35, 2.6), 0x0F172A, 1.1);
 
-      // === WATERING DROPLET PARTICLES ===
-      const dropCount = 40;
+      // ====================================================
+      // === 3D INTERACTIVE DRAGGABLE WATERING POT / CAN ===
+      // ====================================================
+      const wateringCanGroup = new THREE.Group();
+      wateringCanGroup.name = "WateringCan";
+
+      // 1. Can Body (Vibrant teal enamel with metallic sheen)
+      const canBodyGeo = new THREE.CylinderGeometry(0.55, 0.72, 1.25, 24);
+      const canBodyMat = new THREE.MeshStandardMaterial({ 
+        color: 0x0D9488, 
+        roughness: 0.35, 
+        metalness: 0.4,
+        emissive: 0x042F2E,
+        emissiveIntensity: 0.25
+      });
+      const canBodyMesh = new THREE.Mesh(canBodyGeo, canBodyMat);
+      canBodyMesh.castShadow = true;
+      canBodyMesh.receiveShadow = true;
+      wateringCanGroup.add(canBodyMesh);
+
+      // Gold Brass Accent Rim
+      const brassMat = new THREE.MeshStandardMaterial({ 
+        color: 0xF59E0B, 
+        roughness: 0.28, 
+        metalness: 0.8 
+      });
+      const canRimGeo = new THREE.TorusGeometry(0.55, 0.045, 12, 24);
+      canRimGeo.rotateX(Math.PI / 2);
+      const canRim = new THREE.Mesh(canRimGeo, brassMat);
+      canRim.position.y = 0.62;
+      wateringCanGroup.add(canRim);
+
+      // 2. Tapered Spout
+      const spoutCurve = new THREE.LineCurve3(
+        new THREE.Vector3(-0.35, -0.35, 0),
+        new THREE.Vector3(-1.35, 0.65, 0)
+      );
+      const spoutGeo = new THREE.TubeGeometry(spoutCurve, 12, 0.09, 12, false);
+      const spoutMesh = new THREE.Mesh(spoutGeo, canBodyMat);
+      spoutMesh.castShadow = true;
+      wateringCanGroup.add(spoutMesh);
+
+      // 3. Brass Sprinkler Rose (Shower Nozzle)
+      const roseGeo = new THREE.CylinderGeometry(0.22, 0.09, 0.18, 16);
+      roseGeo.rotateZ(Math.PI / 3.2);
+      const roseMesh = new THREE.Mesh(roseGeo, brassMat);
+      roseMesh.position.set(-1.42, 0.72, 0);
+      wateringCanGroup.add(roseMesh);
+
+      // Rose shower face (where water emerges)
+      const roseFaceGeo = new THREE.CircleGeometry(0.21, 16);
+      roseFaceGeo.rotateY(Math.PI / 2);
+      roseFaceGeo.rotateZ(-Math.PI / 6);
+      const roseFaceMat = new THREE.MeshStandardMaterial({ color: 0x78350F, roughness: 0.8 });
+      const roseFace = new THREE.Mesh(roseFaceGeo, roseFaceMat);
+      roseFace.position.set(-1.50, 0.78, 0);
+      wateringCanGroup.add(roseFace);
+
+      // 4. Ergonomic Handle
+      const handleCurve = new THREE.CubicBezierCurve3(
+        new THREE.Vector3(0.1, 0.62, 0),
+        new THREE.Vector3(1.15, 0.75, 0),
+        new THREE.Vector3(1.15, -0.45, 0),
+        new THREE.Vector3(0.55, -0.32, 0)
+      );
+      const handleGeo = new THREE.TubeGeometry(handleCurve, 20, 0.055, 10, false);
+      const handleMesh = new THREE.Mesh(handleGeo, brassMat);
+      handleMesh.castShadow = true;
+      wateringCanGroup.add(handleMesh);
+
+      // 5. Water Level Indicator Band
+      const bandGeo = new THREE.CylinderGeometry(0.56, 0.73, 0.35, 24, 1, true);
+      const bandMat = new THREE.MeshBasicMaterial({ color: 0x38BDF8, transparent: true, opacity: 0.45 });
+      const band = new THREE.Mesh(bandGeo, bandMat);
+      band.position.y = -0.15;
+      wateringCanGroup.add(band);
+
+      // 6. Glowing Table Stand Ring (Shows resting station on workbench)
+      const standRingGeo = new THREE.RingGeometry(0.75, 0.88, 24);
+      standRingGeo.rotateX(-Math.PI / 2);
+      const standRingMat = new THREE.MeshBasicMaterial({ color: 0x06B6D4, transparent: true, opacity: 0.4, side: THREE.DoubleSide });
+      const standRing = new THREE.Mesh(standRingGeo, standRingMat);
+      standRing.position.set(2.8, 0.02, -2.4);
+      scene.add(standRing);
+
+      // Rest position on workbench
+      const canRestPos = new THREE.Vector3(2.8, 0.63, -2.4);
+      wateringCanGroup.position.copy(canRestPos);
+      wateringCanGroup.rotation.y = Math.PI / 3;
+      scene.add(wateringCanGroup);
+
+      // === WATERING STREAM DROPLETS FROM CAN SPOUT ===
+      const canStreamCount = 35;
+      const canDropGeo = new THREE.SphereGeometry(0.05, 6, 6);
+      const canDropMat = new THREE.MeshBasicMaterial({ color: 0x38BDF8, transparent: true, opacity: 0 });
+      const canStreamDroplets = [];
+      for (let i = 0; i < canStreamCount; i++) {
+        const d = new THREE.Mesh(canDropGeo, canDropMat);
+        d.visible = false;
+        scene.add(d);
+        canStreamDroplets.push({
+          mesh: d,
+          progress: Math.random(),
+          speed: 1.8 + Math.random() * 0.8,
+          offset: new THREE.Vector3((Math.random() - 0.5) * 0.3, (Math.random() - 0.5) * 0.2, (Math.random() - 0.5) * 0.3)
+        });
+      }
+
+      // Soil Water Splash Ripple Mesh
+      const soilSplashGeo = new THREE.RingGeometry(0.2, 0.8, 24);
+      soilSplashGeo.rotateX(-Math.PI / 2);
+      const soilSplashMat = new THREE.MeshBasicMaterial({ color: 0x38BDF8, transparent: true, opacity: 0, side: THREE.DoubleSide });
+      const soilSplash = new THREE.Mesh(soilSplashGeo, soilSplashMat);
+      soilSplash.position.set(-3.2, 3.41, 0);
+      scene.add(soilSplash);
+
+      // Trickling Audio Synthesis
+      let waterSoundNode = null;
+      function startWaterSound() {
+        if (!isAudioEnabled || waterSoundNode) return;
+        try {
+          if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          if (audioCtx.state === 'suspended') audioCtx.resume();
+          const bufferSize = audioCtx.sampleRate * 1.5;
+          const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+          const output = noiseBuffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) {
+            output[i] = (Math.random() * 2 - 1) * 0.12;
+          }
+          const whiteNoise = audioCtx.createBufferSource();
+          whiteNoise.buffer = noiseBuffer;
+          whiteNoise.loop = true;
+
+          const filter = audioCtx.createBiquadFilter();
+          filter.type = 'bandpass';
+          filter.frequency.value = 850;
+          filter.Q.value = 2.5;
+
+          const gain = audioCtx.createGain();
+          gain.gain.setValueAtTime(0.045, audioCtx.currentTime);
+
+          whiteNoise.connect(filter);
+          filter.connect(gain);
+          gain.connect(audioCtx.destination);
+          whiteNoise.start();
+
+          waterSoundNode = { source: whiteNoise, gain: gain };
+        } catch (e) {
+          console.warn('Water audio stream error:', e);
+        }
+      }
+
+      function stopWaterSound() {
+        if (waterSoundNode) {
+          try {
+            waterSoundNode.gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+            setTimeout(() => {
+              if (waterSoundNode) {
+                waterSoundNode.source.stop();
+                waterSoundNode.source.disconnect();
+                waterSoundNode = null;
+              }
+            }, 160);
+          } catch(e) {
+            waterSoundNode = null;
+          }
+        }
+      }
+
+      // State flags for watering can interaction
+      let isDraggingCan = false;
+      let isPouringFromCan = false;
+      let canCurrentTilt = 0;
+      let canTargetTilt = 0;
+      let isAutoWatering = false;
+      let autoWaterStep = 0;
+
+      // Legacy Rain Particles (kept for backward compatibility)
+      const dropCount = 20;
       const dropGeo = new THREE.SphereGeometry(0.06, 6, 6);
       const dropMat = new THREE.MeshBasicMaterial({ color: 0x38BDF8, transparent: true, opacity: 0 });
       const droplets = [];
@@ -1763,23 +1950,76 @@ void loop() {
       const btnWater = document.getElementById('btn-water-plant');
       const btnMod = document.getElementById('btn-moderate-plant');
       const btnDry = document.getElementById('btn-dry-plant');
+      const btnAutoPour = document.getElementById('btn-auto-water-pot');
+      const potStatusText = document.getElementById('pot-status-text');
+
+      let shouldReturnToRest = false;
+
+      // Function to trigger automated smooth watering pot sequence
+      function triggerWateringCanSequence(targetMoisture = 85) {
+        if (isDraggingCan) return;
+        isAutoWatering = true;
+        shouldReturnToRest = false;
+        if (potStatusText) potStatusText.innerHTML = '<span class="text-cyan-300 font-bold">🚿 Auto-Watering in Progress...</span>';
+
+        const startPos = wateringCanGroup.position.clone();
+        const pourPos = new THREE.Vector3(-1.6, 4.8, 0.4);
+        let progress = 0;
+
+        // Phase 1: Lift & Glide to plant pot
+        const glideInterval = setInterval(() => {
+          progress += 0.05;
+          wateringCanGroup.position.lerpVectors(startPos, pourPos, Math.min(1, progress));
+          wateringCanGroup.lookAt(-3.2, wateringCanGroup.position.y, 0);
+          wateringCanGroup.rotateY(Math.PI);
+
+          if (progress >= 1) {
+            clearInterval(glideInterval);
+            // Phase 2: Tilt & Pour Water
+            canTargetTilt = -0.7;
+            isPouringFromCan = true;
+            startWaterSound();
+
+            let pourTime = 0;
+            const pourInterval = setInterval(() => {
+              pourTime += 0.05;
+              if (pourTime >= 3.0) {
+                clearInterval(pourInterval);
+                // Phase 3: Tilt back upright & return to bench
+                canTargetTilt = 0;
+                isPouringFromCan = false;
+                stopWaterSound();
+
+                let returnProgress = 0;
+                const currentPourPos = wateringCanGroup.position.clone();
+                const returnInterval = setInterval(() => {
+                  returnProgress += 0.05;
+                  wateringCanGroup.position.lerpVectors(currentPourPos, canRestPos, Math.min(1, returnProgress));
+                  wateringCanGroup.rotation.y = THREE.MathUtils.lerp(wateringCanGroup.rotation.y, Math.PI / 3, 0.1);
+
+                  if (returnProgress >= 1) {
+                    clearInterval(returnInterval);
+                    wateringCanGroup.position.copy(canRestPos);
+                    wateringCanGroup.rotation.y = Math.PI / 3;
+                    isAutoWatering = false;
+                    if (potStatusText) potStatusText.textContent = "Drag the 3D Watering Can over the Plant to Water Soil!";
+                  }
+                }, 30);
+              }
+            }, 50);
+          }
+        }, 30);
+      }
 
       if (btnWater) {
         btnWater.addEventListener('click', () => {
-          isRaining = true;
-          rainProgress = 0;
-          dropMat.opacity = 0.85;
-          let target = 90;
-          let start = currentMoisture;
-          let step = 0;
-          const interval = setInterval(() => {
-            step += 0.08;
-            setMoistureLevel(start + (target - start) * Math.min(1, step));
-            if (step >= 1) {
-              clearInterval(interval);
-              triggerSoilAlert('drowning', true);
-            }
-          }, 30);
+          triggerWateringCanSequence(90);
+        });
+      }
+
+      if (btnAutoPour) {
+        btnAutoPour.addEventListener('click', () => {
+          triggerWateringCanSequence(85);
         });
       }
 
@@ -1796,6 +2036,104 @@ void loop() {
           triggerSoilAlert('dry', true);
         });
       }
+
+      // --- DRAGGING WATERING CAN WITH RAYCASTER ---
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
+      const dragPlane = new THREE.Plane();
+      const planeIntersect = new THREE.Vector3();
+      const dragOffset = new THREE.Vector3();
+
+      function getPointerCoords(e) {
+        const rect = renderer.domElement.getBoundingClientRect();
+        const clientX = e.clientX !== undefined ? e.clientX : (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+        const clientY = e.clientY !== undefined ? e.clientY : (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+        return {
+          x: ((clientX - rect.left) / rect.width) * 2 - 1,
+          y: -((clientY - rect.top) / rect.height) * 2 + 1
+        };
+      }
+
+      renderer.domElement.addEventListener('pointerdown', (e) => {
+        if (isAutoWatering) return;
+        const coords = getPointerCoords(e);
+        mouse.x = coords.x;
+        mouse.y = coords.y;
+
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(wateringCanGroup.children, true);
+
+        if (intersects.length > 0) {
+          isDraggingCan = true;
+          shouldReturnToRest = false;
+          if (controls) controls.enabled = false;
+          renderer.domElement.style.cursor = 'grabbing';
+
+          // Set horizontal plane at elevation Y = 4.8
+          dragPlane.setFromNormalAndCoplanarPoint(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 4.8, 0));
+          if (raycaster.ray.intersectPlane(dragPlane, planeIntersect)) {
+            dragOffset.copy(wateringCanGroup.position).sub(planeIntersect);
+          }
+          if (potStatusText) potStatusText.textContent = "🚿 Dragging Watering Can! Move over plant soil to water.";
+        }
+      });
+
+      window.addEventListener('pointermove', (e) => {
+        const coords = getPointerCoords(e);
+        mouse.x = coords.x;
+        mouse.y = coords.y;
+
+        if (!isDraggingCan) {
+          // Hover check
+          raycaster.setFromCamera(mouse, camera);
+          const intersects = raycaster.intersectObjects(wateringCanGroup.children, true);
+          if (intersects.length > 0) {
+            renderer.domElement.style.cursor = 'grab';
+          }
+          return;
+        }
+
+        // Active dragging
+        raycaster.setFromCamera(mouse, camera);
+        if (raycaster.ray.intersectPlane(dragPlane, planeIntersect)) {
+          wateringCanGroup.position.x = planeIntersect.x + dragOffset.x;
+          wateringCanGroup.position.z = planeIntersect.z + dragOffset.z;
+          wateringCanGroup.position.y = 4.8; // Lifted height
+
+          // Distance to plant pot center (-3.2, 0)
+          const distToPot = Math.hypot(wateringCanGroup.position.x - (-3.2), wateringCanGroup.position.z - 0);
+
+          if (distToPot < 3.2) {
+            // Over/near plant pot: face the pot and tilt
+            wateringCanGroup.lookAt(-3.2, wateringCanGroup.position.y, 0);
+            wateringCanGroup.rotateY(Math.PI);
+            canTargetTilt = -0.7; // ~40 deg tilt
+            isPouringFromCan = true;
+            startWaterSound();
+          } else {
+            // Moved away: upright and cease pouring
+            canTargetTilt = 0;
+            isPouringFromCan = false;
+            stopWaterSound();
+            if (potStatusText) potStatusText.textContent = "Move closer to plant pot to water soil";
+          }
+        }
+      });
+
+      function stopCanDragging() {
+        if (!isDraggingCan) return;
+        isDraggingCan = false;
+        if (controls) controls.enabled = true;
+        renderer.domElement.style.cursor = 'grab';
+        canTargetTilt = 0;
+        isPouringFromCan = false;
+        stopWaterSound();
+        shouldReturnToRest = true;
+        if (potStatusText) potStatusText.textContent = "Drag the 3D Watering Can over the Plant to Water Soil!";
+      }
+
+      window.addEventListener('pointerup', stopCanDragging);
+      window.addEventListener('pointercancel', stopCanDragging);
 
       // Camera preset angles
       const camButtons = document.querySelectorAll('.cam-btn');
@@ -1819,6 +2157,8 @@ void loop() {
 
       // --- 6. 3D Animation Render Loop ---
       let clock = new THREE.Clock();
+      const roseWorldPos = new THREE.Vector3();
+      const soilCenterPos = new THREE.Vector3(-3.2, 3.35, 0);
 
       function animate() {
         requestAnimationFrame(animate);
@@ -1830,7 +2170,57 @@ void loop() {
         // Idle plant leaves gentle breeze sway
         stemMesh.rotation.z = Math.sin(time * 1.5) * 0.02;
 
-        // Watering droplets animation
+        // Smooth watering can tilt interpolation
+        canCurrentTilt += (canTargetTilt - canCurrentTilt) * 0.14;
+        wateringCanGroup.rotation.z = canCurrentTilt;
+
+        // Gentle return of watering can to rest station on workbench when released
+        if (shouldReturnToRest && !isDraggingCan && !isAutoWatering) {
+          wateringCanGroup.position.lerp(canRestPos, 0.045);
+          wateringCanGroup.rotation.y = THREE.MathUtils.lerp(wateringCanGroup.rotation.y, Math.PI / 3, 0.05);
+          if (wateringCanGroup.position.distanceTo(canRestPos) < 0.08) {
+            wateringCanGroup.position.copy(canRestPos);
+            wateringCanGroup.rotation.y = Math.PI / 3;
+            shouldReturnToRest = false;
+          }
+        }
+
+        // Active Pouring from Watering Can
+        if (isPouringFromCan) {
+          roseFace.getWorldPosition(roseWorldPos);
+
+          canStreamDroplets.forEach((d) => {
+            d.progress += delta * d.speed;
+            if (d.progress > 1.0) d.progress = 0;
+
+            // Parabolic water trajectory arc from rose spout to soil
+            const p = new THREE.Vector3().lerpVectors(roseWorldPos, soilCenterPos, d.progress);
+            p.y += Math.sin(d.progress * Math.PI) * 0.22;
+            p.add(d.offset);
+
+            d.mesh.position.copy(p);
+            d.mesh.visible = true;
+          });
+
+          // Soil ripple splash effect
+          const splashCycle = (time * 4) % 1.0;
+          soilSplash.scale.set(1 + splashCycle * 2.0, 1 + splashCycle * 2.0, 1);
+          soilSplashMat.opacity = (1.0 - splashCycle) * 0.75;
+
+          // Dynamically increase moisture while pouring
+          currentMoisture = Math.min(100, currentMoisture + delta * 18);
+          setMoistureLevel(currentMoisture);
+
+          if (potStatusText) {
+            potStatusText.innerHTML = `<span class="text-emerald-400 font-bold">🚿 WATERING SOIL... ${Math.round(currentMoisture)}%</span>`;
+          }
+        } else {
+          // Hide droplets when not pouring
+          canStreamDroplets.forEach(d => { d.mesh.visible = false; });
+          soilSplashMat.opacity = 0;
+        }
+
+        // Legacy background rain animation
         if (isRaining) {
           rainProgress += delta * 1.5;
           droplets.forEach((d, i) => {
@@ -1871,13 +2261,11 @@ void loop() {
       if (typeof ResizeObserver !== 'undefined' && container) {
         new ResizeObserver(handleResize).observe(container);
       }
-      // Force initial layout synchronization
       setTimeout(handleResize, 100);
       setTimeout(handleResize, 500);
 
       // Periodic Background Simulated Loop readings (mimics Arduino loop() delay(100))
       setInterval(() => {
-        // Natural micro-jitter in analog readings (+/- 0.3%)
         const jitter = (Math.random() - 0.5) * 0.4;
         const bounded = Math.max(0, Math.min(100, currentMoisture + jitter));
         const adc = Math.round((bounded / 100) * 1023);

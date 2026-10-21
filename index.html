@@ -561,73 +561,74 @@
         <span class="font-mono text-xs font-semibold tracking-wider text-slate-200 group-hover:text-[#00F2FE] transition-colors">MENU</span>
       </button>
     </div>
-
-    <!-- Slide-out Drawer Navigation (Shows All Options When Clicked) -->
-    <div id="mobile-drawer" class="pointer-events-auto fixed inset-y-0 right-0 w-80 bg-[#080C14]/98 backdrop-blur-2xl border-l border-white/10 z-50 transform translate-x-full transition-transform duration-300 ease-in-out p-6 flex flex-col justify-between shadow-2xl">
-      <div>
-        <div class="flex items-center justify-between pb-5 border-b border-slate-800">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl p-[1.5px] bg-gradient-to-tr from-[#00F2FE] via-[#4FACFE] to-[#7F00FF] shadow-cyan-sm">
-              <div class="w-full h-full rounded-xl overflow-hidden bg-[#080C14] flex items-center justify-center">
-                <img src="assets/tj-logo.jpg" alt="TJ Logo" class="w-full h-full object-cover object-center scale-[1.12]">
-              </div>
-            </div>
-            <div>
-              <span class="font-mono font-bold text-sm text-white block">TYRON JOHN</span>
-              <span class="text-[10px] font-mono text-[#00F2FE] block -mt-0.5 tracking-wider">NAVIGATION</span>
-            </div>
-          </div>
-          <button id="close-drawer-btn" class="p-2 text-slate-400 hover:text-white focus:outline-none" aria-label="Close menu">
-            <i class="fas fa-xmark text-lg"></i>
-          </button>
-        </div>
-
-        <nav class="mt-5 flex flex-col space-y-1.5 font-medium text-sm">
-          <a href="#hero" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-2 px-3 rounded-lg hover:bg-slate-800/50 transition flex items-center gap-3">
-            <i class="fas fa-home text-xs text-cyan-400/70 w-4"></i> Home
-          </a>
-          <a href="#about" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-2 px-3 rounded-lg hover:bg-slate-800/50 transition flex items-center gap-3">
-            <i class="fas fa-user text-xs text-cyan-400/70 w-4"></i> About Me
-          </a>
-          <a href="#skills" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-2 px-3 rounded-lg hover:bg-slate-800/50 transition flex items-center gap-3">
-            <i class="fas fa-laptop-code text-xs text-cyan-400/70 w-4"></i> Technical Skills
-          </a>
-          <a href="#projects" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-2 px-3 rounded-lg hover:bg-slate-800/50 transition flex items-center gap-3">
-            <i class="fas fa-folder-open text-xs text-cyan-400/70 w-4"></i> Projects Showcase
-          </a>
-          <a href="#troubleshooting" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-2 px-3 rounded-lg hover:bg-slate-800/50 transition flex items-center gap-3">
-            <i class="fas fa-wrench text-xs text-cyan-400/70 w-4"></i> Troubleshooting Cases
-          </a>
-          <a href="#ai-log" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-2 px-3 rounded-lg hover:bg-slate-800/50 transition flex items-center gap-3">
-            <i class="fas fa-brain text-xs text-cyan-400/70 w-4"></i> AI Usage Log
-          </a>
-          <a href="#resume" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-2 px-3 rounded-lg hover:bg-slate-800/50 transition flex items-center gap-3">
-            <i class="fas fa-file-invoice text-xs text-cyan-400/70 w-4"></i> Resume &amp; Experience
-          </a>
-          <a href="#certifications" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-2 px-3 rounded-lg hover:bg-slate-800/50 transition flex items-center gap-3">
-            <i class="fas fa-certificate text-xs text-cyan-400/70 w-4"></i> Certifications
-          </a>
-          <a href="#career-plan" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-2 px-3 rounded-lg hover:bg-slate-800/50 transition flex items-center gap-3">
-            <i class="fas fa-compass text-xs text-cyan-400/70 w-4"></i> Career Plan
-          </a>
-          <a href="#reflection" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-2 px-3 rounded-lg hover:bg-slate-800/50 transition flex items-center gap-3">
-            <i class="fas fa-lightbulb text-xs text-cyan-400/70 w-4"></i> Reflection Essay
-          </a>
-          <a href="#contact" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-2 px-3 rounded-lg hover:bg-slate-800/50 transition flex items-center gap-3">
-            <i class="fas fa-envelope text-xs text-cyan-400/70 w-4"></i> Contact
-          </a>
-        </nav>
-      </div>
-
-      <div class="pt-5 border-t border-slate-800 space-y-3">
-        <a href="tyron_dela_cruz_resume.pdf" download class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-mono font-semibold bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] text-[#080C14] hover:opacity-95 transition shadow-cyan-sm">
-          <i class="fas fa-download"></i> Download Full Resume (PDF)
-        </a>
-      </div>
-    </div>
-    <!-- Drawer Backdrop -->
-    <div id="drawer-backdrop" class="pointer-events-auto fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden"></div>
   </header>
+
+  <!-- Slide-out Drawer Navigation (Shows All Options When Clicked) -->
+  <div id="mobile-drawer" class="pointer-events-auto fixed inset-y-0 right-0 w-80 max-w-[85vw] h-full max-h-screen bg-[#080C14]/98 backdrop-blur-2xl border-l border-white/10 z-50 transform translate-x-full transition-transform duration-300 ease-in-out p-4 sm:p-5 flex flex-col justify-between shadow-2xl overflow-hidden">
+    <!-- Top Header: Brand + Close Button (Compact & Sleek) -->
+    <div class="flex items-center justify-between pb-3 border-b border-slate-800/80 shrink-0">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg p-[1.5px] bg-gradient-to-tr from-[#00F2FE] via-[#4FACFE] to-[#7F00FF] shadow-cyan-sm shrink-0">
+          <div class="w-full h-full rounded-lg overflow-hidden bg-[#080C14] flex items-center justify-center">
+            <img src="assets/tj-logo.jpg" alt="TJ Logo" class="w-full h-full object-cover object-center scale-[1.12]">
+          </div>
+        </div>
+        <div>
+          <span class="font-mono font-bold text-xs sm:text-sm text-white tracking-wider block">TYRON JOHN</span>
+          <span class="text-[9px] font-mono text-[#00F2FE] block -mt-0.5 tracking-widest">NAVIGATION</span>
+        </div>
+      </div>
+      <button id="close-drawer-btn" class="w-8 h-8 rounded-lg bg-slate-800/40 hover:bg-slate-800 border border-white/5 flex items-center justify-center text-slate-400 hover:text-white transition focus:outline-none" aria-label="Close menu">
+        <i class="fas fa-xmark text-sm"></i>
+      </button>
+    </div>
+
+    <!-- Navigation Links: Cleanly aligned right below the divider with zero dead space -->
+    <nav class="flex-1 overflow-y-auto overscroll-contain py-2 space-y-1 font-medium text-xs sm:text-sm pr-1">
+      <a href="#hero" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-1.5 px-3 rounded-lg hover:bg-slate-800/60 transition flex items-center gap-3">
+        <i class="fas fa-home text-xs text-cyan-400/70 w-4"></i> <span>Home</span>
+      </a>
+      <a href="#about" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-1.5 px-3 rounded-lg hover:bg-slate-800/60 transition flex items-center gap-3">
+        <i class="fas fa-user text-xs text-cyan-400/70 w-4"></i> <span>About Me</span>
+      </a>
+      <a href="#skills" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-1.5 px-3 rounded-lg hover:bg-slate-800/60 transition flex items-center gap-3">
+        <i class="fas fa-laptop-code text-xs text-cyan-400/70 w-4"></i> <span>Technical Skills</span>
+      </a>
+      <a href="#projects" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-1.5 px-3 rounded-lg hover:bg-slate-800/60 transition flex items-center gap-3">
+        <i class="fas fa-folder-open text-xs text-cyan-400/70 w-4"></i> <span>Projects Showcase</span>
+      </a>
+      <a href="#troubleshooting" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-1.5 px-3 rounded-lg hover:bg-slate-800/60 transition flex items-center gap-3">
+        <i class="fas fa-wrench text-xs text-cyan-400/70 w-4"></i> <span>Troubleshooting Cases</span>
+      </a>
+      <a href="#ai-log" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-1.5 px-3 rounded-lg hover:bg-slate-800/60 transition flex items-center gap-3">
+        <i class="fas fa-brain text-xs text-cyan-400/70 w-4"></i> <span>AI Usage Log</span>
+      </a>
+      <a href="#resume" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-1.5 px-3 rounded-lg hover:bg-slate-800/60 transition flex items-center gap-3">
+        <i class="fas fa-file-invoice text-xs text-cyan-400/70 w-4"></i> <span>Resume &amp; Experience</span>
+      </a>
+      <a href="#certifications" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-1.5 px-3 rounded-lg hover:bg-slate-800/60 transition flex items-center gap-3">
+        <i class="fas fa-certificate text-xs text-cyan-400/70 w-4"></i> <span>Certifications</span>
+      </a>
+      <a href="#career-plan" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-1.5 px-3 rounded-lg hover:bg-slate-800/60 transition flex items-center gap-3">
+        <i class="fas fa-compass text-xs text-cyan-400/70 w-4"></i> <span>Career Plan</span>
+      </a>
+      <a href="#reflection" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-1.5 px-3 rounded-lg hover:bg-slate-800/60 transition flex items-center gap-3">
+        <i class="fas fa-lightbulb text-xs text-cyan-400/70 w-4"></i> <span>Reflection Essay</span>
+      </a>
+      <a href="#contact" class="mobile-nav-link text-slate-300 hover:text-[#00F2FE] py-1.5 px-3 rounded-lg hover:bg-slate-800/60 transition flex items-center gap-3">
+        <i class="fas fa-envelope text-xs text-cyan-400/70 w-4"></i> <span>Contact</span>
+      </a>
+    </nav>
+
+    <!-- Drawer Footer: Resume Download (Pinned at bottom, compact) -->
+    <div class="pt-3 border-t border-slate-800/80 shrink-0">
+      <a href="tyron_dela_cruz_resume.pdf" download class="w-full flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-mono font-semibold bg-gradient-to-r from-[#00F2FE] to-[#4FACFE] text-[#080C14] hover:opacity-95 transition shadow-cyan-sm">
+        <i class="fas fa-download"></i> <span>Download Full Resume (PDF)</span>
+      </a>
+    </div>
+  </div>
+  <!-- Drawer Backdrop -->
+  <div id="drawer-backdrop" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-40 hidden transition-opacity duration-300"></div>
 
   <!-- MAIN CONTENT CONTAINER -->
   <main class="relative z-10 pt-20">

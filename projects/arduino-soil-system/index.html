@@ -496,293 +496,860 @@
       </div>
     </section>
 
-    <!-- HARDWARE COMPONENTS, FUNCTIONS & SYSTEM ROLES DIRECTORY -->
-    <section class="glass-card rounded-2xl p-6 sm:p-8 border border-white/10 space-y-6">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
-        <div>
-          <div class="inline-flex items-center gap-2 text-xs font-mono text-cyan-400 tracking-wider uppercase mb-1">
-            <i class="fas fa-microchip"></i> Hardware Bill of Materials (BOM)
+    <!-- HARDWARE COMPONENTS, FUNCTIONS & SYSTEM ROLES (HORIZONTAL RECTANGLE BOX) -->
+    <section class="space-y-4" id="arduino-parts-section">
+      
+      <!-- Interactive Horizontal Rectangle Box -->
+      <div id="components-toggle-box" role="button" tabindex="0" aria-expanded="false" aria-controls="components-list-wrapper"
+           class="w-full glass-card rounded-2xl p-6 sm:p-7 border border-cyan-500/40 hover:border-cyan-400 bg-gradient-to-r from-slate-900/95 via-[#0A1224]/95 to-slate-900/95 hover:from-slate-900 hover:to-slate-950 transition-all duration-300 shadow-[0_0_30px_rgba(6,182,212,0.12)] hover:shadow-[0_0_40px_rgba(6,182,212,0.25)] cursor-pointer group select-none relative overflow-hidden">
+        
+        <!-- Ambient Glowing Accents -->
+        <div class="absolute -right-16 -top-16 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-cyan-500/20 transition-all duration-500"></div>
+        <div class="absolute -left-16 -bottom-16 w-60 h-60 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-emerald-500/20 transition-all duration-500"></div>
+
+        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+          <!-- Left Info Inside Box -->
+          <div class="flex items-start sm:items-center gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-emerald-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 shrink-0 group-hover:scale-105 group-hover:border-cyan-400 transition-all duration-300 shadow-[0_0_20px_rgba(6,182,212,0.25)]">
+              <i class="fas fa-microchip text-2xl group-hover:rotate-6 transition-transform"></i>
+            </div>
+            
+            <div class="space-y-1.5">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
+                  <i class="fas fa-layer-group mr-1"></i> Hardware Bill of Materials (BOM)
+                </span>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/25">
+                  <i class="fas fa-camera mr-1"></i> 10 Component Photos Included
+                </span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono text-amber-300 bg-amber-500/10 border border-amber-500/20">
+                  <i class="fas fa-diagram-project mr-1"></i> Pin Roles Detailed
+                </span>
+              </div>
+              
+              <h2 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight flex items-center gap-2.5 flex-wrap">
+                <span>System Components, Functions &amp; Pin Roles</span>
+              </h2>
+              
+              <p class="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+                Click this box to view the components list, hardware specifications, pinout connections, and picture examples of every component in the system.
+              </p>
+            </div>
           </div>
-          <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight">System Components, Functions &amp; Pin Roles</h2>
-          <p class="text-xs text-slate-400">Comprehensive breakdown of all hardware components utilized in Tyron's Arduino plant hydration system, including exact pinouts, electrical functions, and their operational roles.</p>
-        </div>
-        <div class="flex items-center gap-2 self-start sm:self-auto shrink-0">
-          <span class="px-3 py-1 rounded-full text-xs font-mono bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
-            <i class="fas fa-cubes mr-1.5"></i> 10 Hardware Modules
-          </span>
+
+          <!-- Right Action Indicator Inside Box -->
+          <div class="flex items-center gap-3 self-end md:self-center shrink-0">
+            <div class="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-slate-950/80 border border-cyan-500/30 group-hover:border-cyan-400/70 group-hover:bg-cyan-500/15 text-cyan-300 text-xs font-mono font-semibold transition-all duration-300 shadow-lg">
+              <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping inline-block"></span>
+              <span id="components-toggle-text">Click to View Components</span>
+              <div class="w-6 h-6 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:bg-cyan-500/30 transition">
+                <i id="components-toggle-chevron" class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Component Cards Grid (10 Components) -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 font-mono text-xs">
+      <!-- Expandable Components Container (Hidden by default, reveals only when the box is clicked) -->
+      <div id="components-list-wrapper" class="hidden transition-all duration-500 space-y-6 pt-2">
         
-        <!-- 1. Arduino Uno R3 -->
-        <div class="p-4 rounded-xl bg-slate-900/70 border border-white/5 hover:border-cyan-500/30 transition space-y-2.5 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-2">
-              <div class="w-8 h-8 rounded-lg bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-400">
-                <i class="fas fa-microchip"></i>
+        <!-- Filter Bar & Counter Header -->
+        <div class="glass-card rounded-xl p-4 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-mono text-xs">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-slate-400 text-[11px] font-semibold mr-1"><i class="fas fa-filter text-cyan-400 mr-1"></i> Filter Category:</span>
+            <button type="button" class="comp-filter-btn px-2.5 py-1 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-[11px] font-bold transition" data-category="all">
+              All (10)
+            </button>
+            <button type="button" class="comp-filter-btn px-2.5 py-1 rounded-lg bg-slate-900 text-slate-400 hover:text-white border border-white/5 text-[11px] transition" data-category="controller">
+              Controller
+            </button>
+            <button type="button" class="comp-filter-btn px-2.5 py-1 rounded-lg bg-slate-900 text-slate-400 hover:text-white border border-white/5 text-[11px] transition" data-category="sensors">
+              Sensors &amp; Audio
+            </button>
+            <button type="button" class="comp-filter-btn px-2.5 py-1 rounded-lg bg-slate-900 text-slate-400 hover:text-white border border-white/5 text-[11px] transition" data-category="indicators">
+              LEDs &amp; Resistors
+            </button>
+            <button type="button" class="comp-filter-btn px-2.5 py-1 rounded-lg bg-slate-900 text-slate-400 hover:text-white border border-white/5 text-[11px] transition" data-category="wiring">
+              Prototyping &amp; Power
+            </button>
+          </div>
+          <span class="text-slate-400 text-[11px] shrink-0">
+            <i class="fas fa-circle-info text-emerald-400 mr-1"></i> Click any component picture to enlarge
+          </span>
+        </div>
+
+        <!-- 10 Component Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 font-mono text-xs" id="components-grid">
+          
+          <!-- 1. Arduino Uno R3 -->
+          <div class="component-card glass-card rounded-2xl p-4 sm:p-5 border border-white/10 hover:border-sky-500/40 transition-all duration-300 flex flex-col justify-between space-y-3.5 group/card" data-cat="controller">
+            <div class="space-y-3">
+              <!-- Picture Example -->
+              <div class="relative w-full h-48 rounded-xl overflow-hidden bg-slate-950 border border-white/10 group/img cursor-pointer" onclick="openPhotoModal('assets/components/arduino-uno.jpg', 'Arduino Uno R3 Microcontroller Board')">
+                <img src="assets/components/arduino-uno.jpg" alt="Arduino Uno R3 Board" class="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-300" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end justify-between p-2.5">
+                  <span class="text-[10px] font-mono text-sky-300 bg-slate-900/90 px-2 py-0.5 rounded border border-sky-500/30 flex items-center gap-1 shadow-sm">
+                    <i class="fas fa-magnifying-glass-plus text-[9px]"></i> Enlarge Photo
+                  </span>
+                  <span class="text-[9px] font-mono text-slate-400 bg-slate-950/80 px-1.5 py-0.5 rounded">Verified Lab Sample</span>
+                </div>
               </div>
-              <span class="px-2 py-0.5 rounded text-[10px] bg-sky-500/20 text-sky-300 border border-sky-500/30 font-bold">CONTROLLER</span>
+
+              <!-- Header Info -->
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="px-2 py-0.5 rounded text-[10px] bg-sky-500/20 text-sky-300 border border-sky-500/30 font-bold uppercase tracking-wider">CONTROLLER</span>
+                  <span class="text-[10px] text-slate-400">MCU: ATmega328P</span>
+                </div>
+                <h4 class="text-base font-bold text-white font-sans">Arduino Uno R3 Microcontroller</h4>
+                <div class="text-[11px] text-slate-400 font-mono mt-1.5 space-y-1 bg-slate-950/60 p-2.5 rounded-lg border border-white/5">
+                  <p><span class="text-sky-300 font-semibold"><i class="fas fa-network-wired mr-1"></i> Pin Roles:</span> A0 (Analog In), D1 (Green LED), D3 (Red LED), D5 (Speaker PWM), 5V &amp; GND</p>
+                  <p><span class="text-sky-300 font-semibold"><i class="fas fa-bolt mr-1"></i> Specs:</span> 16 MHz Clock, 32KB Flash, 2KB SRAM, 14 Digital I/O, 6 Analog Inputs</p>
+                </div>
+              </div>
             </div>
-            <h4 class="text-sm font-bold text-white font-sans">Arduino Uno R3 Microcontroller</h4>
-            <div class="text-[11px] text-slate-400 font-mono mt-1 space-y-1">
-              <p><span class="text-sky-300 font-semibold">Specs:</span> ATmega328P @ 16 MHz, 32KB Flash, 2KB SRAM</p>
-              <p><span class="text-sky-300 font-semibold">Pins:</span> 14 Digital I/O (6 PWM), 6 Analog Inputs (A0–A5)</p>
+
+            <!-- Functions & Roles -->
+            <div class="pt-3 border-t border-white/10 space-y-2 text-[11px] font-sans">
+              <div>
+                <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-cyan-400"><i class="fas fa-gear mr-1"></i> Electrical Function:</span>
+                <p class="text-slate-400 text-xs leading-relaxed">Central computing unit executing C++ logic, sampling analog-to-digital converter channels, and driving output peripherals via PWM square waves.</p>
+              </div>
+              <div>
+                <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-emerald-400"><i class="fas fa-bullseye mr-1"></i> Role in Project:</span>
+                <p class="text-slate-300 text-xs leading-relaxed">The brain of the system. Reads probe data from pin A0, executes <code>moistureDetection()</code>, calculates saturation ratio, and drives the LEDs and speaker.</p>
+              </div>
             </div>
           </div>
-          <div class="pt-2.5 border-t border-white/5 space-y-1.5 text-[11px] font-sans">
-            <div>
-              <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-cyan-400"><i class="fas fa-gear mr-1"></i> Function:</span>
-              <p class="text-slate-400 text-xs leading-relaxed">Central embedded computing board that executes C++ instructions, samples analog-to-digital converters, and controls peripherals.</p>
+
+          <!-- 2. Soil Moisture Sensor Probe -->
+          <div class="component-card glass-card rounded-2xl p-4 sm:p-5 border border-white/10 hover:border-emerald-500/40 transition-all duration-300 flex flex-col justify-between space-y-3.5 group/card" data-cat="sensors">
+            <div class="space-y-3">
+              <!-- Picture Example -->
+              <div class="relative w-full h-48 rounded-xl overflow-hidden bg-slate-950 border border-white/10 group/img cursor-pointer" onclick="openPhotoModal('assets/components/soil-moisture-sensor.jpg', 'Soil Moisture Sensor Probe')">
+                <img src="assets/components/soil-moisture-sensor.jpg" alt="Soil Moisture Sensor Probe" class="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-300" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end justify-between p-2.5">
+                  <span class="text-[10px] font-mono text-emerald-300 bg-slate-900/90 px-2 py-0.5 rounded border border-emerald-500/30 flex items-center gap-1 shadow-sm">
+                    <i class="fas fa-magnifying-glass-plus text-[9px]"></i> Enlarge Photo
+                  </span>
+                  <span class="text-[9px] font-mono text-slate-400 bg-slate-950/80 px-1.5 py-0.5 rounded">Resistive / Capacitive</span>
+                </div>
+              </div>
+
+              <!-- Header Info -->
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold uppercase tracking-wider">ANALOG SENSOR</span>
+                  <span class="text-[10px] text-slate-400">Signal: 0–1023 ADC</span>
+                </div>
+                <h4 class="text-base font-bold text-white font-sans">Soil Moisture Sensor Probe</h4>
+                <div class="text-[11px] text-slate-400 font-mono mt-1.5 space-y-1 bg-slate-950/60 p-2.5 rounded-lg border border-white/5">
+                  <p><span class="text-emerald-300 font-semibold"><i class="fas fa-network-wired mr-1"></i> Pin Roles:</span> SIG &rarr; Arduino Analog Pin A0, VCC &rarr; 5V Power, GND &rarr; System Ground</p>
+                  <p><span class="text-emerald-300 font-semibold"><i class="fas fa-bolt mr-1"></i> Specs:</span> Dual conductive trace probes, variable resistance voltage divider output</p>
+                </div>
+              </div>
             </div>
-            <div>
-              <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-emerald-400"><i class="fas fa-bullseye mr-1"></i> Role in Project:</span>
-              <p class="text-slate-300 text-xs leading-relaxed">The brain of the system. Reads probe data from pin A0, executes <code>moistureDetection()</code>, calculates saturation ratio, and drives the LEDs and speaker.</p>
+
+            <!-- Functions & Roles -->
+            <div class="pt-3 border-t border-white/10 space-y-2 text-[11px] font-sans">
+              <div>
+                <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-cyan-400"><i class="fas fa-gear mr-1"></i> Electrical Function:</span>
+                <p class="text-slate-400 text-xs leading-relaxed">Measures soil conductivity between two prongs; water lowers electrical resistance while dry soil creates high electrical resistance.</p>
+              </div>
+              <div>
+                <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-emerald-400"><i class="fas fa-bullseye mr-1"></i> Role in Project:</span>
+                <p class="text-slate-300 text-xs leading-relaxed">Inserted directly into the plant pot soil to capture real-time moisture data and supply raw ADC voltage to the Arduino's A0 pin for ratio evaluation.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Acoustic Piezo Speaker -->
+          <div class="component-card glass-card rounded-2xl p-4 sm:p-5 border border-white/10 hover:border-purple-500/40 transition-all duration-300 flex flex-col justify-between space-y-3.5 group/card" data-cat="sensors">
+            <div class="space-y-3">
+              <!-- Picture Example -->
+              <div class="relative w-full h-48 rounded-xl overflow-hidden bg-slate-950 border border-white/10 group/img cursor-pointer" onclick="openPhotoModal('assets/components/piezo-speaker.jpg', 'Acoustic Piezo Speaker Transducer')">
+                <img src="assets/components/piezo-speaker.jpg" alt="Acoustic Piezo Speaker" class="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-300" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end justify-between p-2.5">
+                  <span class="text-[10px] font-mono text-purple-300 bg-slate-900/90 px-2 py-0.5 rounded border border-purple-500/30 flex items-center gap-1 shadow-sm">
+                    <i class="fas fa-magnifying-glass-plus text-[9px]"></i> Enlarge Photo
+                  </span>
+                  <span class="text-[9px] font-mono text-slate-400 bg-slate-950/80 px-1.5 py-0.5 rounded">PWM Synthesized</span>
+                </div>
+              </div>
+
+              <!-- Header Info -->
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="px-2 py-0.5 rounded text-[10px] bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold uppercase tracking-wider">AUDIO TRANSDUCER</span>
+                  <span class="text-[10px] text-slate-400">PWM Output</span>
+                </div>
+                <h4 class="text-base font-bold text-white font-sans">Acoustic Speaker / Piezo Transducer</h4>
+                <div class="text-[11px] text-slate-400 font-mono mt-1.5 space-y-1 bg-slate-950/60 p-2.5 rounded-lg border border-white/5">
+                  <p><span class="text-purple-300 font-semibold"><i class="fas fa-network-wired mr-1"></i> Pin Roles:</span> Positive Lead (+) &rarr; Arduino Digital Pin D5 (PWM), Negative Lead (-) &rarr; GND</p>
+                  <p><span class="text-purple-300 font-semibold"><i class="fas fa-bolt mr-1"></i> Specs:</span> 1000 Hz, 1500 Hz, 5000 Hz audible square wave frequencies</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Functions & Roles -->
+            <div class="pt-3 border-t border-white/10 space-y-2 text-[11px] font-sans">
+              <div>
+                <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-cyan-400"><i class="fas fa-gear mr-1"></i> Electrical Function:</span>
+                <p class="text-slate-400 text-xs leading-relaxed">Converts rapid square wave voltage pulses generated by <code>tone()</code> on PWM pin 5 into acoustic vibrations via piezoelectric ceramic disc flexion.</p>
+              </div>
+              <div>
+                <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-emerald-400"><i class="fas fa-bullseye mr-1"></i> Role in Project:</span>
+                <p class="text-slate-300 text-xs leading-relaxed">Replaced basic buzzers with custom acoustic tones: emits 1000Hz alert (&le;10% moisture: "I'm Thirsty"), 1500Hz chirp (&gt;30%: "I'm Full"), and startup chimes.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Green Status LED -->
+          <div class="component-card glass-card rounded-2xl p-4 sm:p-5 border border-white/10 hover:border-emerald-500/40 transition-all duration-300 flex flex-col justify-between space-y-3.5 group/card" data-cat="indicators">
+            <div class="space-y-3">
+              <!-- Picture Example -->
+              <div class="relative w-full h-48 rounded-xl overflow-hidden bg-slate-950 border border-white/10 group/img cursor-pointer" onclick="openPhotoModal('assets/components/led-green.jpg', 'Green Status LED (5mm)')">
+                <img src="assets/components/led-green.jpg" alt="Green Status LED" class="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-300" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end justify-between p-2.5">
+                  <span class="text-[10px] font-mono text-emerald-300 bg-slate-900/90 px-2 py-0.5 rounded border border-emerald-500/30 flex items-center gap-1 shadow-sm">
+                    <i class="fas fa-magnifying-glass-plus text-[9px]"></i> Enlarge Photo
+                  </span>
+                  <span class="text-[9px] font-mono text-slate-400 bg-slate-950/80 px-1.5 py-0.5 rounded">565nm Diffused</span>
+                </div>
+              </div>
+
+              <!-- Header Info -->
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold uppercase tracking-wider">VISUAL OUT</span>
+                  <span class="text-[10px] text-slate-400">Trigger: &gt; 30% Wet</span>
+                </div>
+                <h4 class="text-base font-bold text-white font-sans">Green Status LED (5mm)</h4>
+                <div class="text-[11px] text-slate-400 font-mono mt-1.5 space-y-1 bg-slate-950/60 p-2.5 rounded-lg border border-white/5">
+                  <p><span class="text-emerald-300 font-semibold"><i class="fas fa-network-wired mr-1"></i> Pin Roles:</span> Anode (+) &rarr; Arduino Digital Pin D1 (via 330Ω Resistor), Cathode (-) &rarr; GND</p>
+                  <p><span class="text-emerald-300 font-semibold"><i class="fas fa-bolt mr-1"></i> Specs:</span> Forward Voltage Vf ~2.1V, Forward Current If ~15mA–20mA</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Functions & Roles -->
+            <div class="pt-3 border-t border-white/10 space-y-2 text-[11px] font-sans">
+              <div>
+                <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-cyan-400"><i class="fas fa-gear mr-1"></i> Electrical Function:</span>
+                <p class="text-slate-400 text-xs leading-relaxed">Semiconductor P-N junction emitting green photons through electroluminescence when forward biased by 5V logic HIGH.</p>
+              </div>
+              <div>
+                <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-emerald-400"><i class="fas fa-bullseye mr-1"></i> Role in Project:</span>
+                <p class="text-slate-300 text-xs leading-relaxed">Visual indicator for adequate/optimal hydration. Illuminates brightly when the plant has sufficient water, signaling healthy soil conditions.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. Red Warning LED -->
+          <div class="component-card glass-card rounded-2xl p-4 sm:p-5 border border-white/10 hover:border-rose-500/40 transition-all duration-300 flex flex-col justify-between space-y-3.5 group/card" data-cat="indicators">
+            <div class="space-y-3">
+              <!-- Picture Example -->
+              <div class="relative w-full h-48 rounded-xl overflow-hidden bg-slate-950 border border-white/10 group/img cursor-pointer" onclick="openPhotoModal('assets/components/led-red.jpg', 'Red Warning LED (5mm)')">
+                <img src="assets/components/led-red.jpg" alt="Red Warning LED" class="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-300" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end justify-between p-2.5">
+                  <span class="text-[10px] font-mono text-rose-300 bg-slate-900/90 px-2 py-0.5 rounded border border-rose-500/30 flex items-center gap-1 shadow-sm">
+                    <i class="fas fa-magnifying-glass-plus text-[9px]"></i> Enlarge Photo
+                  </span>
+                  <span class="text-[9px] font-mono text-slate-400 bg-slate-950/80 px-1.5 py-0.5 rounded">630nm Alert</span>
+                </div>
+              </div>
+
+              <!-- Header Info -->
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="px-2 py-0.5 rounded text-[10px] bg-rose-500/20 text-rose-300 border border-rose-500/30 font-bold uppercase tracking-wider">WARNING OUT</span>
+                  <span class="text-[10px] text-slate-400">Trigger: &le; 30% Dry</span>
+                </div>
+                <h4 class="text-base font-bold text-white font-sans">Red Warning LED (5mm)</h4>
+                <div class="text-[11px] text-slate-400 font-mono mt-1.5 space-y-1 bg-slate-950/60 p-2.5 rounded-lg border border-white/5">
+                  <p><span class="text-rose-300 font-semibold"><i class="fas fa-network-wired mr-1"></i> Pin Roles:</span> Anode (+) &rarr; Arduino Digital Pin D3 (via 330Ω Resistor), Cathode (-) &rarr; GND</p>
+                  <p><span class="text-rose-300 font-semibold"><i class="fas fa-bolt mr-1"></i> Specs:</span> Forward Voltage Vf ~1.9V, Forward Current If ~15mA–20mA</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Functions & Roles -->
+            <div class="pt-3 border-t border-white/10 space-y-2 text-[11px] font-sans">
+              <div>
+                <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-cyan-400"><i class="fas fa-gear mr-1"></i> Electrical Function:</span>
+                <p class="text-slate-400 text-xs leading-relaxed">Solid-state warning diode emitting at 630nm wavelength to immediately grab user attention in low-hydration states.</p>
+              </div>
+              <div>
+                <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-emerald-400"><i class="fas fa-bullseye mr-1"></i> Role in Project:</span>
+                <p class="text-slate-300 text-xs leading-relaxed">Visual alert for dry soil. Turns ON whenever moisture drops below 30% (silent warning for 10%–30%, and paired with audio alarm at &le;10%).</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. Current-Limiting Resistors -->
+          <div class="component-card glass-card rounded-2xl p-4 sm:p-5 border border-white/10 hover:border-amber-500/40 transition-all duration-300 flex flex-col justify-between space-y-3.5 group/card" data-cat="indicators">
+            <div class="space-y-3">
+              <!-- Picture Example -->
+              <div class="relative w-full h-48 rounded-xl overflow-hidden bg-slate-950 border border-white/10 group/img cursor-pointer" onclick="openPhotoModal('assets/components/resistors.jpg', 'Through-Hole Resistors (330Ω & 10kΩ)')">
+                <img src="assets/components/resistors.jpg" alt="Current-Limiting Resistors" class="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-300" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end justify-between p-2.5">
+                  <span class="text-[10px] font-mono text-amber-300 bg-slate-900/90 px-2 py-0.5 rounded border border-amber-500/30 flex items-center gap-1 shadow-sm">
+                    <i class="fas fa-magnifying-glass-plus text-[9px]"></i> Enlarge Photo
+                  </span>
+                  <span class="text-[9px] font-mono text-slate-400 bg-slate-950/80 px-1.5 py-0.5 rounded">1/4 Watt ±5%</span>
+                </div>
+              </div>
+
+              <!-- Header Info -->
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold uppercase tracking-wider">PROTECTION</span>
+                  <span class="text-[10px] text-slate-400">Carbon Film</span>
+                </div>
+                <h4 class="text-base font-bold text-white font-sans">Current-Limiting Resistors (330Ω / 10kΩ)</h4>
+                <div class="text-[11px] text-slate-400 font-mono mt-1.5 space-y-1 bg-slate-950/60 p-2.5 rounded-lg border border-white/5">
+                  <p><span class="text-amber-300 font-semibold"><i class="fas fa-network-wired mr-1"></i> Pin Roles:</span> Connected in series between Arduino pins D1 &amp; D3 and the LED anodes</p>
+                  <p><span class="text-amber-300 font-semibold"><i class="fas fa-bolt mr-1"></i> Specs:</span> 330Ω (Orange-Orange-Brown-Gold) &amp; 10kΩ (Brown-Black-Orange-Gold), 1/4W</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Functions & Roles -->
+            <div class="pt-3 border-t border-white/10 space-y-2 text-[11px] font-sans">
+              <div>
+                <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-cyan-400"><i class="fas fa-gear mr-1"></i> Electrical Function:</span>
+                <p class="text-slate-400 text-xs leading-relaxed">Limits forward current flow (I = V/R) through semiconductor junctions to safe operating limits, preventing component burnout.</p>
+              </div>
+              <div>
+                <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-emerald-400"><i class="fas fa-bullseye mr-1"></i> Role in Project:</span>
+                <p class="text-slate-300 text-xs leading-relaxed">Protects the Red and Green LEDs from burning out under 5V rail voltage and safeguards the ATmega328P microcontroller output pins.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 7. Solderless Breadboard -->
+          <div class="component-card glass-card rounded-2xl p-4 sm:p-5 border border-white/10 hover:border-cyan-500/40 transition-all duration-300 flex flex-col justify-between space-y-3.5 group/card" data-cat="wiring">
+            <div class="space-y-3">
+              <!-- Picture Example -->
+              <div class="relative w-full h-48 rounded-xl overflow-hidden bg-slate-950 border border-white/10 group/img cursor-pointer" onclick="openPhotoModal('assets/components/breadboard.jpg', 'Solderless Prototyping Breadboard')">
+                <img src="assets/components/breadboard.jpg" alt="Solderless Prototyping Breadboard" class="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-300" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end justify-between p-2.5">
+                  <span class="text-[10px] font-mono text-cyan-300 bg-slate-900/90 px-2 py-0.5 rounded border border-cyan-500/30 flex items-center gap-1 shadow-sm">
+                    <i class="fas fa-magnifying-glass-plus text-[9px]"></i> Enlarge Photo
+                  </span>
+                  <span class="text-[9px] font-mono text-slate-400 bg-slate-950/80 px-1.5 py-0.5 rounded">830 Tie-Points</span>
+                </div>
+              </div>
+
+              <!-- Header Info -->
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="px-2 py-0.5 rounded text-[10px] bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-bold uppercase tracking-wider">PROTOTYPE HUB</span>
+                  <span class="text-[10px] text-slate-400">2.54mm Pitch</span>
+                </div>
+                <h4 class="text-base font-bold text-white font-sans">Solderless Prototyping Breadboard</h4>
+                <div class="text-[11px] text-slate-400 font-mono mt-1.5 space-y-1 bg-slate-950/60 p-2.5 rounded-lg border border-white/5">
+                  <p><span class="text-cyan-300 font-semibold"><i class="fas fa-network-wired mr-1"></i> Pin Roles:</span> Power distribution rails (+5V red line, GND blue line), 5-pin interconnected terminal rows</p>
+                  <p><span class="text-cyan-300 font-semibold"><i class="fas fa-bolt mr-1"></i> Specs:</span> Dual power distribution strips, nickel phosphor bronze spring clips, ABS body</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Functions & Roles -->
+            <div class="pt-3 border-t border-white/10 space-y-2 text-[11px] font-sans">
+              <div>
+                <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-cyan-400"><i class="fas fa-gear mr-1"></i> Electrical Function:</span>
+                <p class="text-slate-400 text-xs leading-relaxed">Provides solder-free mechanical sockets interconnected by nickel-bronze contact clips for temporary circuit assembly.</p>
+              </div>
+              <div>
+                <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-emerald-400"><i class="fas fa-bullseye mr-1"></i> Role in Project:</span>
+                <p class="text-slate-300 text-xs leading-relaxed">Holds all discrete components in place; distributes common 5V and Ground rails from the Arduino to LEDs, resistors, and the speaker.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 8. DuPont Jumper Wires -->
+          <div class="component-card glass-card rounded-2xl p-4 sm:p-5 border border-white/10 hover:border-blue-500/40 transition-all duration-300 flex flex-col justify-between space-y-3.5 group/card" data-cat="wiring">
+            <div class="space-y-3">
+              <!-- Picture Example -->
+              <div class="relative w-full h-48 rounded-xl overflow-hidden bg-slate-950 border border-white/10 group/img cursor-pointer" onclick="openPhotoModal('assets/components/jumper-wires.jpg', 'Color-Coded DuPont Jumper Wires')">
+                <img src="assets/components/jumper-wires.jpg" alt="DuPont Jumper Wires" class="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-300" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end justify-between p-2.5">
+                  <span class="text-[10px] font-mono text-blue-300 bg-slate-900/90 px-2 py-0.5 rounded border border-blue-500/30 flex items-center gap-1 shadow-sm">
+                    <i class="fas fa-magnifying-glass-plus text-[9px]"></i> Enlarge Photo
+                  </span>
+                  <span class="text-[9px] font-mono text-slate-400 bg-slate-950/80 px-1.5 py-0.5 rounded">24 AWG Copper</span>
+                </div>
+              </div>
+
+              <!-- Header Info -->
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="px-2 py-0.5 rounded text-[10px] bg-blue-500/20 text-blue-300 border border-blue-500/30 font-bold uppercase tracking-wider">INTERCONNECT</span>
+                  <span class="text-[10px] text-slate-400">M-M &amp; M-F</span>
+                </div>
+                <h4 class="text-base font-bold text-white font-sans">Color-Coded DuPont Jumper Wires</h4>
+                <div class="text-[11px] text-slate-400 font-mono mt-1.5 space-y-1 bg-slate-950/60 p-2.5 rounded-lg border border-white/5">
+                  <p><span class="text-blue-300 font-semibold"><i class="fas fa-network-wired mr-1"></i> Pin Roles:</span> Yellow (A0 probe signal), Green (D1 LED), Red (D3 LED), Purple (D5 speaker), Red/Black (5V/GND)</p>
+                  <p><span class="text-blue-300 font-semibold"><i class="fas fa-bolt mr-1"></i> Specs:</span> 24 AWG flexible multi-strand copper conductors, standard 2.54mm square housing</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Functions & Roles -->
+            <div class="pt-3 border-t border-white/10 space-y-2 text-[11px] font-sans">
+              <div>
+                <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-cyan-400"><i class="fas fa-gear mr-1"></i> Electrical Function:</span>
+                <p class="text-slate-400 text-xs leading-relaxed">Low-resistance flexible wires with molded connector pins for interconnecting male pin headers and breadboard tie-points.</p>
+              </div>
+              <div>
+                <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-emerald-400"><i class="fas fa-bullseye mr-1"></i> Role in Project:</span>
+                <p class="text-slate-300 text-xs leading-relaxed">Routes power rails and signals: Yellow (A0 analog signal), Green (D1 LED control), Red (D3 LED control), Purple (D5 speaker PWM), and Red/Black (5V/GND).</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 9. HM-Sensor Signal Conditioning Unit -->
+          <div class="component-card glass-card rounded-2xl p-4 sm:p-5 border border-white/10 hover:border-teal-500/40 transition-all duration-300 flex flex-col justify-between space-y-3.5 group/card" data-cat="sensors">
+            <div class="space-y-3">
+              <!-- Picture Example -->
+              <div class="relative w-full h-48 rounded-xl overflow-hidden bg-slate-950 border border-white/10 group/img cursor-pointer" onclick="openPhotoModal('assets/components/hm-sensor.jpg', 'HM-Sensor Series Signal Conditioning Board')">
+                <img src="assets/components/hm-sensor.jpg" alt="HM-Sensor Conditioning Interface" class="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-300" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end justify-between p-2.5">
+                  <span class="text-[10px] font-mono text-teal-300 bg-slate-900/90 px-2 py-0.5 rounded border border-teal-500/30 flex items-center gap-1 shadow-sm">
+                    <i class="fas fa-magnifying-glass-plus text-[9px]"></i> Enlarge Photo
+                  </span>
+                  <span class="text-[9px] font-mono text-slate-400 bg-slate-950/80 px-1.5 py-0.5 rounded">LM393 Comparator</span>
+                </div>
+              </div>
+
+              <!-- Header Info -->
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="px-2 py-0.5 rounded text-[10px] bg-teal-500/20 text-teal-300 border border-teal-500/30 font-bold uppercase tracking-wider">SIGNAL INTERFACE</span>
+                  <span class="text-[10px] text-slate-400">Comparator IC</span>
+                </div>
+                <h4 class="text-base font-bold text-white font-sans">HM-Sensor Conditioning Interface</h4>
+                <div class="text-[11px] text-slate-400 font-mono mt-1.5 space-y-1 bg-slate-950/60 p-2.5 rounded-lg border border-white/5">
+                  <p><span class="text-teal-300 font-semibold"><i class="fas fa-network-wired mr-1"></i> Pin Roles:</span> VCC (5V), GND, AO (Analog Output to A0), DO (Digital Threshold Comparator Output)</p>
+                  <p><span class="text-teal-300 font-semibold"><i class="fas fa-bolt mr-1"></i> Specs:</span> LM393 dual differential comparator, blue potentiometer trimmer calibration knob</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Functions & Roles -->
+            <div class="pt-3 border-t border-white/10 space-y-2 text-[11px] font-sans">
+              <div>
+                <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-cyan-400"><i class="fas fa-gear mr-1"></i> Electrical Function:</span>
+                <p class="text-slate-400 text-xs leading-relaxed">Ensures steady impedance matching, eliminates high-frequency noise, and provides consistent voltage levels across the moisture probe.</p>
+              </div>
+              <div>
+                <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-emerald-400"><i class="fas fa-bullseye mr-1"></i> Role in Project:</span>
+                <p class="text-slate-300 text-xs leading-relaxed">Calibrates the maximum moisture ceiling (<code>maximumMoistureLevel = analogRead(A0)</code>) during setup to establish an accurate ratio denominator.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 10. USB Cable & Power Source -->
+          <div class="component-card glass-card rounded-2xl p-4 sm:p-5 border border-white/10 hover:border-emerald-500/40 transition-all duration-300 flex flex-col justify-between space-y-3.5 group/card" data-cat="wiring">
+            <div class="space-y-3">
+              <!-- Picture Example -->
+              <div class="relative w-full h-48 rounded-xl overflow-hidden bg-slate-950 border border-white/10 group/img cursor-pointer" onclick="openPhotoModal('assets/components/usb-power.jpg', 'USB 2.0 Cable & 5V Regulated Power Supply')">
+                <img src="assets/components/usb-power.jpg" alt="USB Cable and Power Source" class="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-300" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end justify-between p-2.5">
+                  <span class="text-[10px] font-mono text-emerald-300 bg-slate-900/90 px-2 py-0.5 rounded border border-emerald-500/30 flex items-center gap-1 shadow-sm">
+                    <i class="fas fa-magnifying-glass-plus text-[9px]"></i> Enlarge Photo
+                  </span>
+                  <span class="text-[9px] font-mono text-slate-400 bg-slate-950/80 px-1.5 py-0.5 rounded">9600 Baud UART</span>
+                </div>
+              </div>
+
+              <!-- Header Info -->
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold uppercase tracking-wider">POWER &amp; UART</span>
+                  <span class="text-[10px] text-slate-400">USB Type-A / B</span>
+                </div>
+                <h4 class="text-base font-bold text-white font-sans">USB 2.0 Cable &amp; 5V Power Supply</h4>
+                <div class="text-[11px] text-slate-400 font-mono mt-1.5 space-y-1 bg-slate-950/60 p-2.5 rounded-lg border border-white/5">
+                  <p><span class="text-emerald-300 font-semibold"><i class="fas fa-network-wired mr-1"></i> Pin Roles:</span> Pin 1: VBUS (+5V DC), Pin 2: D- (Data-), Pin 3: D+ (Data+), Pin 4: GND (Ground)</p>
+                  <p><span class="text-emerald-300 font-semibold"><i class="fas fa-bolt mr-1"></i> Specs:</span> 9600 Baud full-duplex serial UART communication, 500mA–2A regulated DC power</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Functions & Roles -->
+            <div class="pt-3 border-t border-white/10 space-y-2 text-[11px] font-sans">
+              <div>
+                <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-cyan-400"><i class="fas fa-gear mr-1"></i> Electrical Function:</span>
+                <p class="text-slate-400 text-xs leading-relaxed">Delivers clean regulated 5V DC power from a host computer or adapter while transmitting bidirectional serial UART data.</p>
+              </div>
+              <div>
+                <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-emerald-400"><i class="fas fa-bullseye mr-1"></i> Role in Project:</span>
+                <p class="text-slate-300 text-xs leading-relaxed">Powers the microcontroller board and sensor rails, flashes compiled sketches, and streams real-time ADC readings to the Serial Monitor.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP-BY-STEP ASSEMBLY & BUILD GUIDE (HORIZONTAL RECTANGLE BOX) -->
+    <section class="space-y-4" id="arduino-build-guide-section">
+      
+      <!-- Interactive Horizontal Rectangle Box -->
+      <div id="build-guide-toggle-box" role="button" tabindex="0" aria-expanded="false" aria-controls="build-guide-wrapper"
+           class="w-full glass-card rounded-2xl p-6 sm:p-7 border border-emerald-500/40 hover:border-emerald-400 bg-gradient-to-r from-slate-900/95 via-[#081816]/95 to-slate-900/95 hover:from-slate-900 hover:to-slate-950 transition-all duration-300 shadow-[0_0_30px_rgba(16,185,129,0.12)] hover:shadow-[0_0_40px_rgba(16,185,129,0.25)] cursor-pointer group select-none relative overflow-hidden">
+        
+        <!-- Ambient Glowing Accents -->
+        <div class="absolute -right-16 -top-16 w-60 h-60 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-emerald-500/20 transition-all duration-500"></div>
+        <div class="absolute -left-16 -bottom-16 w-60 h-60 bg-teal-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-teal-500/20 transition-all duration-500"></div>
+
+        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+          <!-- Left Info Inside Box -->
+          <div class="flex items-start sm:items-center gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 group-hover:scale-105 group-hover:border-emerald-400 transition-all duration-300 shadow-[0_0_20px_rgba(16,185,129,0.25)]">
+              <i class="fas fa-screwdriver-wrench text-2xl group-hover:rotate-12 transition-transform"></i>
+            </div>
+            
+            <div class="space-y-1.5">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                  <i class="fas fa-list-ol mr-1"></i> Assembly Manual
+                </span>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono text-cyan-300 bg-cyan-500/10 border border-cyan-500/25">
+                  <i class="fas fa-diagram-project mr-1"></i> 6 Step-by-Step Stages
+                </span>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono text-amber-300 bg-amber-500/10 border border-amber-500/20">
+                  <i class="fas fa-shield-check mr-1"></i> Pin Wiring &amp; Verification
+                </span>
+              </div>
+              
+              <h2 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight flex items-center gap-2.5 flex-wrap">
+                <span>Step-by-Step Guide to Build Arduino Plant Hydration System</span>
+              </h2>
+              
+              <p class="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+                Click this box to view the complete step-by-step tutorial covering breadboard wiring, sensor interfacing, speaker PWM setup, code uploading, and calibration.
+              </p>
+            </div>
+          </div>
+
+          <!-- Right Action Indicator Inside Box -->
+          <div class="flex items-center gap-3 self-end md:self-center shrink-0">
+            <div class="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-slate-950/80 border border-emerald-500/30 group-hover:border-emerald-400/70 group-hover:bg-emerald-500/15 text-emerald-300 text-xs font-mono font-semibold transition-all duration-300 shadow-lg">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block"></span>
+              <span id="build-guide-toggle-text">Click to View Build Guide</span>
+              <div class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:bg-emerald-500/30 transition">
+                <i id="build-guide-toggle-chevron" class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
+              </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- 2. Soil Moisture Sensor -->
-        <div class="p-4 rounded-xl bg-slate-900/70 border border-white/5 hover:border-emerald-500/30 transition space-y-2.5 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-2">
-              <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-                <i class="fas fa-seedling"></i>
-              </div>
-              <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">ANALOG SENSOR</span>
-            </div>
-            <h4 class="text-sm font-bold text-white font-sans">Soil Moisture Sensor Probe</h4>
-            <div class="text-[11px] text-slate-400 font-mono mt-1 space-y-1">
-              <p><span class="text-emerald-300 font-semibold">Pins:</span> VCC (5V), GND, SIG (Analog Out &rarr; Pin A0)</p>
-              <p><span class="text-emerald-300 font-semibold">Signal:</span> 0 – 1023 (10-bit Analog Voltage Divider)</p>
-            </div>
+      <!-- Expandable Build Guide Container (Hidden by default, reveals only when the box is clicked) -->
+      <div id="build-guide-wrapper" class="hidden transition-all duration-500 space-y-6 pt-2">
+        
+        <!-- Quick Action Bar & Circuit Schematic Launcher -->
+        <div class="glass-card rounded-xl p-4 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-mono text-xs">
+          <div class="flex items-center gap-2 text-slate-300">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span>Follow stages sequentially from <strong>Stage 1 (Power Rails)</strong> to <strong>Stage 6 (Live Testing)</strong>.</span>
           </div>
-          <div class="pt-2.5 border-t border-white/5 space-y-1.5 text-[11px] font-sans">
-            <div>
-              <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-cyan-400"><i class="fas fa-gear mr-1"></i> Function:</span>
-              <p class="text-slate-400 text-xs leading-relaxed">Measures soil conductivity between two conductive PCB prongs; water lowers electrical resistance while dry soil increases resistance.</p>
-            </div>
-            <div>
-              <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-emerald-400"><i class="fas fa-bullseye mr-1"></i> Role in Project:</span>
-              <p class="text-slate-300 text-xs leading-relaxed">Inserted directly into the plant pot soil to capture real-time moisture data and supply raw ADC voltage to the Arduino's A0 pin for ratio evaluation.</p>
-            </div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <button type="button" onclick="openPhotoModal('assets/circuit-schematic.png', 'Arduino &amp; Soil Moisture Circuit Wiring Schematic (Tinkercad)')" class="px-3 py-1.5 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30 text-xs font-mono transition flex items-center gap-1.5">
+              <i class="fas fa-network-wired text-xs"></i> View Full Schematic Diagram
+            </button>
+            <button type="button" onclick="openPhotoModal('assets/hardware-setup.jpg', 'Physical Arduino Breadboard Prototype Lab Setup')" class="px-3 py-1.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 text-xs font-mono transition flex items-center gap-1.5">
+              <i class="fas fa-camera text-xs"></i> Physical Build Photo
+            </button>
           </div>
         </div>
 
-        <!-- 3. Acoustic Piezo Speaker -->
-        <div class="p-4 rounded-xl bg-slate-900/70 border border-white/5 hover:border-purple-500/30 transition space-y-2.5 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-2">
-              <div class="w-8 h-8 rounded-lg bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
-                <i class="fas fa-volume-high"></i>
+        <!-- 6 Step-by-Step Build Stages Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          
+          <!-- Stage 1 -->
+          <div class="glass-card rounded-2xl p-5 border border-white/10 hover:border-cyan-500/40 transition-all duration-300 flex flex-col justify-between space-y-4 group">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                  STAGE 01
+                </span>
+                <span class="text-[10px] font-mono text-slate-400">POWER RAILS</span>
               </div>
-              <span class="px-2 py-0.5 rounded text-[10px] bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold">AUDIO TRANSDUCER</span>
+              <h4 class="text-base font-bold text-white">Common Power Rails &amp; Ground Bus</h4>
+              
+              <!-- Thumbnail -->
+              <div class="relative w-full h-36 rounded-xl overflow-hidden bg-slate-950 border border-white/10 group/img cursor-pointer" onclick="openPhotoModal('assets/components/breadboard.jpg', 'Breadboard Power &amp; Ground Rails Setup')">
+                <img src="assets/components/breadboard.jpg" alt="Breadboard Power Rails" class="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-300" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end justify-between p-2">
+                  <span class="text-[10px] font-mono text-cyan-300 bg-slate-900/80 px-2 py-0.5 rounded border border-cyan-500/30 flex items-center gap-1">
+                    <i class="fas fa-magnifying-glass-plus text-[9px]"></i> View Step Image
+                  </span>
+                  <span class="text-[9px] font-mono text-slate-400 bg-slate-950/80 px-1.5 py-0.5 rounded">5V &amp; GND</span>
+                </div>
+              </div>
+
+              <div class="space-y-2 text-xs text-slate-300 leading-relaxed font-sans">
+                <p>1. Mount the Arduino Uno R3 next to the solderless breadboard on an anti-static work mat.</p>
+                <p>2. Connect a red DuPont jumper wire from the Arduino <strong class="text-rose-400">5V pin</strong> to the breadboard's red positive (<strong class="text-rose-400">+</strong>) power rail.</p>
+                <p>3. Connect a black jumper wire from the Arduino <strong class="text-slate-300">GND pin</strong> to the blue negative (<strong class="text-blue-400">-</strong>) ground rail.</p>
+              </div>
             </div>
-            <h4 class="text-sm font-bold text-white font-sans">Acoustic Speaker / Piezo Transducer</h4>
-            <div class="text-[11px] text-slate-400 font-mono mt-1 space-y-1">
-              <p><span class="text-purple-300 font-semibold">Pins:</span> Positive (+) &rarr; Pin D5 (PWM), Negative (-) &rarr; GND</p>
-              <p><span class="text-purple-300 font-semibold">Frequencies:</span> 1000 Hz, 1500 Hz, 5000–6000 Hz</p>
+
+            <div class="pt-3 border-t border-white/10 font-mono text-[10px] text-cyan-300 space-y-1 bg-slate-950/40 p-2.5 rounded-lg border border-white/5">
+              <div><strong class="text-slate-200">Rail Pinout:</strong> Arduino 5V &rarr; Breadboard (+)</div>
+              <div><strong class="text-slate-200">Ground Pinout:</strong> Arduino GND &rarr; Breadboard (-)</div>
             </div>
           </div>
-          <div class="pt-2.5 border-t border-white/5 space-y-1.5 text-[11px] font-sans">
-            <div>
-              <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-cyan-400"><i class="fas fa-gear mr-1"></i> Function:</span>
-              <p class="text-slate-400 text-xs leading-relaxed">Converts oscillating electrical square wave signals generated by the microcontroller into audible sound waves via diaphragm oscillation.</p>
+
+          <!-- Stage 2 -->
+          <div class="glass-card rounded-2xl p-5 border border-white/10 hover:border-emerald-500/40 transition-all duration-300 flex flex-col justify-between space-y-4 group">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  STAGE 02
+                </span>
+                <span class="text-[10px] font-mono text-slate-400">SENSOR WIRING</span>
+              </div>
+              <h4 class="text-base font-bold text-white">Soil Moisture Sensor &amp; Analog Pin A0</h4>
+              
+              <!-- Thumbnail -->
+              <div class="relative w-full h-36 rounded-xl overflow-hidden bg-slate-950 border border-white/10 group/img cursor-pointer" onclick="openPhotoModal('assets/components/soil-moisture-sensor.jpg', 'Soil Moisture Sensor Probe Interfacing')">
+                <img src="assets/components/soil-moisture-sensor.jpg" alt="Soil Moisture Sensor Wiring" class="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-300" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end justify-between p-2">
+                  <span class="text-[10px] font-mono text-emerald-300 bg-slate-900/80 px-2 py-0.5 rounded border border-emerald-500/30 flex items-center gap-1">
+                    <i class="fas fa-magnifying-glass-plus text-[9px]"></i> View Step Image
+                  </span>
+                  <span class="text-[9px] font-mono text-slate-400 bg-slate-950/80 px-1.5 py-0.5 rounded">Pin A0 Signal</span>
+                </div>
+              </div>
+
+              <div class="space-y-2 text-xs text-slate-300 leading-relaxed font-sans">
+                <p>1. Connect sensor header <strong class="text-rose-400">VCC</strong> to the breadboard 5V (+) power bus.</p>
+                <p>2. Connect sensor header <strong class="text-blue-400">GND</strong> to the breadboard Ground (-) bus.</p>
+                <p>3. Connect sensor <strong class="text-amber-300">SIG / AO (Analog Output)</strong> via yellow jumper wire directly to Arduino <strong class="text-cyan-300">Analog Pin A0</strong>.</p>
+                <p>4. Keep probe prongs clean and dry for baseline zero calibration.</p>
+              </div>
             </div>
-            <div>
-              <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-emerald-400"><i class="fas fa-bullseye mr-1"></i> Role in Project:</span>
-              <p class="text-slate-300 text-xs leading-relaxed">Replaced basic buzzers with custom acoustic tones: emits 1000Hz alert (&le;10% moisture: "I'm Thirsty"), 1500Hz chirp (&gt;30%: "I'm Full"), and startup chimes.</p>
+
+            <div class="pt-3 border-t border-white/10 font-mono text-[10px] text-emerald-300 space-y-1 bg-slate-950/40 p-2.5 rounded-lg border border-white/5">
+              <div><strong class="text-slate-200">Analog Signal:</strong> Sensor AO &rarr; Arduino Pin A0</div>
+              <div><strong class="text-slate-200">Sensor Power:</strong> 5V &amp; GND Rails</div>
             </div>
           </div>
+
+          <!-- Stage 3 -->
+          <div class="glass-card rounded-2xl p-5 border border-white/10 hover:border-amber-500/40 transition-all duration-300 flex flex-col justify-between space-y-4 group">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                  STAGE 03
+                </span>
+                <span class="text-[10px] font-mono text-slate-400">LEDS &amp; RESISTORS</span>
+              </div>
+              <h4 class="text-base font-bold text-white">Dual LEDs &amp; Resistor Protection</h4>
+              
+              <!-- Thumbnail -->
+              <div class="relative w-full h-36 rounded-xl overflow-hidden bg-slate-950 border border-white/10 group/img cursor-pointer" onclick="openPhotoModal('assets/components/resistors.jpg', 'LEDs and Current Limiting Resistors Placement')">
+                <img src="assets/components/resistors.jpg" alt="LEDs and Resistors" class="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-300" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end justify-between p-2">
+                  <span class="text-[10px] font-mono text-amber-300 bg-slate-900/80 px-2 py-0.5 rounded border border-amber-500/30 flex items-center gap-1">
+                    <i class="fas fa-magnifying-glass-plus text-[9px]"></i> View Step Image
+                  </span>
+                  <span class="text-[9px] font-mono text-slate-400 bg-slate-950/80 px-1.5 py-0.5 rounded">Pins D1 &amp; D3</span>
+                </div>
+              </div>
+
+              <div class="space-y-2 text-xs text-slate-300 leading-relaxed font-sans">
+                <p>1. Insert **Green LED** on breadboard. Connect longer anode lead (+) to Arduino <strong class="text-emerald-400">Pin D1</strong> via a 330Ω resistor. Connect shorter cathode (-) to GND.</p>
+                <p>2. Insert **Red LED** on breadboard. Connect longer anode lead (+) to Arduino <strong class="text-rose-400">Pin D3</strong> via a 330Ω resistor. Connect shorter cathode (-) to GND.</p>
+                <p>3. Verify polarity: Shorter lead / flat rim is cathode (-).</p>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-white/10 font-mono text-[10px] text-amber-300 space-y-1 bg-slate-950/40 p-2.5 rounded-lg border border-white/5">
+              <div><strong class="text-slate-200">Green LED:</strong> Arduino D1 &rarr; 330Ω &rarr; Anode (+)</div>
+              <div><strong class="text-slate-200">Red LED:</strong> Arduino D3 &rarr; 330Ω &rarr; Anode (+)</div>
+            </div>
+          </div>
+
+          <!-- Stage 4 -->
+          <div class="glass-card rounded-2xl p-5 border border-white/10 hover:border-purple-500/40 transition-all duration-300 flex flex-col justify-between space-y-4 group">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                  STAGE 04
+                </span>
+                <span class="text-[10px] font-mono text-slate-400">SPEAKER PWM</span>
+              </div>
+              <h4 class="text-base font-bold text-white">Acoustic Piezo Speaker (Pin D5)</h4>
+              
+              <!-- Thumbnail -->
+              <div class="relative w-full h-36 rounded-xl overflow-hidden bg-slate-950 border border-white/10 group/img cursor-pointer" onclick="openPhotoModal('assets/components/piezo-speaker.jpg', 'Acoustic Piezo Speaker Wiring to PWM Pin 5')">
+                <img src="assets/components/piezo-speaker.jpg" alt="Acoustic Piezo Speaker Wiring" class="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-300" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end justify-between p-2">
+                  <span class="text-[10px] font-mono text-purple-300 bg-slate-900/80 px-2 py-0.5 rounded border border-purple-500/30 flex items-center gap-1">
+                    <i class="fas fa-magnifying-glass-plus text-[9px]"></i> View Step Image
+                  </span>
+                  <span class="text-[9px] font-mono text-slate-400 bg-slate-950/80 px-1.5 py-0.5 rounded">PWM Tone Out</span>
+                </div>
+              </div>
+
+              <div class="space-y-2 text-xs text-slate-300 leading-relaxed font-sans">
+                <p>1. Connect speaker positive terminal (<strong class="text-rose-400">+</strong> / red wire) directly to Arduino <strong class="text-purple-400">Digital Pin D5</strong>.</p>
+                <p>2. Connect speaker negative terminal (<strong class="text-slate-400">-</strong> / black wire) to the breadboard Ground bus.</p>
+                <p>3. Note: Pin D5 is PWM-capable, allowing the ATmega328P timer to synthesize exact square wave frequencies (1000Hz, 1500Hz, 5000Hz, 6000Hz).</p>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-white/10 font-mono text-[10px] text-purple-300 space-y-1 bg-slate-950/40 p-2.5 rounded-lg border border-white/5">
+              <div><strong class="text-slate-200">Speaker (+) Lead:</strong> Arduino Pin D5 (PWM)</div>
+              <div><strong class="text-slate-200">Speaker (-) Lead:</strong> Common Ground Rail (GND)</div>
+            </div>
+          </div>
+
+          <!-- Stage 5 -->
+          <div class="glass-card rounded-2xl p-5 border border-white/10 hover:border-sky-500/40 transition-all duration-300 flex flex-col justify-between space-y-4 group">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-sky-500/20 text-sky-300 border border-sky-500/30">
+                  STAGE 05
+                </span>
+                <span class="text-[10px] font-mono text-slate-400">CODE UPLOAD</span>
+              </div>
+              <h4 class="text-base font-bold text-white">Arduino IDE Sketch Flashing</h4>
+              
+              <!-- Thumbnail -->
+              <div class="relative w-full h-36 rounded-xl overflow-hidden bg-slate-950 border border-white/10 group/img cursor-pointer" onclick="openPhotoModal('assets/components/arduino-uno.jpg', 'Arduino IDE USB Connection and Sketch Flashing')">
+                <img src="assets/components/arduino-uno.jpg" alt="Arduino Uno USB Flashing" class="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-300" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end justify-between p-2">
+                  <span class="text-[10px] font-mono text-sky-300 bg-slate-900/80 px-2 py-0.5 rounded border border-sky-500/30 flex items-center gap-1">
+                    <i class="fas fa-magnifying-glass-plus text-[9px]"></i> View Step Image
+                  </span>
+                  <span class="text-[9px] font-mono text-slate-400 bg-slate-950/80 px-1.5 py-0.5 rounded">9600 Baud UART</span>
+                </div>
+              </div>
+
+              <div class="space-y-2 text-xs text-slate-300 leading-relaxed font-sans">
+                <p>1. Connect Arduino Uno to your computer using the USB Type-A to Type-B cable.</p>
+                <p>2. Open Arduino IDE, select <strong class="text-white">Tools &gt; Board &gt; Arduino Uno</strong> and choose your active COM port (e.g. COM4).</p>
+                <p>3. Paste the C++ sketch from the code inspector below and click <strong class="text-emerald-400">Upload (Ctrl+U)</strong>.</p>
+                <p>4. Open Serial Monitor (<strong class="text-cyan-300">Ctrl+Shift+M</strong>) and verify 9600 baud rate.</p>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-white/10 font-mono text-[10px] text-sky-300 space-y-1 bg-slate-950/40 p-2.5 rounded-lg border border-white/5">
+              <div><strong class="text-slate-200">Board Target:</strong> Arduino Uno (ATmega328P)</div>
+              <div><strong class="text-slate-200">Serial Stream:</strong> 9600 bps UART</div>
+            </div>
+          </div>
+
+          <!-- Stage 6 -->
+          <div class="glass-card rounded-2xl p-5 border border-white/10 hover:border-emerald-500/40 transition-all duration-300 flex flex-col justify-between space-y-4 group">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  STAGE 06
+                </span>
+                <span class="text-[10px] font-mono text-slate-400">CALIBRATION &amp; TEST</span>
+              </div>
+              <h4 class="text-base font-bold text-white">Calibration &amp; Plant Soil Verification</h4>
+              
+              <!-- Thumbnail -->
+              <div class="relative w-full h-36 rounded-xl overflow-hidden bg-slate-950 border border-white/10 group/img cursor-pointer" onclick="openPhotoModal('assets/hardware-setup.jpg', 'Physical Plant Hydration Lab Testing Verification')">
+                <img src="assets/hardware-setup.jpg" alt="Physical Plant Hydration Testing" class="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-300" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end justify-between p-2">
+                  <span class="text-[10px] font-mono text-emerald-300 bg-slate-900/80 px-2 py-0.5 rounded border border-emerald-500/30 flex items-center gap-1">
+                    <i class="fas fa-magnifying-glass-plus text-[9px]"></i> View Step Image
+                  </span>
+                  <span class="text-[9px] font-mono text-slate-400 bg-slate-950/80 px-1.5 py-0.5 rounded">Empirical Verification</span>
+                </div>
+              </div>
+
+              <div class="space-y-2 text-xs text-slate-300 leading-relaxed font-sans">
+                <p>1. **Power-On Chirp**: Hear two high startup chimes (5000Hz and 6000Hz) confirming code execution.</p>
+                <p>2. **Dry Soil Test**: Keep probe in dry soil (&le; 10% moisture) &rarr; Red LED turns ON, 1000Hz alert fires ("I'm Thirsty").</p>
+                <p>3. **Watering Test**: Pour water around plant roots (&gt; 30% moisture) &rarr; Green LED turns ON, 1500Hz chirp fires ("I'm Full").</p>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-white/10 font-mono text-[10px] text-emerald-300 space-y-1 bg-slate-950/40 p-2.5 rounded-lg border border-white/5">
+              <div><strong class="text-slate-200">Alert Threshold:</strong> &le;10% (Red + 1000Hz)</div>
+              <div><strong class="text-slate-200">Healthy Threshold:</strong> &gt;30% (Green + 1500Hz)</div>
+            </div>
+          </div>
+
         </div>
 
-        <!-- 4. Green LED -->
-        <div class="p-4 rounded-xl bg-slate-900/70 border border-white/5 hover:border-emerald-500/30 transition space-y-2.5 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-2">
-              <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-                <i class="fas fa-lightbulb"></i>
-              </div>
-              <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">VISUAL OUT</span>
+        <!-- Breadboard Pinout Connection Cheat Sheet Table -->
+        <div class="glass-card rounded-2xl p-5 border border-white/10 space-y-3 font-mono text-xs">
+          <div class="flex items-center justify-between border-b border-white/10 pb-3">
+            <div class="flex items-center gap-2">
+              <i class="fas fa-table-list text-cyan-400"></i>
+              <h4 class="text-sm font-bold text-white font-sans">Complete Breadboard Wiring &amp; Pinout Cheat Sheet</h4>
             </div>
-            <h4 class="text-sm font-bold text-white font-sans">Green Status LED (5mm)</h4>
-            <div class="text-[11px] text-slate-400 font-mono mt-1 space-y-1">
-              <p><span class="text-emerald-300 font-semibold">Pins:</span> Anode &rarr; Pin D1 (via 330Ω Resistor), Cathode &rarr; GND</p>
-              <p><span class="text-emerald-300 font-semibold">Trigger:</span> Moisture Ratio &gt; 30% (HIGH logic)</p>
-            </div>
+            <span class="text-[10px] text-slate-400 bg-slate-900 px-2 py-0.5 rounded border border-white/5">Hardware Matrix</span>
           </div>
-          <div class="pt-2.5 border-t border-white/5 space-y-1.5 text-[11px] font-sans">
-            <div>
-              <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-cyan-400"><i class="fas fa-gear mr-1"></i> Function:</span>
-              <p class="text-slate-400 text-xs leading-relaxed">Solid-state semiconductor light emitter emitting at 565nm wavelength with fast response time and low power consumption.</p>
-            </div>
-            <div>
-              <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-emerald-400"><i class="fas fa-bullseye mr-1"></i> Role in Project:</span>
-              <p class="text-slate-300 text-xs leading-relaxed">Visual indicator for adequate/optimal hydration. Illuminates brightly when the plant has sufficient water, signaling healthy soil conditions.</p>
-            </div>
-          </div>
-        </div>
 
-        <!-- 5. Red LED -->
-        <div class="p-4 rounded-xl bg-slate-900/70 border border-white/5 hover:border-rose-500/30 transition space-y-2.5 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-2">
-              <div class="w-8 h-8 rounded-lg bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400">
-                <i class="fas fa-triangle-exclamation"></i>
-              </div>
-              <span class="px-2 py-0.5 rounded text-[10px] bg-rose-500/20 text-rose-300 border border-rose-500/30 font-bold">WARNING OUT</span>
-            </div>
-            <h4 class="text-sm font-bold text-white font-sans">Red Warning LED (5mm)</h4>
-            <div class="text-[11px] text-slate-400 font-mono mt-1 space-y-1">
-              <p><span class="text-rose-300 font-semibold">Pins:</span> Anode &rarr; Pin D3 (via 330Ω Resistor), Cathode &rarr; GND</p>
-              <p><span class="text-rose-300 font-semibold">Trigger:</span> Moisture Ratio &le; 30% (HIGH logic)</p>
-            </div>
-          </div>
-          <div class="pt-2.5 border-t border-white/5 space-y-1.5 text-[11px] font-sans">
-            <div>
-              <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-cyan-400"><i class="fas fa-gear mr-1"></i> Function:</span>
-              <p class="text-slate-400 text-xs leading-relaxed">Solid-state warning diode emitting at 630nm wavelength to immediately grab user attention in low-hydration states.</p>
-            </div>
-            <div>
-              <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-emerald-400"><i class="fas fa-bullseye mr-1"></i> Role in Project:</span>
-              <p class="text-slate-300 text-xs leading-relaxed">Visual alert for dry soil. Turns ON whenever moisture drops below 30% (silent warning for 10%–30%, and paired with audio alarm at &le;10%).</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- 6. Current-Limiting Resistors -->
-        <div class="p-4 rounded-xl bg-slate-900/70 border border-white/5 hover:border-amber-500/30 transition space-y-2.5 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-2">
-              <div class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
-                <i class="fas fa-shield-halved"></i>
-              </div>
-              <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold">PROTECTION</span>
-            </div>
-            <h4 class="text-sm font-bold text-white font-sans">Current-Limiting Resistors (330Ω / 10kΩ)</h4>
-            <div class="text-[11px] text-slate-400 font-mono mt-1 space-y-1">
-              <p><span class="text-amber-300 font-semibold">Placement:</span> In series with Green (D1) and Red (D3) LEDs</p>
-              <p><span class="text-amber-300 font-semibold">Rating:</span> 1/4 Watt, ±5% tolerance (Ohmic load)</p>
-            </div>
-          </div>
-          <div class="pt-2.5 border-t border-white/5 space-y-1.5 text-[11px] font-sans">
-            <div>
-              <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-cyan-400"><i class="fas fa-gear mr-1"></i> Function:</span>
-              <p class="text-slate-400 text-xs leading-relaxed">Limits forward current flow (I = V/R) through semiconductor junctions to safe operating limits, preventing component burnout.</p>
-            </div>
-            <div>
-              <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-emerald-400"><i class="fas fa-bullseye mr-1"></i> Role in Project:</span>
-              <p class="text-slate-300 text-xs leading-relaxed">Protects the Red and Green LEDs from burning out under 5V rail voltage and safeguards the ATmega328P microcontroller output pins.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- 7. Solderless Breadboard -->
-        <div class="p-4 rounded-xl bg-slate-900/70 border border-white/5 hover:border-cyan-500/30 transition space-y-2.5 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-2">
-              <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
-                <i class="fas fa-table-cells"></i>
-              </div>
-              <span class="px-2 py-0.5 rounded text-[10px] bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-bold">PROTOTYPE HUB</span>
-            </div>
-            <h4 class="text-sm font-bold text-white font-sans">Solderless Prototyping Breadboard</h4>
-            <div class="text-[11px] text-slate-400 font-mono mt-1 space-y-1">
-              <p><span class="text-cyan-300 font-semibold">Rails:</span> Dual (+ / -) Power Distribution Buses</p>
-              <p><span class="text-cyan-300 font-semibold">Tie-Points:</span> 400–830 Spring Contact Sockets</p>
-            </div>
-          </div>
-          <div class="pt-2.5 border-t border-white/5 space-y-1.5 text-[11px] font-sans">
-            <div>
-              <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-cyan-400"><i class="fas fa-gear mr-1"></i> Function:</span>
-              <p class="text-slate-400 text-xs leading-relaxed">Provides solder-free mechanical sockets interconnected by nickel-bronze contact clips for temporary circuit assembly.</p>
-            </div>
-            <div>
-              <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-emerald-400"><i class="fas fa-bullseye mr-1"></i> Role in Project:</span>
-              <p class="text-slate-300 text-xs leading-relaxed">Holds all discrete components in place; distributes common 5V and Ground rails from the Arduino to LEDs, resistors, and the speaker.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- 8. DuPont Jumper Wires -->
-        <div class="p-4 rounded-xl bg-slate-900/70 border border-white/5 hover:border-blue-500/30 transition space-y-2.5 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-2">
-              <div class="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
-                <i class="fas fa-bezier-curve"></i>
-              </div>
-              <span class="px-2 py-0.5 rounded text-[10px] bg-blue-500/20 text-blue-300 border border-blue-500/30 font-bold">INTERCONNECT</span>
-            </div>
-            <h4 class="text-sm font-bold text-white font-sans">Color-Coded DuPont Jumper Wires</h4>
-            <div class="text-[11px] text-slate-400 font-mono mt-1 space-y-1">
-              <p><span class="text-blue-300 font-semibold">Types:</span> Male-to-Male (M-M) &amp; Male-to-Female (M-F)</p>
-              <p><span class="text-blue-300 font-semibold">Standards:</span> 24 AWG tinned copper conductors</p>
-            </div>
-          </div>
-          <div class="pt-2.5 border-t border-white/5 space-y-1.5 text-[11px] font-sans">
-            <div>
-              <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-cyan-400"><i class="fas fa-gear mr-1"></i> Function:</span>
-              <p class="text-slate-400 text-xs leading-relaxed">Low-resistance flexible wires with molded connector pins for interconnecting male pin headers and breadboard tie-points.</p>
-            </div>
-            <div>
-              <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-emerald-400"><i class="fas fa-bullseye mr-1"></i> Role in Project:</span>
-              <p class="text-slate-300 text-xs leading-relaxed">Routes power rails and signals: Yellow (A0 analog signal), Green (D1 LED control), Red (D3 LED control), Purple (D5 speaker PWM), and Red/Black (5V/GND).</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- 9. HM-Sensor Signal Conditioning Unit -->
-        <div class="p-4 rounded-xl bg-slate-900/70 border border-white/5 hover:border-teal-500/30 transition space-y-2.5 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-2">
-              <div class="w-8 h-8 rounded-lg bg-teal-500/10 border border-teal-500/30 flex items-center justify-center text-teal-400">
-                <i class="fas fa-sliders"></i>
-              </div>
-              <span class="px-2 py-0.5 rounded text-[10px] bg-teal-500/20 text-teal-300 border border-teal-500/30 font-bold">SIGNAL INTERFACE</span>
-            </div>
-            <h4 class="text-sm font-bold text-white font-sans">HM-Sensor Conditioning Interface</h4>
-            <div class="text-[11px] text-slate-400 font-mono mt-1 space-y-1">
-              <p><span class="text-teal-300 font-semibold">Type:</span> Sensor Bridge &amp; Analog Buffer</p>
-              <p><span class="text-teal-300 font-semibold">Calibration:</span> Baseline Ceiling Stabilization</p>
-            </div>
-          </div>
-          <div class="pt-2.5 border-t border-white/5 space-y-1.5 text-[11px] font-sans">
-            <div>
-              <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-cyan-400"><i class="fas fa-gear mr-1"></i> Function:</span>
-              <p class="text-slate-400 text-xs leading-relaxed">Ensures steady impedance matching, eliminates high-frequency noise, and provides consistent voltage levels across the moisture probe.</p>
-            </div>
-            <div>
-              <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-emerald-400"><i class="fas fa-bullseye mr-1"></i> Role in Project:</span>
-              <p class="text-slate-300 text-xs leading-relaxed">Calibrates the maximum moisture ceiling (<code>maximumMoistureLevel = analogRead(A0)</code>) during setup to establish an accurate ratio denominator.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- 10. USB Cable & Power Source -->
-        <div class="p-4 rounded-xl bg-slate-900/70 border border-white/5 hover:border-emerald-500/30 transition space-y-2.5 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-2">
-              <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-                <i class="fas fa-plug"></i>
-              </div>
-              <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">POWER &amp; UART</span>
-            </div>
-            <h4 class="text-sm font-bold text-white font-sans">USB 2.0 Cable &amp; 5V Power Supply</h4>
-            <div class="text-[11px] text-slate-400 font-mono mt-1 space-y-1">
-              <p><span class="text-emerald-300 font-semibold">Interface:</span> USB Type-A to Type-B (Standard Arduino)</p>
-              <p><span class="text-emerald-300 font-semibold">Serial Baud:</span> 9600 bps Full-Duplex UART Bridge</p>
-            </div>
-          </div>
-          <div class="pt-2.5 border-t border-white/5 space-y-1.5 text-[11px] font-sans">
-            <div>
-              <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-cyan-400"><i class="fas fa-gear mr-1"></i> Function:</span>
-              <p class="text-slate-400 text-xs leading-relaxed">Delivers clean regulated 5V DC power from a host computer or adapter while transmitting bidirectional serial UART data.</p>
-            </div>
-            <div>
-              <span class="text-slate-300 font-semibold text-[10px] uppercase font-mono block text-emerald-400"><i class="fas fa-bullseye mr-1"></i> Role in Project:</span>
-              <p class="text-slate-300 text-xs leading-relaxed">Powers the microcontroller board and sensor rails, flashes compiled sketches, and streams real-time ADC readings to the Serial Monitor.</p>
-            </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-[11px] text-slate-300">
+              <thead class="bg-slate-950 text-slate-400 uppercase text-[10px] border-b border-white/10">
+                <tr>
+                  <th class="py-2.5 px-3">Component Pin</th>
+                  <th class="py-2.5 px-3">Arduino Pin / Destination</th>
+                  <th class="py-2.5 px-3">Recommended Wire Color</th>
+                  <th class="py-2.5 px-3">Electrical Function &amp; Notes</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-white/5 font-mono">
+                <tr class="hover:bg-white/5 transition">
+                  <td class="py-2 px-3 text-white font-semibold">Sensor VCC</td>
+                  <td class="py-2 px-3 text-rose-400">Arduino 5V Power Rail</td>
+                  <td class="py-2 px-3"><span class="inline-block w-2.5 h-2.5 rounded-full bg-rose-500 mr-1.5 align-middle"></span>Red Wire</td>
+                  <td class="py-2 px-3 text-slate-400 font-sans text-xs">Provides regulated 5V DC power to probe PCB bridge</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition">
+                  <td class="py-2 px-3 text-white font-semibold">Sensor GND</td>
+                  <td class="py-2 px-3 text-slate-400">Arduino GND Ground Rail</td>
+                  <td class="py-2 px-3"><span class="inline-block w-2.5 h-2.5 rounded-full bg-slate-800 border border-slate-500 mr-1.5 align-middle"></span>Black Wire</td>
+                  <td class="py-2 px-3 text-slate-400 font-sans text-xs">Common zero-volt system ground reference</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition">
+                  <td class="py-2 px-3 text-white font-semibold">Sensor SIG / AO</td>
+                  <td class="py-2 px-3 text-cyan-300 font-bold">Arduino Analog Pin A0</td>
+                  <td class="py-2 px-3"><span class="inline-block w-2.5 h-2.5 rounded-full bg-amber-400 mr-1.5 align-middle"></span>Yellow Wire</td>
+                  <td class="py-2 px-3 text-slate-400 font-sans text-xs">Analog voltage proportional to soil moisture (0–1023 ADC)</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition">
+                  <td class="py-2 px-3 text-white font-semibold">Green LED Anode (+)</td>
+                  <td class="py-2 px-3 text-emerald-400 font-bold">Arduino Pin D1 (via 330Ω)</td>
+                  <td class="py-2 px-3"><span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400 mr-1.5 align-middle"></span>Green Wire</td>
+                  <td class="py-2 px-3 text-slate-400 font-sans text-xs">Illuminates when moisture &gt; 30% ("My soil is wet / full")</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition">
+                  <td class="py-2 px-3 text-white font-semibold">Red LED Anode (+)</td>
+                  <td class="py-2 px-3 text-rose-400 font-bold">Arduino Pin D3 (via 330Ω)</td>
+                  <td class="py-2 px-3"><span class="inline-block w-2.5 h-2.5 rounded-full bg-rose-500 mr-1.5 align-middle"></span>Red Wire</td>
+                  <td class="py-2 px-3 text-slate-400 font-sans text-xs">Illuminates when moisture &le; 30% ("Soil is dry alert")</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition">
+                  <td class="py-2 px-3 text-white font-semibold">Speaker Positive (+)</td>
+                  <td class="py-2 px-3 text-purple-400 font-bold">Arduino Pin D5 (PWM)</td>
+                  <td class="py-2 px-3"><span class="inline-block w-2.5 h-2.5 rounded-full bg-purple-500 mr-1.5 align-middle"></span>Purple Wire</td>
+                  <td class="py-2 px-3 text-slate-400 font-sans text-xs">Acoustic tone output via PWM: 1000Hz alert &amp; 1500Hz chime</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition">
+                  <td class="py-2 px-3 text-white font-semibold">Speaker Negative (-)</td>
+                  <td class="py-2 px-3 text-slate-400">Breadboard Ground Rail (GND)</td>
+                  <td class="py-2 px-3"><span class="inline-block w-2.5 h-2.5 rounded-full bg-slate-800 border border-slate-500 mr-1.5 align-middle"></span>Black Wire</td>
+                  <td class="py-2 px-3 text-slate-400 font-sans text-xs">Ground return path for piezoelectric transducer current</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
@@ -2290,7 +2857,7 @@ void loop() {
       setMoistureLevel(72);
     })();
 
-    // Photo Modal Global Helpers
+    // Photo Modal Global Helpers & ESC Handler
     function openPhotoModal(imgSrc, title) {
       const modal = document.getElementById('photo-modal');
       const modalImg = document.getElementById('photo-modal-img');
@@ -2300,6 +2867,7 @@ void loop() {
         if (modalTitle) modalTitle.textContent = title || 'Hardware Photo';
         modal.classList.remove('opacity-0', 'pointer-events-none');
         modal.classList.add('opacity-100', 'pointer-events-auto');
+        document.body.classList.add('overflow-hidden');
       }
     }
     function closePhotoModal() {
@@ -2307,8 +2875,140 @@ void loop() {
       if (modal) {
         modal.classList.add('opacity-0', 'pointer-events-none');
         modal.classList.remove('opacity-100', 'pointer-events-auto');
+        document.body.classList.remove('overflow-hidden');
       }
     }
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closePhotoModal();
+    });
+
+    // Horizontal Rectangle Box Toggle Logic for Arduino Components
+    (function initArduinoComponentsToggle() {
+      const toggleBox = document.getElementById('components-toggle-box');
+      const listWrapper = document.getElementById('components-list-wrapper');
+      const toggleText = document.getElementById('components-toggle-text');
+      const toggleChevron = document.getElementById('components-toggle-chevron');
+
+      if (!toggleBox || !listWrapper) return;
+
+      function toggleList() {
+        const isHidden = listWrapper.classList.contains('hidden');
+        if (isHidden) {
+          listWrapper.classList.remove('hidden');
+          toggleBox.setAttribute('aria-expanded', 'true');
+          if (toggleText) toggleText.textContent = 'Click to Collapse List';
+          if (toggleChevron) toggleChevron.classList.add('rotate-180');
+          toggleBox.classList.add('border-emerald-500/50', 'shadow-[0_0_40px_rgba(16,185,129,0.2)]');
+          toggleBox.classList.remove('border-cyan-500/40');
+        } else {
+          listWrapper.classList.add('hidden');
+          toggleBox.setAttribute('aria-expanded', 'false');
+          if (toggleText) toggleText.textContent = 'Click to View Components';
+          if (toggleChevron) toggleChevron.classList.remove('rotate-180');
+          toggleBox.classList.remove('border-emerald-500/50', 'shadow-[0_0_40px_rgba(16,185,129,0.2)]');
+          toggleBox.classList.add('border-cyan-500/40');
+        }
+      }
+
+      toggleBox.addEventListener('click', toggleList);
+      toggleBox.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggleList();
+        }
+      });
+
+      // Filter tabs logic
+      const filterBtns = document.querySelectorAll('.comp-filter-btn');
+      const cards = document.querySelectorAll('#components-grid .component-card');
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation(); // Don't trigger toggleBox click
+          const category = btn.getAttribute('data-category');
+
+          filterBtns.forEach(b => {
+            b.classList.remove('bg-cyan-500/20', 'text-cyan-300', 'border-cyan-500/40', 'font-bold');
+            b.classList.add('bg-slate-900', 'text-slate-400', 'border-white/5');
+          });
+          btn.classList.add('bg-cyan-500/20', 'text-cyan-300', 'border-cyan-500/40', 'font-bold');
+          btn.classList.remove('bg-slate-900', 'text-slate-400', 'border-white/5');
+
+          cards.forEach(card => {
+            const cardCat = card.getAttribute('data-cat');
+            if (category === 'all' || cardCat === category) {
+              card.classList.remove('hidden');
+            } else {
+              card.classList.add('hidden');
+            }
+          });
+        });
+      });
+    })();
+
+    // Horizontal Rectangle Box Toggle Logic for Arduino Build Guide
+    (function initArduinoBuildGuideToggle() {
+      const toggleBox = document.getElementById('build-guide-toggle-box');
+      const guideWrapper = document.getElementById('build-guide-wrapper');
+      const toggleText = document.getElementById('build-guide-toggle-text');
+      const toggleChevron = document.getElementById('build-guide-toggle-chevron');
+
+      if (!toggleBox || !guideWrapper) return;
+
+      function toggleGuide() {
+        const isHidden = guideWrapper.classList.contains('hidden');
+        if (isHidden) {
+          guideWrapper.classList.remove('hidden');
+          toggleBox.setAttribute('aria-expanded', 'true');
+          if (toggleText) toggleText.textContent = 'Click to Collapse Build Guide';
+          if (toggleChevron) toggleChevron.classList.add('rotate-180');
+          toggleBox.classList.add('border-emerald-500/70', 'shadow-[0_0_40px_rgba(16,185,129,0.25)]');
+          toggleBox.classList.remove('border-emerald-500/40');
+        } else {
+          guideWrapper.classList.add('hidden');
+          toggleBox.setAttribute('aria-expanded', 'false');
+          if (toggleText) toggleText.textContent = 'Click to View Build Guide';
+          if (toggleChevron) toggleChevron.classList.remove('rotate-180');
+          toggleBox.classList.remove('border-emerald-500/70', 'shadow-[0_0_40px_rgba(16,185,129,0.25)]');
+          toggleBox.classList.add('border-emerald-500/40');
+        }
+      }
+
+      toggleBox.addEventListener('click', toggleGuide);
+      toggleBox.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggleGuide();
+        }
+      });
+    })();
   </script>
+
+  <!-- High-Resolution Hardware Photo Lightbox Modal -->
+  <div id="photo-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300 select-none" onclick="if(event.target === this) closePhotoModal();">
+    <div class="relative max-w-4xl w-full bg-slate-900 border border-white/10 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between p-4 border-b border-white/10 bg-slate-950/90">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+            <i class="fas fa-camera text-xs"></i>
+          </div>
+          <div>
+            <h3 id="photo-modal-title" class="text-sm font-bold text-white font-mono">Component Photo</h3>
+            <span class="text-[10px] text-slate-400 font-mono">Arduino Uno Plant Hydration Hardware Component</span>
+          </div>
+        </div>
+        <button type="button" onclick="closePhotoModal()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition border border-white/10" aria-label="Close modal">
+          <i class="fas fa-xmark text-sm"></i>
+        </button>
+      </div>
+      <div class="p-4 sm:p-6 flex items-center justify-center bg-slate-950 overflow-auto">
+        <img id="photo-modal-img" src="" alt="Hardware Component" class="max-h-[70vh] w-auto max-w-full object-contain rounded-xl shadow-2xl border border-white/10">
+      </div>
+      <div class="p-3 bg-slate-950/80 border-t border-white/10 flex items-center justify-between text-xs font-mono text-slate-400">
+        <span><i class="fas fa-keyboard mr-1"></i> Press ESC or click background to close</span>
+        <button type="button" onclick="closePhotoModal()" class="text-cyan-400 hover:text-cyan-300 transition">Close Window &times;</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
